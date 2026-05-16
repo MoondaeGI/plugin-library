@@ -1,0 +1,15 @@
+# Secrets
+.env
+
+# Personal Claude settings
+.claude/settings.local.json
+
+# Personal Codex settings
+.codex/.local.toml
+
+# Node
+node_modules/
+
+# OS
+Thumbs.db
+.DS_Store
