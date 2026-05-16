@@ -21,18 +21,10 @@ if (!cmd) {
   process.exit(2);
 }
 
-// On Windows, .cmd/.bat scripts require shell:true to be found and executed.
-// Using shell:true unconditionally on Windows breaks args containing shell
-// metacharacters (e.g. `||` in node -e scripts). Only enable shell when the
-// command is actually a Windows script file.
-const needsShell =
-  process.platform === 'win32' &&
-  /\.(cmd|bat)$/i.test(cmd);
-
 const child = spawn(cmd, args, {
   env,
   stdio: 'inherit',
-  shell: needsShell,
+  shell: process.platform === 'win32',
 });
 
 const forward = (sig) => () => child.kill(sig);

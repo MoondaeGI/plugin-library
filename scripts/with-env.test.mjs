@@ -30,7 +30,8 @@ function runWithFakeRoot(envContent, childArgs) {
 
 test('passes .env values into child process', () => {
   const res = runWithFakeRoot('MY_TEST_VAR=hello_world', [
-    'node', '-e', 'process.stdout.write(process.env.MY_TEST_VAR || "MISSING")',
+    'node', '-e',
+    "process.stdout.write(process.env.MY_TEST_VAR===undefined?'MISSING':process.env.MY_TEST_VAR)",
   ]);
   assert.equal(res.status, 0);
   assert.equal(res.stdout, 'hello_world');
@@ -39,7 +40,8 @@ test('passes .env values into child process', () => {
 test('parent env wins over .env (no overwrite)', () => {
   process.env.MY_OVERRIDE_VAR = 'from_parent';
   const res = runWithFakeRoot('MY_OVERRIDE_VAR=from_dotenv', [
-    'node', '-e', 'process.stdout.write(process.env.MY_OVERRIDE_VAR)',
+    'node', '-e',
+    'process.stdout.write(process.env.MY_OVERRIDE_VAR)',
   ]);
   delete process.env.MY_OVERRIDE_VAR;
   assert.equal(res.status, 0);
@@ -48,7 +50,7 @@ test('parent env wins over .env (no overwrite)', () => {
 
 test('runs cleanly when .env is absent', () => {
   const res = runWithFakeRoot(null, [
-    'node', '-e', 'process.stdout.write("ok")',
+    'node', '-e', "process.stdout.write('ok')",
   ]);
   assert.equal(res.status, 0);
   assert.equal(res.stdout, 'ok');
