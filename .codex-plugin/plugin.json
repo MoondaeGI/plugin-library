@@ -1,0 +1,7 @@
+{
+  "name": "personal",
+  "description": "Personal shared plugin for Claude Code and Codex CLI",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "mcpServers": "./.codex-plugin/mcp.json"
+}
