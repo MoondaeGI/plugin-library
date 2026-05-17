@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "personal",
+  "owner": { "name": "ansgu" },
+  "plugins": [
+    {
+      "name": "personal",
+      "source": { "type": "path", "path": "." },
+      "description": "Personal plugin (this repo)"
+    }
+  ]
+}

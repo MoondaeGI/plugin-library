@@ -1,0 +1,10 @@
+{
+  "name": "personal",
+  "plugins": [
+    {
+      "name": "personal",
+      "source": { "type": "path", "path": "./" },
+      "description": "Personal plugin (this repo)"
+    }
+  ]
+}
