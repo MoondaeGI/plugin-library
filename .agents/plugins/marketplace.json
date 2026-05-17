@@ -1,9 +1,10 @@
 {
   "name": "personal",
+  "description": "Personal plugin marketplace for ansgu's tools",
   "plugins": [
     {
       "name": "personal",
-      "source": { "type": "path", "path": "./" },
+      "source": "./",
       "description": "Personal plugin (this repo)"
     }
   ]
