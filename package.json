@@ -1,0 +1,16 @@
+{
+  "name": "personal-plugin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Personal plugin for Claude Code and Codex CLI",
+  "scripts": {
+    "sync": "node scripts/sync-mcp.mjs",
+    "validate": "node scripts/sync-mcp.mjs --check",
+    "test": "node --test \"scripts/**/*.test.mjs\"",
+    "prepare": "node scripts/sync-mcp.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
