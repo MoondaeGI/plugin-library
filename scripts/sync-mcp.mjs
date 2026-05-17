@@ -131,6 +131,15 @@ function main() {
     return;
   }
 
+  const upToDate =
+    readStateHash() === newHash &&
+    diffExisting(CLAUDE_OUT, claudeText).equal &&
+    diffExisting(CODEX_OUT, codexText).equal &&
+    diffExisting(ENV_EXAMPLE, envExampleText).equal;
+  if (upToDate) {
+    console.log('sync-mcp: already in sync, no changes written');
+    return;
+  }
   writeAll(claudeText, codexText, envExampleText, newHash);
   console.log('sync-mcp: wrote .claude-plugin/mcp.json, .codex-plugin/mcp.json, .env.example, .claude-plugin/mcp.sync-state.json');
 }
