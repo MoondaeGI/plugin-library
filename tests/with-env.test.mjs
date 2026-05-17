@@ -8,8 +8,9 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const WITH_ENV = path.join(__dirname, 'with-env.mjs');
-const PARSE_ENV = path.join(__dirname, 'lib', 'parse-env.mjs');
+const PLUGIN_ROOT = path.resolve(__dirname, '..');
+const WITH_ENV = path.join(PLUGIN_ROOT, 'scripts', 'with-env.mjs');
+const PARSE_ENV = path.join(PLUGIN_ROOT, 'scripts', 'lib', 'parse-env.mjs');
 
 function runWithFakeRoot(envContent, childArgs) {
   const tmp = mkdtempSync(join(tmpdir(), 'with-env-test-'));
