@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run sync:*)",
+      "Bash(npm run validate:*)",
+      "Bash(npm test:*)",
+      "Bash(node scripts/sync-mcp.mjs:*)",
+      "Bash(node scripts/check-secrets.mjs:*)",
+      "Bash(node --test:*)"
+    ]
+  }
+}
