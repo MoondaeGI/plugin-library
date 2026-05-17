@@ -1,0 +1,20 @@
+# Force LF line endings for all text files to avoid Windows CRLF drift
+* text=auto eol=lf
+
+# Lock specific text types to LF (scripts especially — shebang lines)
+*.mjs text eol=lf
+*.js  text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.toml text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.sh   text eol=lf
+
+# Binary types
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
