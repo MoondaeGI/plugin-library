@@ -34,24 +34,24 @@
 
 ## 4. vault 경로 해석 (env 기반)
 
-vault 위치는 `.env`의 **`LIBRARIAN_VAULT_PATH`**로 설정한다. 스킬은 markdown 절차라 `.env`를 직접 못 읽으므로, 루트 `scripts/`에 전용 리졸버를 둔다.
+vault 위치는 `.env`의 **`LIBRARIAN_VAULT_PATH`**로 설정한다. 스킬은 markdown 절차라 `.env`를 직접 못 읽으므로, 전용 리졸버 스크립트를 둔다.
 
-### `scripts/resolve-vault.mjs` (신규, 루트)
+### `skills/librarian/scripts/resolve-vault.mjs` (신규)
 
-env를 만지는 스크립트는 루트에서 관리한다는 기존 규약(`with-env.mjs`, `parse-env.mjs` …)을 따른다. vault 경로는 향후 inbox-watcher 훅이나 다른 스킬도 쓸 수 있는 공용 설정이라 처음부터 루트가 적절하다 (AGENTS.md의 "다른 곳에서도 쓰면 루트로 승격" 기준).
+현재 이 리졸버의 유일한 소비자는 librarian 스킬이다. AGENTS.md 규약("스킬 전용 스크립트는 skill 안에, 훅·다른 스킬에서도 실제로 쓰는 경우에만 루트로 승격")에 따라 **skill 디렉터리 안**에 둔다. 공용 env 파서(`scripts/lib/parse-env.mjs`)는 루트에 그대로 두고 리졸버가 상대경로(`../../../scripts/lib/parse-env.mjs`)로 import한다 — *공유 라이브러리는 루트, 스킬 전용 소비자는 스킬 안*. 향후 inbox-watcher 훅이나 다른 스킬이 vault 경로를 쓰게 되면 그때 루트로 승격한다.
 
 동작:
-1. 기존 `scripts/lib/parse-env.mjs`를 재사용해 플러그인 root의 `.env`를 파싱한다.
+1. 루트 `scripts/lib/parse-env.mjs`를 재사용해 플러그인 root의 `.env`(`../../../.env`)를 파싱한다.
 2. 해석 우선순위: `process.env.LIBRARIAN_VAULT_PATH` → `.env` 파일의 `LIBRARIAN_VAULT_PATH`. (`with-env.mjs`의 `{ ...fileEnv, ...process.env }` 정신 — 실제 환경변수가 파일을 덮어쓴다.) 마켓플레이스 캐시 설치처럼 `.env`가 없는 경우엔 실제 환경변수로 동작.
 3. **검증**: 해석한 경로가 존재하고 *kb vault처럼 생겼는지* 확인한다 — `AGENTS.md`와 `index.md`가 있어야 한다. 아니면 실패. (잘못된 vault, 예컨대 보관함을 실수로 건드리지 않게.)
 4. 성공 → 절대경로를 **stdout**으로 출력, exit 0.
 5. 실패(미설정·경로 없음·구조 불일치) → **stderr**에 명확한 에러 + `.env`에 `LIBRARIAN_VAULT_PATH=...`를 설정하라는 안내, **non-zero exit**.
 
-스킬은 `node <plugin-root>/scripts/resolve-vault.mjs`를 실행해 stdout의 절대경로를 받는다 (에이전트 중립 — shell 실행만 필요). 필요하면 `package.json`에 `npm run vault:path` 별칭을 추가할 수 있다.
+스킬은 `node <plugin-root>/skills/librarian/scripts/resolve-vault.mjs`를 실행해 stdout의 절대경로를 받는다 (에이전트 중립 — shell 실행만 필요).
 
-### `tests/resolve-vault.test.mjs` (신규)
+### `tests/librarian-resolve-vault.test.mjs` (신규)
 
-프로젝트 관례(`node --test "tests/**/*.test.mjs"`)에 맞춰 단위 테스트를 둔다: 미설정 시 에러, `.env`/`process.env` 우선순위, kb 구조 검증 통과/실패, 절대경로 출력.
+`npm test`가 `tests/**/*.test.mjs`를 글로빙하므로 테스트 파일은 (스크립트가 스킬 안에 있어도) 루트 `tests/`에 둔다. 스킬 안의 리졸버를 상대경로로 import해 검사한다: 미설정 시 에러, `.env`/`process.env` 우선순위, kb 구조 검증 통과/실패, 절대경로 출력.
 
 ## 5. `.env` 문서화 / `.env.example` 처리
 
@@ -108,13 +108,14 @@ env를 만지는 스크립트는 루트에서 관리한다는 기존 규약(`wit
 ```
 work/plugin/
 ├─ scripts/
-│  ├─ lib/parse-env.mjs       # 기존 — 재사용
-│  └─ resolve-vault.mjs       # 신규: LIBRARIAN_VAULT_PATH 해석 + kb 구조 검증 + 절대경로 출력
+│  └─ lib/parse-env.mjs                 # 기존 — 재사용 (변경 없음)
 ├─ tests/
-│  └─ resolve-vault.test.mjs  # 신규 단위 테스트
+│  └─ librarian-resolve-vault.test.mjs  # 신규 단위 테스트 (루트 tests/ — npm test 글로빙)
 └─ skills/librarian/
-   ├─ SKILL.md                # frontmatter(name, description) + ingest/query/lint 흐름 + 리졸버 호출
-   └─ references/             # (선택) ingest.md / query.md / lint.md 로 분리 — 길어지면
+   ├─ SKILL.md                          # frontmatter(name, description) + ingest/query/lint 흐름 + 리졸버 호출
+   ├─ scripts/
+   │  └─ resolve-vault.mjs              # 신규: LIBRARIAN_VAULT_PATH 해석 + kb 구조 검증 + 절대경로 출력
+   └─ references/                       # (선택) ingest.md / query.md / lint.md 로 분리 — 길어지면
 ```
 
 - frontmatter는 공통 키(`name`, `description`)만 (plugin 규약 — Claude·Codex 공유).
@@ -135,8 +136,8 @@ work/plugin/
 
 ## 12. 작성 시 체크리스트 (나중에)
 
-- [ ] `scripts/resolve-vault.mjs` 생성 (`parse-env.mjs` 재사용, `process.env` → `.env` 우선순위, kb 구조 검증, 절대경로 stdout/에러 stderr).
-- [ ] `tests/resolve-vault.test.mjs` 생성, `npm test` 통과.
+- [ ] `skills/librarian/scripts/resolve-vault.mjs` 생성 (루트 `parse-env.mjs` 재사용, `process.env` → `.env` 우선순위, kb 구조 검증, 절대경로 stdout/에러 stderr).
+- [ ] `tests/librarian-resolve-vault.test.mjs` 생성, `npm test` 통과.
 - [ ] `work/plugin/skills/librarian/SKILL.md` 생성 (`superpowers:writing-skills`).
 - [ ] 페이지 계약 재기술 금지 — vault `AGENTS.md` 참조만.
 - [ ] 자연어 path 인터페이스 (형식 인자 의존 X).
