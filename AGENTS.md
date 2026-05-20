@@ -19,6 +19,9 @@
   도구가 알 수 없는 키를 깔끔하게 무시하는 경우에만 추가합니다.
 - 스킬 전용 스크립트는 `skills/<name>/scripts/`에 둡니다. 다른 곳(훅이나
   다른 스킬)에서도 사용하는 경우에만 최상위 `scripts/`로 승격하세요.
+- `librarian` 스킬은 운영 대상 vault(kb) 경로를 `.env`의 `LIBRARIAN_VAULT_PATH`에서
+  읽습니다 (gitignore된 머신별 로컬 값 — `.env.example`에는 없음). 설정이 없거나
+  잘못되면 `skills/librarian/scripts/resolve-vault.mjs`가 안내와 함께 실패합니다.
 
 ## 로컬 테스트
 
