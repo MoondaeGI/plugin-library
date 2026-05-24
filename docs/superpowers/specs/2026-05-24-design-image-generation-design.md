@@ -1,4 +1,4 @@
-# design 스킬 이미지 자동 생성 설계
+# design 스킬 협업형 이미지 생성 + 로고 설계
 
 **날짜**: 2026-05-24
 **상태**: 설계 (구현 전 — 이 문서가 "어떻게 바꿀지"의 기준)
@@ -9,73 +9,102 @@
 
 ## 1. 무엇 / 왜
 
-현재 `design-brand-kit`·`design-page-image`는 **이미지 브리프(계약)만** 만들고, 실제 이미지 생성은 "pluggable"로 빼뒀다 (Codex 내장 생성 또는 사람이 수동 드롭). 사용자는 **스킬이 브랜드 킷/브리프를 바탕으로 실제 이미지까지 만들어주길** 원한다.
+현재 `design-brand-kit`·`design-page-image`는 **이미지 브리프(계약)만** 만들고 생성은 빼뒀다. 사용자는 스킬이 **실제 디자이너처럼 협업하며 이미지 프로토타입을 만들고 반복 수정**하길 원한다. 한꺼번에 여러 장을 뽑는 batch가 아니라, **한 개 만들고 → 보여주고 → 한 가지 고치고 → 또 만들고 → 다음으로** 넘어가는 흐름이다.
 
-Codex에는 내장 이미지 생성 도구 `image_gen`(시스템 스킬 `imagegen`)이 있고 **API 키 없이** 동작한다. 브리프의 "이미지 생성 Prompt / Negative Prompt"가 `image_gen`의 입력에 그대로 매핑되므로, 두 스킬의 생성 단계를 **실제 동작**하도록 강화한다.
+추가 요구:
+- **`design-brand-kit`에 로고 생성이 반드시 포함**된다 (이후 그 로고 이미지를 받아 정제·변형하는 별도 `design-logo` 스킬의 입력이 된다 — 이번 범위 밖).
+- brand-kit 비주얼 산출물을 **더 풍부하고 상세하게** (로고 + 무드보드 + 키 비주얼).
+
+Codex에는 내장 이미지 생성 도구 `image_gen`(시스템 스킬 `imagegen`)이 있고 **API 키 없이** 동작한다. 브리프의 생성 Prompt·Negative Prompt가 그대로 매핑된다.
 
 ## 2. 핵심 제약 (왜 인라인인가)
 
-- **이미지 생성 능력은 Codex 전용**: Codex 내장 `image_gen`. Claude에는 이미지 생성 도구가 없다.
-- **Codex의 `agents/` 디렉터리는 서브에이전트 정의가 아니라 UI 메타데이터**(`openai.yaml`: display name/아이콘/default_prompt)다. "agent md + 서브에이전트 dispatch" 패턴은 Codex의 이 구조와 다르다.
-- "스킬이 서브에이전트를 dispatch" 패턴은 사실상 Claude 쪽 구조인데, **Claude는 이미지를 생성하지 못한다.**
-- 따라서 별도 생성 에이전트 파일은 양쪽 어디서도 동작하는 생성을 주지 못한다. **실제로 동작하는 경로는 "스킬이 Codex 내장 `image_gen`을 직접 구동"뿐**이라 인라인으로 둔다.
-- **에이전트 중립 유지**: 생성 단계는 "도구가 있으면 `image_gen`, 없으면 수동 드롭"으로 **조건부**. 스킬 계약에 특정 도구를 박지 않는다.
+- **이미지 생성 능력은 Codex 전용**: 내장 `image_gen`. Claude에는 이미지 생성 도구가 없다.
+- **Codex의 `agents/` 디렉터리는 서브에이전트 정의가 아니라 UI 메타데이터**(`openai.yaml`)다. "agent md + 서브에이전트 dispatch" 패턴은 여기에 맞지 않고, 그 패턴이 깔끔한 Claude는 이미지를 못 만든다. → 실제 동작 경로는 "스킬이 `image_gen`을 직접 구동"뿐이라 **인라인**으로 둔다.
+- **이미지 모델 텍스트 한계**: `image_gen`은 로고·무드·질감·이미지엔 강하지만 **정확한 텍스트(HEX·폰트 이름이 박힌 스타일 타일/브랜드보드)는 부정확**하다. → 색 팔레트·타이포 스펙은 **이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`(텍스트/코드)** 에 둔다. 텍스트 정밀이 필요한 "브랜드 보드"는 후속 HTML 프로토타입이 정확히 렌더. 이미지 산출물은 **텍스트 정확도가 필요 없는 항목(로고·무드보드·키 비주얼)** 에 집중.
+- **에이전트 중립 유지**: 생성 단계는 "도구 있으면 `image_gen`, 없으면 사람이 드롭" **조건부**. 계약에 특정 도구를 박지 않는다.
 
-## 3. 변경 범위
+## 3. 상호작용 모델 — 디자이너 협업형 반복 루프 (핵심)
 
-- **대상**: `design-brand-kit`(무드보드), `design-page-image`(페이지 섹션) 두 스킬만.
-- **다운스트림 불변**: `design-md-compiler`, `design-html-prototype`은 변경하지 않는다 — 생성 방식과 무관하게 `.design/generated/**`의 이미지를 그대로 소비.
-- **별도 스킬/에이전트/스크립트 신규 없음.** API 키·CLI 폴백 없음(기본 `image_gen`만; 투명 배경 등 특수 케이스는 `imagegen` 스킬 자체 정책에 위임).
+두 스킬 모두 **md(방향/브리프)를 먼저 쓰고**, 그다음 **이미지를 한 개씩** 만들어 반복 수정한다. 한 항목(item)에 대해:
 
-## 4. 각 스킬 변경 내용
+```
+brief 작성/갱신 → 1장 생성(또는 수동 드롭) → 보여주고 "이 방향 어때요? 뭘 바꿀까요?"
+   → 피드백 → [한 번에 한 가지만] 수정해 재생성 → 만족할 때까지 반복
+   → 확정(lock) → 다음 항목으로
+```
 
-### 4.1 흐름(리뷰 게이트)의 생성 단계 교체 — 확인 게이트
+행동 규칙 (스킬 본문에 명시):
+- **항상 한 개씩.** 전체를 한꺼번에 생성하지 않는다.
+- 생성 후 능동적으로 피드백을 청하고, **반복마다 한 가지 변경만** 적용해 재생성 (`imagegen`의 "single targeted change" 원칙과 일치).
+- 사용자가 만족(lock)해야 다음 항목 → 모든 항목이 끝나야 다음 단계(스킬)로.
+- 확정본은 `.design/generated/<category>/`에 **버전 파일명**으로 저장(재생성 시 `-v2`), 채택본 유지.
+- **도구 미가용(Claude 등)**: 같은 루프를 "브리프/프롬프트 수정 → 사람이 해당 폴더에 이미지 드롭 → 검토 → 수정"으로.
 
-생성 단계를 다음 절차로 명시한다(두 스킬 공통 골격):
+## 4. `design-brand-kit` 비주얼 산출물 (상세)
 
-1. 브리프 작성 → 사용자에게 **항목 수(N)와 함께 제시**.
-2. **"이대로 이미지를 생성할까요?" 확인.** 거절 시 브리프를 수정하고 1~2 반복.
-3. 승인 시 — **이미지 생성 도구가 있으면**(Codex 내장 `image_gen`): 브리프 항목당 1회 생성 → 결과를 `.design/generated/<category>/`로 복사. **도구가 없으면**(Claude 등): 사람이 같은 폴더에 PNG 드롭.
-4. 생성/드롭된 이미지를 검토 → 마음에 안 들면 브리프(또는 프롬프트)를 고쳐 재생성, 좋으면 다음 단계 안내.
+순서: ① `BRAND_KIT.md` + `brand-tokens.json`(방향 문서, 텍스트/코드) 작성 → ② `brand-briefs.md`에 아래 브리프 작성 → ③ 각 항목을 3절의 협업 루프로 한 개씩 생성·반복.
 
-> 비용/시간이 드는 호출이므로 2단계(확인)는 필수다. 무인 자동 생성하지 않는다.
+`brand-briefs.md`는 세 종류의 브리프를 담는다:
 
-### 4.2 `## 이미지 생성` 절 신규 (브리프 → `image_gen` 매핑)
+### A. 로고 (필수) — 저장: `.design/generated/logo/`
+- **로고 유형**: 워드마크 / 레터마크(모노그램) / 심볼(픽토그램) / 콤비네이션 마크 / 엠블럼 — 어느 방향인지 + 이유.
+- **형태 언어**: 기하 vs 유기, 각짐 vs 둥긆, 선 굵기, 대칭/비대칭, **제품 본질에서 끌어온 모티프**(추상 표현 금지, 형태로 설명).
+- **타이포(워드마크/레터마크면)**: 글자 성격(세리프/산세리프/커스텀), 자간·굵기.
+- **색 적용**: primary 적용본 + **단색(흑/백) 버전 필수 고려**.
+- **확장성**: 파비콘(16px)부터 큰 화면까지 읽히게, 최소 여백 규칙.
+- **배경**: 단색 또는 투명-친화(깔끔한 배경, 후속 배경제거 용이).
+- **금지**: 방패·자물쇠·지구본·기어·말풍선 클리셰, 의미없는 그라데이션/3D 베벨/드롭섀도, 스톡 아이콘 느낌, 너무 흔한 보안/SaaS 클리셰.
+- **생성**: 한 컨셉씩 → 피드백 → 한 가지 수정 → 반복 → 확정. (→ 향후 `design-logo` 스킬이 이 확정 이미지를 edit 모드로 받아 정제·변형)
 
-각 스킬에 아래 내용을 담은 절을 추가한다:
+### B. 무드보드 — 저장: `.design/generated/brand-kit/`
+- 분위기/감정 키워드, 색 분위기(팔레트 느낌), 질감/소재, 이미지 성향(사진/추상/일러스트), 조명/톤, 구도·밀도, 참고 무드, 금지 비주얼. **텍스트가 중요한 요소를 넣지 않는다.**
 
-- **항목당 1회 호출**: 무드보드 N장·섹션 N개는 각각 별도 `image_gen` 호출로 만든다 (한 프롬프트의 변형 `n`이 아니라 개별 자산이므로 개별 호출).
-- **프롬프트 매핑**:
-  - `Primary request` ← 브리프의 "이미지 생성 Prompt"
-  - `Avoid` ← 브리프의 "Negative Prompt"
-  - `Color palette` / `Style/medium` ← `brand-tokens.json` + BRAND_KIT의 시각 방향
-  - `Use case`: `design-brand-kit` = `stylized-concept`(무드보드), `design-page-image` = `ui-mockup`(섹션 시안)
-- **저장 규칙**: `image_gen` 기본 저장 위치($CODEX_HOME)에 방치하지 말고 **`.design/generated/<category>/`로 복사**한다. 카테고리: brand-kit → `brand-kit/`, page-image → `page/`.
-- **파일명**: 항목 식별 가능하게 (`moodboard-1-saas.png`, `moodboard-2-editorial.png`, `section-1-hero.png` …). 기존 파일은 덮어쓰지 말고 버전 파일명(`-v2`)으로.
-- **도구 미가용 폴백**: Claude 등 생성 도구가 없으면 같은 폴더에 사람이 PNG를 드롭(파일명 규칙 동일 권장).
+### C. 키 비주얼 / 브랜드 모티프 (선택, 권장) — 저장: `.design/generated/brand-kit/`
+- 히어로 배경·섹션 악센트로 **반복 사용할 시그니처 그래픽/패턴/텍스처**. 로고·무드보드와 일관된 형태 언어.
 
-## 5. 산출물 경계 (변경 없음)
+> brand-kit의 협업 진행: **로고(필수) → 무드보드 → (선택)키 비주얼** 순으로 각각 한 개씩 반복 확정. 색/타이포 정밀 스펙은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`에.
 
-- 중간물·생성 이미지: `.design/generated/brand-kit/`, `.design/generated/page/` (기존 레이아웃 그대로).
-- `image_gen`이 채우든 사람이 드롭하든 결과는 같은 폴더 → 다운스트림 소비는 불변.
+## 5. `design-page-image` (섹션 시안)
 
-## 6. 빌드/배포 영향
+- ① `page-briefs.md`(섹션 계획) 작성 → ② **섹션 하나씩** 3절 협업 루프(생성→피드백→한 가지 수정→재생성→확정)로 진행 → 다음 섹션 → … → 필요한 섹션이 다 확정되면 `design-md-compiler`로.
+- 저장: `.design/generated/page/`, 파일명 `section-1-hero.png` 식 + 버전.
 
-- 스킬 본문이 바뀌므로 **`npm run sync`로 Codex 번들 `plugins/personal/` 재생성** 필요(생성물 커밋). dev 세션에선 SessionStart 훅이 stale 번들을 자동 갱신.
-- Codex 재설치(`codex plugin add personal@personal`)로 갱신 반영.
+## 6. 브리프 → `image_gen` 매핑 + 저장 규칙 (두 스킬 공통 `## 이미지 생성` 절)
 
-## 7. 비범위 / 후속
+- **항목당 1회 호출** (여러 장은 변형 `n`이 아니라 개별 호출).
+- 매핑: `Primary request` ← 브리프의 "이미지 생성 Prompt", `Avoid` ← "Negative Prompt", `Color palette`/`Style/medium` ← `brand-tokens.json` + 시각 방향.
+- `Use case` 슬러그: 로고 = `logo-brand`, 무드보드/키비주얼 = `stylized-concept`, 페이지 섹션 = `ui-mockup`.
+- **저장**: `image_gen` 기본 위치($CODEX_HOME)에 방치 금지 → `.design/generated/<category>/`로 복사. 카테고리: 로고 `logo/`, 무드보드·키비주얼 `brand-kit/`, 섹션 `page/`.
+- **파일명**: 항목 식별 가능 + 재생성 버전(`-v2`). 기존 확정본 덮어쓰기 금지.
 
-- `ui-kit`/`logo` 카테고리 생성은 여전히 범위 밖.
-- CLI(`scripts/image_gen.py`)·API 키·`gpt-image-1.5` 투명배경 경로는 기본 사용 안 함(필요 시 `imagegen` 스킬 정책이 사용자에게 확인).
+## 7. 폴더 / 경계
+
+- `logo/` 폴더가 **이제 활성화**(이전엔 예약). 무드보드·키비주얼은 `brand-kit/`, 섹션은 `page/`.
+- **다운스트림 불변**: `design-md-compiler`·`design-html-prototype`은 변경 없음 — `.design/generated/**`의 이미지를 생성 방식과 무관하게 소비. (md-compiler가 로고를 "이미지 에셋 사용 규칙"에서 자연히 참조)
+
+## 8. 향후 (이번 범위 밖) — `design-logo`
+
+- 확정된 로고 이미지(`.design/generated/logo/`)를 입력으로 받아 **edit 모드**로 정제·변형하는 별도 스킬: 단색화, 앱 아이콘, 가로/세로 락업, 배경 제거, 변형 탐색.
+- 이번 스펙은 brand-kit이 로고를 **깔끔한 핸드오프 형태**(known 폴더·파일명, 단색 고려, 깨끗한 배경)로 내보내는 데까지만 책임.
+
+## 9. 빌드 / 배포 영향
+
+- 스킬 본문이 바뀌므로 **`npm run sync`로 Codex 번들 `plugins/personal/` 재생성**(생성물 커밋). dev 세션은 SessionStart 훅이 stale 번들 자동 갱신.
+- Codex 재설치(`codex plugin add personal@personal`)로 반영.
+
+## 10. 비범위 / 후속
+
+- `design-logo`(로고 수정 스킬) — 다음 스펙.
+- `ui-kit` 카테고리 생성 — 여전히 범위 밖.
+- CLI(`scripts/image_gen.py`)·API 키·`gpt-image-1.5` 투명배경 경로 — 기본 사용 안 함(특수 케이스는 `imagegen` 스킬이 사용자에게 확인).
 - `design-md-compiler`/`design-html-prototype` 변경 없음.
 
-## 8. 구현 체크리스트 (나중에)
+## 11. 구현 체크리스트 (나중에)
 
-- [ ] `design-brand-kit`: 흐름 생성 단계를 "확인 게이트"로 교체 + `## 이미지 생성` 절 추가(무드보드, `stylized-concept`, `brand-kit/`).
-- [ ] `design-page-image`: 동일 패턴(섹션, `ui-mockup`, `page/`).
-- [ ] 두 스킬 모두 조건부 생성(도구 있으면 `image_gen`, 없으면 수동 드롭) 명시 — 에이전트 중립 유지.
-- [ ] 항목당 1회 호출·`.design/generated/<category>/` 복사·버전 파일명 규칙 명시.
-- [ ] `npm run sync`로 `plugins/personal/` 재생성, 커밋.
-- [ ] Codex 재설치 후 `codex exec`로 "브리프 확인 → 생성 → `.design/generated/`에 PNG 저장"이 실제로 되는지 검증.
-- [ ] 다운스트림 스킬 미변경 확인.
+- [ ] `design-brand-kit`: 협업 루프(3절) 적용 + `brand-briefs.md`를 **로고(필수)/무드보드/키비주얼** 3종 브리프로 재구성 + `## 이미지 생성` 절(매핑·저장·`logo/`·`brand-kit/`) 추가. 색/타이포는 md·tokens에 유지 명시.
+- [ ] `design-page-image`: 협업 루프(섹션 하나씩) 적용 + `## 이미지 생성` 절(`ui-mockup`, `page/`).
+- [ ] 두 스킬: 항상 한 개씩·반복마다 한 가지 수정·도구 미가용 시 수동 드롭(중립) 명시. 항목당 1회 호출·버전 파일명·워크스페이스 복사 규칙.
+- [ ] 로고 핸드오프: `.design/generated/logo/`에 단색 고려·깨끗한 배경으로 저장(향후 `design-logo` 입력).
+- [ ] 다운스트림 2개 스킬 미변경 확인.
+- [ ] `npm run sync`로 번들 재생성·커밋 → Codex 재설치 후 `codex exec`로 "brief → 한 개 생성 → 검토/수정 → `.design/generated/`(logo 포함) 저장"이 실제로 되는지 검증.
