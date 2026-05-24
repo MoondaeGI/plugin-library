@@ -9,12 +9,17 @@
 - **비밀 값은 절대 커밋하지 않기**: `.env`는 gitignore되어 있으며, 실제 값은 그곳에만 둡니다. 커밋되는 모든 MCP 항목은 `${VAR_NAME}` 플레이스홀더로 변수를 참조합니다. `scripts/check-secrets.mjs`는 `mcp.servers.json` 안에 실제처럼 보이는 비밀 값이 감지되면 sync를 차단합니다.
 - **생성된 파일은 직접 수정하지 않기**: `.claude-plugin/mcp.json`,
   `.codex-plugin/mcp.json`, `.env.example`, `.claude-plugin/mcp.sync-state.json`은
-  `scripts/sync-mcp.mjs`가 생성합니다. `mcp.servers.json`을 수정한 뒤 sync를
-  다시 실행하세요.
+  `scripts/sync-mcp.mjs`가 생성하고, Codex 번들 `plugins/personal/`(자기
+  `skills/` 포함)은 `scripts/sync-codex-plugin.mjs`가 루트 `skills/`에서
+  생성합니다. 둘 다 `npm run sync` 한 번에 돌아갑니다. 소스(`mcp.servers.json`,
+  `skills/`)를 수정한 뒤 sync를 다시 실행하세요.
 
 ## 스킬
 
 - 스킬은 `skills/<name>/SKILL.md`에 위치하며 Claude와 Codex가 공유합니다.
+  Claude는 루트 `skills/`를 직접 읽지만, Codex는 자체 완결형 번들에서
+  로드하므로 스킬을 추가·수정한 뒤 **`npm run sync`로 `plugins/personal/`를
+  재생성**해야 Codex가 반영합니다 (생성물·커밋 대상).
 - 공통 프론트매터(`name`, `description`)를 따르세요. 도구별 확장은 다른
   도구가 알 수 없는 키를 깔끔하게 무시하는 경우에만 추가합니다.
 - 스킬 전용 스크립트는 `skills/<name>/scripts/`에 둡니다. 다른 곳(훅이나
@@ -26,9 +31,10 @@
 ## 로컬 테스트
 
 - Claude Code: 이 디렉터리 안에서 `claude --plugin-dir .` 실행.
-- Codex CLI: `.agents/plugins/marketplace.json`을 통해 이 저장소를 마켓플레이스로
-  등록한 뒤 `/plugins` → 설치. Codex 플러그인 설치에 문제가 있으면
-  `~/.codex/config.toml`에 수동으로 MCP 항목을 작성하는 방식으로 폴백합니다.
+- Codex CLI: 마켓플레이스 등록 후 설치 — `codex plugin marketplace add <repo 경로>`
+  그다음 `codex plugin add personal@personal`. (`/plugins` 목록은 이미 등록된
+  마켓플레이스만 보여주므로 marketplace add가 선행되어야 함.) 설치 대상은 생성
+  번들 `plugins/personal/`이다. 자세한 명령은 README의 "Codex CLI" 절 참고.
 - 스크립트 테스트는 언제든 실행 가능: `npm test` (또는 `node --test "tests/**/*.test.mjs"`).
 
 ## 업데이트 흐름

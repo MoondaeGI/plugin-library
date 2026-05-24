@@ -5,10 +5,10 @@
   "type": "module",
   "description": "Personal plugin for Claude Code and Codex CLI",
   "scripts": {
-    "sync": "node scripts/sync-mcp.mjs",
-    "validate": "node scripts/sync-mcp.mjs --check",
+    "sync": "node scripts/sync-mcp.mjs && node scripts/sync-codex-plugin.mjs",
+    "validate": "node scripts/sync-mcp.mjs --check && node scripts/sync-codex-plugin.mjs --check",
     "test": "node --test \"tests/**/*.test.mjs\"",
-    "prepare": "node scripts/sync-mcp.mjs"
+    "prepare": "node scripts/sync-mcp.mjs && node scripts/sync-codex-plugin.mjs"
   },
   "engines": {
     "node": ">=18"
