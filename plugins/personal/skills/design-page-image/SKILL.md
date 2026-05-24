@@ -94,12 +94,12 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 ## 이미지 생성
 
-이미지 생성 도구가 있으면(Codex 내장 `image_gen`) 브리프를 바탕으로 직접 생성한다. 없으면(예: Claude) 사람이 같은 폴더에 드롭한다.
+이미지 생성 도구가 있으면(Codex 내장 `image_gen`) 브리프를 바탕으로 직접 생성한다. 없으면(예: Claude) 사람이 같은 폴더에 드롭한다 — 다운스트림은 둘을 구분하지 않는다.
 
-- **섹션당 1회 호출.** 한 번에 한 섹션만 만든다.
+- **섹션당 1회 호출.** 한 번에 한 섹션만 만든다 (여러 장은 변형 `n`이 아니라 개별 호출).
 - 프롬프트 매핑: `Primary request` ← 섹션의 "이미지 생성 Prompt", `Avoid` ← "Negative Prompt", `Color palette`·`Style` ← `brand-tokens.json` + 공통 디자인 방향.
 - `Use case` 슬러그 (Codex `image_gen`의 use case 값): `ui-mockup`.
-- **저장**: 워크스페이스로 복사 — `.design/generated/page/`. 파일명 `section-1-hero.png` 식, 재생성 시 버전(`-v2`).
+- **저장**: 워크스페이스로 복사 — `.design/generated/page/`. 파일명 `section-1-hero.png` 식, 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
 
 ## 흐름 (디자이너 협업 루프)
 
