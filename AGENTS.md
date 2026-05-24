@@ -39,8 +39,11 @@
 
 ## 업데이트 흐름
 
-- 같은 머신, 세션 중: 수정 후 `/reload-plugins`.
+- 같은 머신, 세션 중 (Claude): 수정 후 `/reload-plugins`.
+- 같은 머신 (Codex): 스킬/소스 수정 후 `npm run codex:reinstall`
+  (sync로 번들 재생성 → `codex plugin remove` → `add`. `add`만으론 갱신 안 됨).
 - 다른 머신: `git pull` 후 `/reload-plugins` 또는 `/plugin update personal`
-  (설치 방식에 따라 다름).
+  (설치 방식에 따라 다름). Codex Git 설치면 `codex plugin marketplace upgrade personal`
+  후 `npm run codex:reinstall`.
 - "푸시 시 자동 업데이트"는 보장되지 않습니다 — 명시적인 `/plugin update`가
   신뢰할 수 있는 트리거입니다.

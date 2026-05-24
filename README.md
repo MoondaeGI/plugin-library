@@ -45,6 +45,12 @@ codex plugin list --marketplace personal   # personal@personal = installed, enab
 
 이후 Codex의 `/plugins`에도 뜨고, 스킬은 자연어로 발동한다.
 
+**업데이트 (스킬/소스 수정 후):**
+```powershell
+npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → add
+```
+`codex plugin add`만 다시 돌리면 갱신되지 않으므로(기존 캐시 백업 실패) remove가 선행되어야 하며, 이 스크립트가 그 순서를 처리한다. 다른 머신에서 Git 마켓플레이스로 설치했다면 먼저 `codex plugin marketplace upgrade personal`로 스냅샷을 새로고침한 뒤 재설치한다.
+
 > **Codex 번들 주의:** Codex는 플러그인 디렉터리를 자체 캐시로 **스냅샷 복사**해서 로드하므로, 루트 `skills/`를 직접 보지 못한다. 그래서 Codex용으로는 자체 완결형 번들 `plugins/personal/`(자기 `skills/` 포함)이 필요하다. 이 번들은 **`npm run sync`가 루트 `skills/`에서 생성**한다 (직접 편집 금지). 스킬을 고치면 `npm run sync` 후 `codex plugin add personal@personal`로 재설치하면 갱신된다.
 >
 > 마켓플레이스 스키마: `.agents/plugins/marketplace.json`의 플러그인 `source`는 문자열이 아니라 객체(`{ "source": "local", "path": "./plugins/personal" }`)이고 `policy`/`category`가 필요하다. Claude용 `.claude-plugin/marketplace.json`은 `source: "./"`(루트)로 충분하다.
