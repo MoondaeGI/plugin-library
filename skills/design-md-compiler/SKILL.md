@@ -17,7 +17,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - `.design/brand-tokens.json`
 - `.design/image-briefs/brand-briefs.md`
 - `.design/image-briefs/page-briefs.md`
-- `.design/generated/**/*.png` (생성/드롭된 이미지)
+- `.design/generated/**/*.{png,jpg,jpeg,webp}` (생성/드롭된 이미지 — 수동 드롭 시 PNG 외 형식도 포함)
 - `.design/generated/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타로 사용, 없으면 파일명 glob)
 
 ## 출력 파일
@@ -66,7 +66,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 ### CTA / Footer
 
 ## 7. 이미지 에셋 사용 규칙
-- 로고: / 배경: / 제품 목업: / UI kit reference: / 사용하지 말아야 할 방식:
+- 로고: / 배경: / 제품 목업: / UI 킷 레퍼런스: / 사용하지 말아야 할 방식:
 
 ## 8. 구현 제약
 - HTML/CSS: / React 이식: / 접근성: / 반응형: / 성능:
@@ -88,6 +88,8 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - 컴포넌트 규칙은 class나 variant로 옮길 수 있게 쓴다.
 - **이미지 레퍼런스의 살릴 점과 구현 시 버릴 점을 구분한다.**
 - 최종 문구는 이미지가 아니라 코드에 있어야 한다고 명시한다.
+- 모든 필드를 비워두지 않는다 — 입력 파일에서 추론 가능한 값을 채우고, 추측한 값은 표시한다.
+- 이미지는 경로의 서브디렉터리 이름(`brand-kit/` vs `page/`)으로 종류를 구분한다.
 
 ## 금지 사항
 
