@@ -24,6 +24,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - `.design/BRAND_KIT.md`
 - `.design/brand-tokens.json`
 - `.design/image-briefs/brand-briefs.md` (무드보드 이미지 브리프)
+- `.design/generated/brand-kit/` — 무드보드 PNG가 채워지는 폴더 (Codex 생성 또는 수동 드롭; 아래 흐름 3단계 참고)
 
 ## BRAND_KIT.md 구조
 
@@ -71,9 +72,10 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - Danger:
 
 ## 6. 타이포그래피
+- 디스플레이/슬로건용 폰트 방향:
 - 제목용 폰트 방향:
 - 본문용 폰트 방향:
-- 숫자/데이터용 폰트 방향:
+- 숫자/데이터(mono)용 폰트 방향:
 - 한글 사용 시 주의점:
 
 ## 7. UI 분위기
@@ -115,17 +117,29 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 ## 공통 방향
 - 브랜드 키워드:
 - 무드보드 목적: 색상·타이포·질감·전체 분위기를 한눈에 검증
+- 추천 루트: (아래 세 루트 중 추천안을 여기 표시)
 - 금지 패턴:
 
-## Moodboard 1 — 추천안
+## Moodboard 1 — 안전한 SaaS형
 ### 분위기 / 키워드
 ### 색상 사용 (HEX 기반)
 ### 질감 / 형태 언어
 ### 이미지 생성 Prompt
 ### Negative Prompt
 
-## Moodboard 2 — 대안 방향
-(같은 항목)
+## Moodboard 2 — 프리미엄 에디토리얼형
+### 분위기 / 키워드
+### 색상 사용 (HEX 기반)
+### 질감 / 형태 언어
+### 이미지 생성 Prompt
+### Negative Prompt
+
+## Moodboard 3 — 대담한 실험형
+### 분위기 / 키워드
+### 색상 사용 (HEX 기반)
+### 질감 / 형태 언어
+### 이미지 생성 Prompt
+### Negative Prompt
 ```
 
 ## 품질 기준
@@ -147,6 +161,6 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 2. `.design/image-briefs/brand-briefs.md`(무드보드 브리프) 작성.
 3. **이미지 채우기 (pluggable)**: Codex면 내장 gpt-image로 브리프를 읽어 `.design/generated/brand-kit/`에 PNG 생성. 그 외(예: Claude)면 사람이 외부 도구로 만든 PNG를 같은 폴더에 드롭.
 4. 사람이 무드보드를 보고 브랜드 방향을 시각으로 검증한다.
-5. 마음에 안 들면 2~4단계를 반복. 좋으면 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-page-image`"**.
+5. 마음에 안 들면 브리프(2단계)를 고쳐 이미지를 다시 채우고(3단계) 재검증한다(4단계). 좋으면 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-page-image`"**.
 
 이미지를 직접 생성하지 않는다 — 이 스킬의 계약은 브리프 작성과 산출물 안내까지다.
