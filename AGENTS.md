@@ -7,6 +7,7 @@
 
 - **MCP 서버 추가**: `mcp.servers.json`을 수정하고 `npm run sync`를 실행한 뒤, 소스와 생성된 파일을 함께 커밋합니다.
 - **비밀 값은 절대 커밋하지 않기**: `.env`는 gitignore되어 있으며, 실제 값은 그곳에만 둡니다. 커밋되는 모든 MCP 항목은 `${VAR_NAME}` 플레이스홀더로 변수를 참조합니다. `scripts/check-secrets.mjs`는 `mcp.servers.json` 안에 실제처럼 보이는 비밀 값이 감지되면 sync를 차단합니다.
+- **`.env` 값을 OS 환경변수로 (`npm run env:apply`)**: `.env`는 비밀의 단일 소스이고, `scripts/apply-env.mjs`가 그 값을 OS 사용자 환경변수로 등록합니다(Windows `setx`). 그러면 MCP 서버(`${VAR}`는 런타임이 OS env에서 치환)와 일반 스크립트(예: 디자인 스킬 `image-gen.mjs`가 읽는 `OPENAI_API_KEY`)가 모두 `process.env`로 읽습니다. `.env`를 수정하면 `npm run env:apply` 후 세션을 재시작하세요. 특히 Codex 설치 캐시엔 `.env`가 없으므로 OS 환경변수가 유일한 경로입니다.
 - **생성된 파일은 직접 수정하지 않기**: `.claude-plugin/mcp.json`,
   `.codex-plugin/mcp.json`, `.env.example`, `.claude-plugin/mcp.sync-state.json`은
   `scripts/sync-mcp.mjs`가 생성하고, Codex 번들 `plugins/personal/`(자기

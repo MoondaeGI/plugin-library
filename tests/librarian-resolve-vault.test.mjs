@@ -78,7 +78,7 @@ test('reads the path from the .env file when not in process env', () => {
   rmSync(tmp, { recursive: true, force: true });
 });
 
-// --- CLI integration tests (fake plugin root, mirrors with-env.test.mjs) ---
+// --- CLI integration tests (fake plugin root) ---
 
 function runResolverWithFakeRoot(envContent) {
   const tmp = mkdtempSync(path.join(tmpdir(), 'resolver-root-'));

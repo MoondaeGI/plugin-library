@@ -4,8 +4,8 @@ import { toClaudeFormat, toCodexFormat, extractPlaceholders } from '../scripts/l
 
 const sample = {
   github: {
-    command: 'node',
-    args: ['./scripts/with-env.mjs', 'npx', '-y', '@modelcontextprotocol/server-github'],
+    command: 'npx',
+    args: ['-y', '@modelcontextprotocol/server-github'],
     env: { GITHUB_TOKEN: '${GITHUB_TOKEN}' },
   },
 };
