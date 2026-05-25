@@ -93,20 +93,28 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 - 텍스트가 너무 작거나 읽기 어려운 디자인을 만들지 않는다.
 - UI를 이미지로만 구현해야 하는 구조로 만들지 않는다.
 
-## 이미지 생성
+## 이미지 생성 (공유 `image-gen` 스킬)
 
-이미지 생성 도구가 있으면(Codex 내장 `image_gen`) 브리프를 바탕으로 직접 생성한다. 없으면(예: Claude) 사람이 같은 폴더에 드롭한다 — 다운스트림은 둘을 구분하지 않는다.
+이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY` 환경변수가 필요**하다(`.env` + `npm run env:apply`). 키가 없으면 그때만 사람이 직접 드롭한다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
 
-- **섹션당 1회 호출.** 한 번에 한 섹션만 만든다 (여러 장은 변형 `n`이 아니라 개별 호출).
-- 프롬프트 매핑: `Primary request` ← 섹션의 "이미지 생성 Prompt", `Avoid` ← "Negative Prompt", `Color palette`·`Style` ← `brand-tokens.json` + 공통 디자인 방향.
-- `Use case` 슬러그 (Codex `image_gen`의 use case 값): `ui-mockup`.
-- **저장 (중요)**: Codex `image_gen`은 생성물을 항상 기본 위치 `~/.codex/generated_images/<uuid>/ig_*.png`에 쓴다 (호출 결과가 그 경로를 반환). 거기 방치하지 말고 **대상 프로젝트 cwd 기준 절대 경로** `<cwd>/.design/generated/page/`로 복사한다 (폴더 없으면 생성). 파일명 `section-1-hero.png` 식, 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다. (플러그인/홈 기준 상대경로 금지.)
+스크립트 경로(형제 스킬): `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
+
+- **섹션당 1회 호출.** 한 번에 한 섹션만 만든다 (여러 장은 `--n`이 아니라 개별 호출).
+- 프롬프트는 섹션의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)에 `Use case: ui-mockup`·색/스타일(`brand-tokens.json` + 공통 디자인 방향)을 더해 구성하고, **임시 파일에 써서 `--prompt-file`로 넘긴다**. 보이는 텍스트는 한국어로 렌더.
+- 호출 예:
+  ```bash
+  node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
+    --prompt-file <임시 프롬프트 파일> \
+    --out "<cwd>/.design/generated/page/section-1-hero.png" \
+    --quality high
+  ```
+- **저장 경로**: `--out`에 **대상 프로젝트 cwd 기준 절대 경로** `<cwd>/.design/generated/page/`. 파일명 `section-1-hero.png` 식, 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
 
 ## 흐름 (디자이너 협업 루프)
 
 1. `.design/image-briefs/page-briefs.md` 작성 (섹션 계획; 섹션당 브리프 1개).
 2. **섹션을 하나씩** 진행한다. 각 섹션마다:
-   - 이미지 1장 생성(도구 없으면 사람이 드롭) → 보여주고 피드백을 청한다 (예: "이 섹션 어때요? 뭘 바꿀까요?").
+   - 이미지 1장 생성(`image-gen` 스크립트; 키 없으면 사람이 드롭) → 보여주고 피드백을 청한다 (예: "이 섹션 어때요? 뭘 바꿀까요?").
    - 피드백을 받아 **한 번에 한 가지만** 고쳐 재생성한다. 만족(lock)할 때까지 반복.
    - 확정되면 `.design/generated/page/`에 저장하고 다음 섹션으로.
 3. 필요한 섹션이 다 확정되면 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-md-compiler`"**.

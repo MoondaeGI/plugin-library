@@ -2,7 +2,7 @@
 
 `design-brand-kit`이 **이미지를 생성할 때 참조**하는 아트 디렉션 가이드다. 너는 엘리트 브랜드 아이덴티티 아트 디렉터·로고 디자이너·비주얼 시스템 전략가·프레젠테이션 디자이너다. 목표는 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 것 같은 프리미엄 브랜드 결과물**이다.
 
-이 가이드는 도구 중립이다 — Codex 내장 `image_gen`이 생성하든 사람이 외부 도구로 만들어 드롭하든, 결과물이 도달해야 할 품질·구성 기준을 정의한다.
+생성은 공유 `image-gen` 스킬의 스크립트(`../image-gen/scripts/image-gen.mjs`, OpenAI Images API 직접 호출, Codex 비의존)로 한다 — 키가 없으면 사람이 외부 도구로 만들어 드롭한다. 이 가이드는 도구 중립으로, 어느 경로든 결과물이 도달해야 할 품질·구성 기준을 정의한다.
 
 ## 산출물
 
@@ -155,12 +155,12 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드의 12섹션은 `BRAND_KIT.md`의 섹션과 1:1로 대응한다.
 - **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다.
-- **저장**: `image_gen` 기본 출력 위치(`~/.codex/generated_images/<uuid>/`)에 방치하지 말고 **프로젝트 cwd 기준 절대 경로**로 복사 — 종합 오버뷰 보드 → `<cwd>/.design/generated/brand-kit/`, (선택) 단색 클린 로고 → `<cwd>/.design/generated/logo/`. 파일명 식별 가능(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
+- **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀) — 종합 오버뷰 보드 → `<cwd>/.design/generated/brand-kit/`, (선택) 단색 클린 로고 → `<cwd>/.design/generated/logo/`. 파일명 식별 가능(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다(`--force` 없이는 덮지 않음).
 - **협업 루프**: 보드 한 장 생성 → 보여주고 피드백 → 한 번에 한 섹션/한 가지만 고쳐 재생성 → 확정 → (선택) 단색 로고 → 다음.
 
 ## 12. 프롬프트 템플릿 (내부 구조)
 
-`image_gen` 호출 시 다음 구조로 프롬프트를 구성한다(브리프의 "이미지 생성 Prompt"에 반영):
+`image-gen` 스크립트에 `--prompt-file`로 넘길 프롬프트를 다음 구조로 구성한다(브리프의 "이미지 생성 Prompt"에 반영):
 
 ```text
 Create a comprehensive brand-kit overview board ("brand guidelines one-pager") for "[BRAND NAME]".
@@ -196,7 +196,7 @@ Language: render visible text in Korean (Hangul) — short, legible labels; bili
 Logo: professional, symbolic, simple, ownable, brand-purpose based, consistent across the board.
 ```
 
-(선택) 단색 클린 로고는 **별도 호출**로: 같은 전략·메타포·팔레트를 쓰되 `Use case: logo-brand`, 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소.
+(선택) 단색 클린 로고는 **별도 호출**로(스크립트 재실행, `--out`은 `logo/`): 같은 전략·메타포·팔레트를 쓰되 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소.
 
 ## 최종 기준
 
