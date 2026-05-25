@@ -122,6 +122,8 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 > 이 종합 보드는 **텍스트를 담는 브랜드 원페이저**다. 기존 "이미지에 텍스트 최소" 규칙은 이 보드에 한해 완화한다 — 단, **읽히고 위계가 또렷할 때만**.
 
+**언어: 보드의 보이는 텍스트(섹션 타이틀·라벨·태그라인·미션/약속·UI 카피 등)는 한국어로 렌더한다.** 제품·타깃이 영어권이면 한/영 병기도 가능. 단 한글 글리프는 모델이 부정확하게 렌더할 수 있으니 **짧고 또렷한 한국어 라벨**을 쓰고, 정확한 문구의 권위 원본은 `BRAND_KIT.md`에 둔다.
+
 - 담아야 할 것: 섹션 번호·타이틀, 워드마크/제품명, 한 줄 설명, 미션/약속/특성 짧은 문구, 태그라인 옵션, 가치 기둥 한 줄 설명, 색 HEX + 용도, 타입 스케일(예: `Display 48/60`), 보이스 "X, not Y", 다음 결정 체크리스트.
 - 피할 것: 긴 문단, 가짜 본문(lorem ipsum), 안 읽히는 작은 텍스트, 빽빽한 밀도. 각 줄은 **짧고 또렷하게**.
 - 태그라인은 짧고 구체적으로 (예: "Quiet security for small teams.", "See the leak. Keep the workflow.", "Evidence-first DLD."). 일반 기업 슬로건·버즈워드·가짜 영감 문구 금지.
@@ -153,7 +155,7 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드의 12섹션은 `BRAND_KIT.md`의 섹션과 1:1로 대응한다.
 - **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다.
-- **저장**: 종합 오버뷰 보드 → `.design/generated/brand-kit/`, (선택) 단색 클린 로고 → `.design/generated/logo/`. 파일명 식별 가능(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
+- **저장**: `image_gen` 기본 출력 위치(`~/.codex/generated_images/<uuid>/`)에 방치하지 말고 **프로젝트 cwd 기준 절대 경로**로 복사 — 종합 오버뷰 보드 → `<cwd>/.design/generated/brand-kit/`, (선택) 단색 클린 로고 → `<cwd>/.design/generated/logo/`. 파일명 식별 가능(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
 - **협업 루프**: 보드 한 장 생성 → 보여주고 피드백 → 한 번에 한 섹션/한 가지만 고쳐 재생성 → 확정 → (선택) 단색 로고 → 다음.
 
 ## 12. 프롬프트 템플릿 (내부 구조)
@@ -190,6 +192,7 @@ Visual mode: [모드]
 Palette: [절제된 팔레트 — brand-tokens.json 기반, single dominant accent]
 Style: premium, clean, intentional, polished brand-guidelines one-pager, no clutter, no copied real-world logos.
 Typography: readable, organized, high hierarchy; render labels/HEX/type-scale legibly; no tiny fake body text, no lorem ipsum.
+Language: render visible text in Korean (Hangul) — short, legible labels; bilingual KR/EN only if the brand is English-facing.
 Logo: professional, symbolic, simple, ownable, brand-purpose based, consistent across the board.
 ```
 

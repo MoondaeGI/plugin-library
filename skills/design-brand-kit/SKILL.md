@@ -196,9 +196,9 @@ primary 적용 + 흑/백 단색 버전 고려
 - **항목당 1회 호출.** 한 번에 한 개만 만든다 (여러 장은 변형 `n`이 아니라 개별 호출). 메인은 종합 오버뷰 보드 한 장이다 — 로고만 따로 만들고 끝내지 않는다.
 - 프롬프트 매핑: `Primary request` ← 브리프의 "이미지 생성 Prompt", `Avoid` ← "Negative Prompt", `Color palette`·`Style` ← `brand-tokens.json` + 시각 방향.
 - `Use case` 슬러그 (Codex `image_gen`의 use case 값): 종합 오버뷰 보드·추가 탐색 = `stylized-concept`, 단색 로고 = `logo-brand`.
-- **저장**: 생성 기본 위치에 방치하지 말고 워크스페이스로 복사 — 종합 보드·추가 탐색은 `.design/generated/brand-kit/`, (선택) 단색 로고는 `.design/generated/logo/`. 파일명은 항목 식별 가능하게(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
+- **저장 (중요)**: Codex `image_gen`은 생성물을 항상 기본 위치 `~/.codex/generated_images/<uuid>/ig_*.png`에 쓴다 (호출 결과가 그 경로를 반환). 거기 방치하지 말고, 그 파일을 **대상 프로젝트 cwd 기준 절대 경로**로 복사한다 — 종합 보드·추가 탐색은 `<cwd>/.design/generated/brand-kit/`, (선택) 단색 로고는 `<cwd>/.design/generated/logo/`. 폴더가 없으면 만든다. 파일명은 항목 식별 가능하게(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다. (플러그인/홈 기준 상대경로 금지.)
 - 보드의 섹션 시스템·비주얼 모드·텍스트 규칙·프롬프트 템플릿은 `references/brand-kit-image.md` 참조.
-- 종합 보드는 텍스트(섹션 타이틀·HEX·타입 스케일·짧은 문구)를 담되 **읽히고 위계가 또렷하게** 한다. 단 **정확한 색/폰트 스펙의 권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`** — 보드는 그 시각화다.
+- 종합 보드는 텍스트(섹션 타이틀·HEX·타입 스케일·짧은 문구)를 담되 **읽히고 위계가 또렷하게** 한다. **보이는 텍스트(섹션 타이틀·라벨·태그라인·미션/약속·UI 카피 등)는 한국어로 렌더**한다 (제품·타깃이 영어권이면 한/영 병기 가능; 한글 글리프 렌더 한계를 감안해 짧고 또렷한 라벨로). 단 **정확한 색/폰트 스펙의 권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`** — 보드는 그 시각화다.
 - (선택) 단색 로고는 단색 버전을 고려하고 배경을 깨끗하게 둔다 (향후 로고 수정 단계의 입력이 되므로).
 
 ## 흐름 (디자이너 협업 루프)
