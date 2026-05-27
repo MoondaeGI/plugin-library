@@ -3,5 +3,6 @@
   "name": "personal",
   "description": "Personal shared plugin for Claude Code and Codex CLI",
   "author": { "name": "ansgu" },
-  "mcpServers": "./.claude-plugin/mcp.json"
+  "mcpServers": "./.claude-plugin/mcp.json",
+  "agents": "./agents/"
 }
