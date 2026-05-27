@@ -8,7 +8,9 @@
 // Usage: npm run codex:reinstall
 // Requires the `codex` CLI on PATH (Codex installs only).
 import { execSync } from 'node:child_process';
+import { readdirSync, existsSync, mkdirSync, copyFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import os from 'node:os';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -29,12 +31,27 @@ function run(cmd, { allowFail = false } = {}) {
   }
 }
 
-// 1) regenerate generated files from source (mcp + Codex bundle)
+// 1) regenerate generated files from source (mcp + Codex bundle + agent toml)
 run('node scripts/sync-mcp.mjs');
 run('node scripts/sync-codex-plugin.mjs');
+run('node scripts/sync-agents.mjs');
 
 // 2) remove (ok if not installed), then 3) add fresh from the marketplace
 run(`codex plugin remove ${PLUGIN}`, { allowFail: true });
 run(`codex plugin add ${PLUGIN}`);
+
+// 4) install custom agents — Codex 플러그인은 에이전트를 번들하지 못하므로
+//    생성된 TOML을 ~/.codex/agents/ 로 직접 복사한다.
+const agentsSrc = path.join(ROOT, 'codex-agents');
+if (existsSync(agentsSrc)) {
+  const agentsDest = path.join(os.homedir(), '.codex', 'agents');
+  mkdirSync(agentsDest, { recursive: true });
+  const tomls = readdirSync(agentsSrc).filter((f) => f.endsWith('.toml'));
+  for (const f of tomls) {
+    copyFileSync(path.join(agentsSrc, f), path.join(agentsDest, f));
+    console.log(`  copied ${f} → ${agentsDest}`);
+  }
+  console.log(`codex-reinstall: ${tomls.length} agent(s) installed to ~/.codex/agents/`);
+}
 
 console.log('\ncodex-reinstall: done — personal@personal 재설치 완료.');
