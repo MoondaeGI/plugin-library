@@ -22,3 +22,25 @@ export function extractPlaceholders(source) {
   scan(source);
   return [...found].sort();
 }
+
+// MCP placeholder(`${VAR}`)와 스킬/스크립트용 비-MCP env 변수를 합쳐 .env.example 본문을 만든다.
+// extras: [{ key, comment? }] — process.env로 직접 읽혀 ${VAR} 참조가 없는 값들.
+export function renderEnvExample(placeholders, extras = []) {
+  const lines = [
+    '# Auto-generated from mcp.servers.json + 스킬 env 선언 — 직접 수정하지 말 것',
+    '# .env로 복사해 값을 채운 뒤 `npm run env:apply` 실행.',
+  ];
+  if (placeholders.length > 0) {
+    lines.push('', '# MCP 서버 (mcp.servers.json의 ${VAR})');
+    for (const k of placeholders) lines.push(`${k}=`);
+  }
+  const extra = extras.filter((e) => !placeholders.includes(e.key));
+  if (extra.length > 0) {
+    lines.push('', '# 스킬/스크립트 env (process.env로 직접 읽음)');
+    for (const e of extra) {
+      if (e.comment) lines.push(`# ${e.comment}`);
+      lines.push(`${e.key}=`);
+    }
+  }
+  return lines.join('\n') + '\n';
+}

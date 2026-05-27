@@ -3,11 +3,21 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { toClaudeFormat, toCodexFormat, extractPlaceholders } from './lib/transform-mcp.mjs';
+import { toClaudeFormat, toCodexFormat, extractPlaceholders, renderEnvExample } from './lib/transform-mcp.mjs';
 import { findIssues } from './check-secrets.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
+
+// 비-MCP env 변수 — 스킬/스크립트가 process.env로 직접 읽는 값. MCP placeholder는
+// mcp.servers.json에서 자동 추출되지만, 이들은 ${VAR} 참조가 없어 여기서 선언해
+// .env.example에 노출한다. (LIBRARIAN_VAULT_PATH는 머신별 로컬 값이라 의도적으로 제외 — AGENTS.md 참고.)
+const EXTRA_ENV = [
+  {
+    key: 'OPENAI_API_KEY',
+    comment: 'image-gen: OpenAI Images API 호출용 (design-brand-kit·design-page-image 공유)',
+  },
+];
 
 const SOURCE = path.join(PLUGIN_ROOT, 'mcp.servers.json');
 const CLAUDE_OUT = path.join(PLUGIN_ROOT, '.claude-plugin', 'mcp.json');
@@ -49,12 +59,6 @@ function readStateHash() {
   }
 }
 
-function renderEnvExample(placeholders) {
-  const header = '# Auto-generated from mcp.servers.json — do not edit manually\n';
-  const body = placeholders.map((k) => `${k}=`).join('\n');
-  return placeholders.length > 0 ? header + body + '\n' : header;
-}
-
 function writeJson(file, obj) {
   mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, JSON.stringify(obj, null, 2) + '\n', 'utf8');
@@ -70,7 +74,7 @@ function buildOutputs(source) {
   const claudeText = JSON.stringify(toClaudeFormat(source), null, 2) + '\n';
   const codexText = JSON.stringify(toCodexFormat(source), null, 2) + '\n';
   const placeholders = extractPlaceholders(source);
-  const envExampleText = renderEnvExample(placeholders);
+  const envExampleText = renderEnvExample(placeholders, EXTRA_ENV);
   return { claudeText, codexText, envExampleText };
 }
 

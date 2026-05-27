@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { toClaudeFormat, toCodexFormat, extractPlaceholders } from '../scripts/lib/transform-mcp.mjs';
+import { toClaudeFormat, toCodexFormat, extractPlaceholders, renderEnvExample } from '../scripts/lib/transform-mcp.mjs';
 
 const sample = {
   github: {
@@ -47,4 +47,28 @@ test('extractPlaceholders also scans args for placeholders', () => {
 
 test('extractPlaceholders returns empty array when none', () => {
   assert.deepEqual(extractPlaceholders({}), []);
+});
+
+test('renderEnvExample lists MCP placeholders under their section', () => {
+  const out = renderEnvExample(['GITHUB_TOKEN']);
+  assert.match(out, /# MCP 서버/);
+  assert.match(out, /^GITHUB_TOKEN=$/m);
+});
+
+test('renderEnvExample emits extras with their comment', () => {
+  const out = renderEnvExample([], [{ key: 'OPENAI_API_KEY', comment: 'image-gen' }]);
+  assert.match(out, /# 스킬\/스크립트 env/);
+  assert.match(out, /# image-gen/);
+  assert.match(out, /^OPENAI_API_KEY=$/m);
+  // no MCP placeholders → no MCP section
+  assert.doesNotMatch(out, /# MCP 서버/);
+});
+
+test('renderEnvExample skips an extra already covered by an MCP placeholder', () => {
+  const out = renderEnvExample(['OPENAI_API_KEY'], [{ key: 'OPENAI_API_KEY', comment: 'x' }]);
+  assert.equal((out.match(/OPENAI_API_KEY=/g) || []).length, 1);
+});
+
+test('renderEnvExample always emits the header', () => {
+  assert.match(renderEnvExample([], []), /^# Auto-generated from mcp\.servers\.json/);
 });
