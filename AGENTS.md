@@ -18,6 +18,13 @@
   않습니다** — 루트 `skills/`와의 바이트 단위 중복을 피하기 위함이며, 설치/사용
   전 항상 sync를 돌리므로(`npm install`의 `prepare` 훅도 자동 재생성) 추적할
   필요가 없습니다.
+  추가로 `codex-agents/*.toml`은 `scripts/sync-agents.mjs`가 `agents/*.md`에서 생성하는 커밋 생성물이다 — 직접 수정하지 말고 `agents/*.md`를 고친 뒤 `npm run sync`를 실행한다.
+
+## 에이전트
+
+- `designer` 서브에이전트의 단일 소스는 `agents/designer.md`(Claude 네이티브)다. Claude는 `agents/`를 직접 번들로 읽고, Codex는 에이전트를 번들하지 못하므로 `scripts/sync-agents.mjs`가 `codex-agents/designer.toml`을 생성한다(커밋되는 생성물). `npm run codex:reinstall`이 그 TOML을 `~/.codex/agents/`로 복사한다.
+- `model`·`tools`는 Claude 전용 frontmatter라 Codex TOML로 옮기지 않는다(`opus`/`sonnet`은 Anthropic 모델 슬러그라 Codex에 무의미; Codex는 세션 모델 상속). 도구별 모델 고정이 필요해지면 소스에 `codex_model` 키를 추가한다.
+- `agents/*.md`를 수정한 뒤 `npm run sync`로 `codex-agents/`를 재생성하고, Claude는 `/reload-plugins`, Codex는 `npm run codex:reinstall`로 갱신한다.
 
 ## 스킬
 

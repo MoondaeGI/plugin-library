@@ -55,6 +55,15 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 >
 > 마켓플레이스 스키마: `.agents/plugins/marketplace.json`의 플러그인 `source`는 문자열이 아니라 객체(`{ "source": "local", "path": "./plugins/personal" }`)이고 `policy`/`category`가 필요하다. Claude용 `.claude-plugin/marketplace.json`은 `source: "./"`(루트)로 충분하다.
 
+## 에이전트
+
+`designer` 서브에이전트는 디자인 스킬 파이프라인(`design-brand-kit` → `design-page-image` → `design-md-compiler` → `design-html-prototype`)을 협업하며 운전한다.
+
+- **소스**: `agents/designer.md` (Claude 네이티브 — 단일 진실 소스).
+- **Claude**: 플러그인이 `agents/`를 번들하므로 자동 노출된다 (`@agent-personal:designer`). 수정 후 `/reload-plugins`.
+- **Codex**: 플러그인이 에이전트를 번들하지 못한다. `npm run sync`가 `agents/designer.md` → `codex-agents/designer.toml`을 생성하고, `npm run codex:reinstall`이 이를 `~/.codex/agents/`로 복사한다. (수동: `copy codex-agents\designer.toml %USERPROFILE%\.codex\agents\`.) 열려 있던 Codex 세션은 재시작해야 반영된다.
+- **`model`/`tools`는 Claude 전용** frontmatter라 Codex TOML로 옮기지 않는다(`opus`/`sonnet`은 Anthropic 슬러그). Codex는 세션 모델을 상속한다.
+
 ## 레이아웃
 
 - `mcp.servers.json` — MCP 서버 정의의 단일 소스 (편집은 여기만)
@@ -62,6 +71,8 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 - `scripts/sync-codex-plugin.mjs` — 루트 `skills/`에서 Codex 번들 `plugins/personal/`를 재생성
 - `scripts/apply-env.mjs` (`npm run env:apply`) — `.env`(비밀 단일 소스, gitignore됨) 값을 OS 사용자 환경변수로 등록 (Windows `setx`). MCP 서버와 일반 스크립트(예: 디자인 스킬 `image-gen.mjs`)가 모두 `process.env`로 읽게 한다. 새 세션부터 적용
 - `skills/` — Claude와 Codex가 공유하는 스킬의 **단일 소스** (Claude는 여기서 직접 읽음)
+- `agents/` — Claude 서브에이전트 **소스** (`designer.md` 등; Claude가 직접 읽음)
+- `codex-agents/` — **생성물**: `agents/*.md`에서 만든 Codex 에이전트 TOML (`npm run sync`가 생성, `codex:reinstall`이 `~/.codex/agents/`로 설치)
 - `plugins/personal/` — **로컬 생성물**: Codex가 설치하는 자체 완결형 번들 (`npm run sync`가 생성, **gitignore — 커밋 안 함**, 직접 편집 금지)
 - `.agents/plugins/marketplace.json` — Codex 마켓플레이스 정의 / `.claude-plugin/marketplace.json` — Claude 마켓플레이스 정의
 - `hooks/hooks.json` — 세션 훅 (현재: mcp·codex-plugin stale-sync 검사)
