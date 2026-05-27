@@ -10,17 +10,21 @@
 - **`.env` 값을 OS 환경변수로 (`npm run env:apply`)**: `.env`는 비밀의 단일 소스이고, `scripts/apply-env.mjs`가 그 값을 OS 사용자 환경변수로 등록합니다(Windows `setx`). 그러면 MCP 서버(`${VAR}`는 런타임이 OS env에서 치환)와 일반 스크립트(예: 디자인 스킬 `image-gen.mjs`가 읽는 `OPENAI_API_KEY`)가 모두 `process.env`로 읽습니다. `.env`를 수정하면 `npm run env:apply` 후 세션을 재시작하세요. 특히 Codex 설치 캐시엔 `.env`가 없으므로 OS 환경변수가 유일한 경로입니다.
 - **생성된 파일은 직접 수정하지 않기**: `.claude-plugin/mcp.json`,
   `.codex-plugin/mcp.json`, `.env.example`, `.claude-plugin/mcp.sync-state.json`은
-  `scripts/sync-mcp.mjs`가 생성하고, Codex 번들 `plugins/personal/`(자기
-  `skills/` 포함)은 `scripts/sync-codex-plugin.mjs`가 루트 `skills/`에서
-  생성합니다. 둘 다 `npm run sync` 한 번에 돌아갑니다. 소스(`mcp.servers.json`,
-  `skills/`)를 수정한 뒤 sync를 다시 실행하세요.
+  `scripts/sync-mcp.mjs`가 생성하고(이들은 **커밋되는** 생성물), Codex 번들
+  `plugins/personal/`(자기 `skills/` 포함)은 `scripts/sync-codex-plugin.mjs`가
+  루트 `skills/`에서 생성합니다. 둘 다 `npm run sync` 한 번에 돌아갑니다.
+  소스(`mcp.servers.json`, `skills/`)를 수정한 뒤 sync를 다시 실행하세요.
+  단, **Codex 번들 `plugins/personal/`는 gitignore된 로컬 생성물이라 커밋하지
+  않습니다** — 루트 `skills/`와의 바이트 단위 중복을 피하기 위함이며, 설치/사용
+  전 항상 sync를 돌리므로(`npm install`의 `prepare` 훅도 자동 재생성) 추적할
+  필요가 없습니다.
 
 ## 스킬
 
 - 스킬은 `skills/<name>/SKILL.md`에 위치하며 Claude와 Codex가 공유합니다.
   Claude는 루트 `skills/`를 직접 읽지만, Codex는 자체 완결형 번들에서
   로드하므로 스킬을 추가·수정한 뒤 **`npm run sync`로 `plugins/personal/`를
-  재생성**해야 Codex가 반영합니다 (생성물·커밋 대상).
+  재생성**해야 Codex가 반영합니다 (로컬 생성물 — gitignore되어 커밋하지 않음).
 - 공통 프론트매터(`name`, `description`)를 따르세요. 도구별 확장은 다른
   도구가 알 수 없는 키를 깔끔하게 무시하는 경우에만 추가합니다.
 - 스킬 전용 스크립트는 `skills/<name>/scripts/`에 둡니다. 다른 곳(훅이나

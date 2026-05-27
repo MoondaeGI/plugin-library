@@ -1,11 +1,19 @@
 # Secrets
 .env
 
+# ide
+.vscode
+
 # Personal Claude settings
 .claude/settings.local.json
 
 # Personal Codex settings
 .codex/.local.toml
+
+# Codex 번들 — 로컬 생성물 (npm run sync / prepare 훅이 루트 skills/에서 재생성).
+# git에 커밋하지 않는다: 설치 전 항상 sync를 돌리므로 추적할 필요가 없고,
+# 루트 skills/와의 중복(바이트 단위 복사본)을 피한다.
+/plugins/personal/
 
 # Node
 node_modules/

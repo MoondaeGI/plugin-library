@@ -51,7 +51,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 ```
 `codex plugin add`만 다시 돌리면 갱신되지 않으므로(기존 캐시 백업 실패) remove가 선행되어야 하며, 이 스크립트가 그 순서를 처리한다. 다른 머신에서 Git 마켓플레이스로 설치했다면 먼저 `codex plugin marketplace upgrade personal`로 스냅샷을 새로고침한 뒤 재설치한다.
 
-> **Codex 번들 주의:** Codex는 플러그인 디렉터리를 자체 캐시로 **스냅샷 복사**해서 로드하므로, 루트 `skills/`를 직접 보지 못한다. 그래서 Codex용으로는 자체 완결형 번들 `plugins/personal/`(자기 `skills/` 포함)이 필요하다. 이 번들은 **`npm run sync`가 루트 `skills/`에서 생성**한다 (직접 편집 금지). 스킬을 고치면 `npm run sync` 후 `codex plugin add personal@personal`로 재설치하면 갱신된다.
+> **Codex 번들 주의:** Codex는 플러그인 디렉터리를 자체 캐시로 **스냅샷 복사**해서 로드하므로, 루트 `skills/`를 직접 보지 못한다. 그래서 Codex용으로는 자체 완결형 번들 `plugins/personal/`(자기 `skills/` 포함)이 필요하다. 이 번들은 **`npm run sync`가 루트 `skills/`에서 생성**하는 **로컬 생성물이며 git에 커밋하지 않는다**(gitignore — 루트 `skills/`와의 중복 방지). 설치/사용 전 항상 sync를 돌리므로 추적할 필요가 없고, `npm install`의 `prepare` 훅도 자동으로 재생성한다. 스킬을 고치면 `npm run sync` 후 `codex plugin add personal@personal`로 재설치하면 갱신된다. (번들이 없으면 `npm run sync`로 생성.)
 >
 > 마켓플레이스 스키마: `.agents/plugins/marketplace.json`의 플러그인 `source`는 문자열이 아니라 객체(`{ "source": "local", "path": "./plugins/personal" }`)이고 `policy`/`category`가 필요하다. Claude용 `.claude-plugin/marketplace.json`은 `source: "./"`(루트)로 충분하다.
 
@@ -62,7 +62,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 - `scripts/sync-codex-plugin.mjs` — 루트 `skills/`에서 Codex 번들 `plugins/personal/`를 재생성
 - `scripts/apply-env.mjs` (`npm run env:apply`) — `.env`(비밀 단일 소스, gitignore됨) 값을 OS 사용자 환경변수로 등록 (Windows `setx`). MCP 서버와 일반 스크립트(예: 디자인 스킬 `image-gen.mjs`)가 모두 `process.env`로 읽게 한다. 새 세션부터 적용
 - `skills/` — Claude와 Codex가 공유하는 스킬의 **단일 소스** (Claude는 여기서 직접 읽음)
-- `plugins/personal/` — **생성물**: Codex가 설치하는 자체 완결형 번들 (`npm run sync`가 생성, 직접 편집 금지)
+- `plugins/personal/` — **로컬 생성물**: Codex가 설치하는 자체 완결형 번들 (`npm run sync`가 생성, **gitignore — 커밋 안 함**, 직접 편집 금지)
 - `.agents/plugins/marketplace.json` — Codex 마켓플레이스 정의 / `.claude-plugin/marketplace.json` — Claude 마켓플레이스 정의
 - `hooks/hooks.json` — 세션 훅 (현재: mcp·codex-plugin stale-sync 검사)
 - `tests/` — 스크립트 테스트 (`npm test`로 실행)

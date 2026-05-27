@@ -8,7 +8,7 @@
     "sync": "node scripts/sync-mcp.mjs && node scripts/sync-codex-plugin.mjs",
     "codex:reinstall": "node scripts/codex-reinstall.mjs",
     "env:apply": "node scripts/apply-env.mjs",
-    "validate": "node scripts/sync-mcp.mjs --check && node scripts/sync-codex-plugin.mjs --check",
+    "validate": "node scripts/sync-mcp.mjs --check",
     "test": "node --test \"tests/**/*.test.mjs\"",
     "prepare": "node scripts/sync-mcp.mjs && node scripts/sync-codex-plugin.mjs"
   },
