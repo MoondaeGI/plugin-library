@@ -81,6 +81,16 @@ function outPaths(out, n, ext) {
   return Array.from({ length: n }, (_, i) => path.join(dir, `${base}-${i + 1}${ext}`));
 }
 
+const MIME_BY_EXT = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+};
+function mimeFor(file) {
+  return MIME_BY_EXT[path.extname(file).toLowerCase()] || 'application/octet-stream';
+}
+
 async function main() {
   const opts = parseArgs(process.argv.slice(2));
   if (opts.help) {
@@ -154,14 +164,33 @@ async function main() {
 
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), TIMEOUT_MS);
-  let res;
-  try {
-    res = await fetch(endpoint, {
+
+  let requestInit;
+  if (useEdits) {
+    const form = new FormData();
+    for (const [k, v] of Object.entries(fields)) form.append(k, String(v));
+    for (const img of opts.images) {
+      const buf = readFileSync(img);
+      form.append('image[]', new Blob([buf], { type: mimeFor(img) }), path.basename(img));
+    }
+    requestInit = {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}` },
+      body: form,
+      signal: ac.signal,
+    };
+  } else {
+    requestInit = {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify(fields),
       signal: ac.signal,
-    });
+    };
+  }
+
+  let res;
+  try {
+    res = await fetch(endpoint, requestInit);
   } catch (err) {
     die(`오류: API 요청 실패 — ${err.name === 'AbortError' ? `${TIMEOUT_MS}ms 타임아웃` : err.message}`, 1);
   } finally {
