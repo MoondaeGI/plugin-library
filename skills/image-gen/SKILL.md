@@ -17,6 +17,8 @@ description: 구성된 텍스트 프롬프트를 래스터 이미지 파일로 �
 
 OpenAI Images API를 직접 호출하므로 `OPENAI_API_KEY`가 필요하다. 공용 `loadEnv()`로 `.env`를 직접 읽으니 `.env`에 적기만 하면 된다 (Claude 즉시 반영; Codex는 `.env` 수정 후 `npm run codex:reinstall`). 직접 OS 환경변수로 설정해도 된다(우선함). 없으면 생성 불가 — 그때만 사람이 이미지를 직접 드롭하는 폴백을 쓴다.
 
+**키를 사전 검증하지 마라.** env 로딩 경로(`load-env.mjs`·`.env`)를 단계별로 추적하거나 키 존재를 미리 확인하는 절차를 끼워 넣지 말 것 — 그냥 생성을 호출하면 된다. 키가 없으면 스크립트가 고치는 법(`.env`에 추가 / `npm run codex:reinstall` / OS 환경변수)까지 안내하며 즉시 `exit 2`로 실패한다. 정 미리 확인이 필요하면 `--dry-run` 한 번이면 충분하다(키 불필요).
+
 ## 사용
 
 ```bash

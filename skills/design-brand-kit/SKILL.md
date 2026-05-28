@@ -226,7 +226,7 @@ primary 적용 + 흑/백 단색 버전 고려
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
-이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 생성할 수 없고, 그때만 사람이 직접 드롭하는 폴백을 쓴다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
+이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 생성할 수 없고, 그때만 사람이 직접 드롭하는 폴백을 쓴다. 스크립트 옵션·전제는 `image-gen` 스킬 참조. **키는 사전 점검하지 말고 바로 생성을 호출한다** — 부재 시 스크립트가 고치는 법까지 안내하며 즉시 실패한다.
 
 스크립트 경로(형제 스킬): `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
 
