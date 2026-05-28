@@ -36,8 +36,12 @@ run('node scripts/sync-mcp.mjs');
 run('node scripts/sync-codex-plugin.mjs');
 run('node scripts/sync-agents.mjs');
 
-// 2) remove (ok if not installed), then 3) add fresh from the marketplace
+// 2) remove (ok if not installed), then 3) add fresh from the marketplace.
+//    로컬 마켓플레이스의 마지막 플러그인을 remove하면 마켓플레이스 등록까지 함께
+//    사라져 직후의 add가 "not found in marketplace"로 실패한다. 그래서 add 전에
+//    마켓플레이스를 재등록한다(이미 등록돼 있으면 실패해도 무시하고 진행).
 run(`codex plugin remove ${PLUGIN}`, { allowFail: true });
+run(`codex plugin marketplace add "${ROOT}"`, { allowFail: true });
 run(`codex plugin add ${PLUGIN}`);
 
 // 4) install custom agents — Codex 플러그인은 에이전트를 번들하지 못하므로
