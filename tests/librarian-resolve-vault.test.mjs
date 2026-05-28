@@ -11,6 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PLUGIN_ROOT = path.resolve(__dirname, '..');
 const RESOLVER = path.join(PLUGIN_ROOT, 'skills', 'librarian', 'scripts', 'resolve-vault.mjs');
 const PARSE_ENV = path.join(PLUGIN_ROOT, 'scripts', 'lib', 'parse-env.mjs');
+const LOAD_ENV = path.join(PLUGIN_ROOT, 'scripts', 'lib', 'load-env.mjs');
 const NO_ENV = path.join(tmpdir(), 'librarian-no-such.env');
 
 function makeKbVault() {
@@ -88,6 +89,7 @@ function runResolverWithFakeRoot(envContent) {
   mkdirSync(libDir, { recursive: true });
   copyFileSync(RESOLVER, path.join(scriptDir, 'resolve-vault.mjs'));
   copyFileSync(PARSE_ENV, path.join(libDir, 'parse-env.mjs'));
+  copyFileSync(LOAD_ENV, path.join(libDir, 'load-env.mjs'));
   if (envContent !== null) writeFileSync(path.join(tmp, '.env'), envContent);
   const { LIBRARIAN_VAULT_PATH, ...cleanEnv } = process.env;
   const res = spawnSync('node', [path.join(scriptDir, 'resolve-vault.mjs')], {
