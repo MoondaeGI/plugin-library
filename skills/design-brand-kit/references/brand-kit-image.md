@@ -63,7 +63,9 @@
 
 보드의 "로고 방향" 섹션에는 워드마크 · 모노그램/심볼 컨셉 · 앱 아이콘 · **구성·의미 노트**(왜 이 마크인지)를 함께 보여준다. 컨셉 방법 5가지: 모노그램+의미 · 제품 액션 · 메타포 융합 · 네거티브 스페이스 · 구성 기하.
 
-> 독립 단색 로고 생성의 깊은 스펙·형태 언어·컨셉 방법 상세·프롬프트 청크·피해야 할 클리셰 전체 목록은 **`../../references/design/logo-art-direction.md`** 참조.
+**보드 프롬프트의 로고 줄은 generic하게 두지 않는다.** `../../references/design/logo-art-direction.md` §7.1 "보드 주입용 압축 블록"(3줄)을 `BRAND_KIT.md §6`의 구성·의미로 채워 §12 템플릿의 `Logo:` 자리에 넣는다. 보드 로고가 떨어지면 같은 ref의 §8 품질 테스트로 판정한다.
+
+> 독립 단색 로고 생성의 깊은 스펙·형태 언어·컨셉 방법 상세·프롬프트 청크(독립용 풀 청크 §7 / 보드용 압축 블록 §7.1)·품질 테스트(§8)·체크리스트(§9)·피해야 할 클리셰 전체 목록은 **`../../references/design/logo-art-direction.md`** 참조.
 
 ## 3. 종합 오버뷰 보드 — 섹션 시스템 (기본 · 메인)
 
@@ -193,12 +195,16 @@ Palette: [절제된 팔레트 — brand-tokens.json 기반, single dominant acce
 Style: premium, clean, intentional, polished brand-guidelines one-pager, no clutter, no copied real-world logos.
 Typography: readable, organized, high hierarchy; render labels/HEX/type-scale legibly; no tiny fake body text, no lorem ipsum.
 Language: render visible text in Korean (Hangul) — short, legible labels; bilingual KR/EN only if the brand is English-facing.
-Logo: professional, symbolic, simple, ownable, brand-purpose based, consistent across the board.
+Logo Direction section: wordmark + standalone monogram/symbol + app-icon tile.
+Mark concept: [BRAND_KIT.md §6 구성·의미], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at small size, valid in solid monochrome; the symbol reads on its own without the name.
+Avoid (logo): shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo.
 ```
+
+> 위 마지막 3줄(`Logo Direction section:` ~ `Avoid (logo):`)은 `../../references/design/logo-art-direction.md` §7.1 압축 블록이다 — `[BRAND_KIT.md §6 구성·의미]`·`[grid / ...]` 브래킷을 이 브랜드의 실제 마크 컨셉·기하로 채워 넣는다. 비워두거나 generic 문구로 두지 않는다.
 
 **발산 3 루트**: 위 템플릿을 루트마다 한 번씩, `Visual mode`·`Palette`·`Layout`(구도·에너지) 줄만 루트별로 바꿔 3개 프롬프트로 인스턴스화한다(§3 "발산 3 루트" 매핑). `Sections`·`Brand strategy`·`Language` 등 나머지는 공통. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 `brand-overview-route-a/b/c.png`로 개별 호출(`--quality low` 초안).
 
-(선택) 단색 클린 로고는 **별도 호출**로(스크립트 재실행, `--out`은 `logo/`): 같은 전략·메타포·팔레트를 쓰되 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소. **프롬프트는 `../../references/design/logo-art-direction.md`의 프롬프트 청크를 기반으로 구성한다.**
+(선택) 단색 클린 로고는 **별도 호출**로(스크립트 재실행, `--out`은 `logo/`): 같은 전략·메타포·팔레트를 쓰되 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소. **프롬프트는 `../../references/design/logo-art-direction.md` §7 풀 청크를 `BRAND_KIT.md`로 채워 구성한다 — 워드마크만으로 끝내지 말고 독립 심볼을 반드시 포함하고, 사용자에게 보여주기 전 같은 ref의 §8 품질 테스트로 자가 판정한다(떨어지면 §1·§2·§7을 한 가지씩 보강해 재생성).**
 
 ## 최종 기준
 

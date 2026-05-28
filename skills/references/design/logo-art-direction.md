@@ -4,7 +4,7 @@
 
 이 문서는 `design-brand-kit`의 독립 단색 로고 생성과 미래 `design-logo` 스킬이 읽는 공유 ref다. 추상적 디자인 이론이 아니라 **이미지 모델이 바로 그릴 수 있는 구체적·렌더 가능한 형태 지시**만 담는다. 목표 품질 기준은 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 마크**다.
 
-권위 원본(정확한 색·문구·폰트 스펙)은 `BRAND_KIT.md`/`brand-tokens.json`이고, 이 문서는 **형태·생성 방향**을 정의한다. 둘이 어긋나면 md/tokens가 정답이다. 사용법: §1에서 카테고리 의미를 형태로 끌어내고 → §2에서 컨셉 방법을 고르고 → §3 기하 언어와 §4 유형/락업으로 다듬고 → §6 Avoid를 네거티브로 붙이고 → §7 청크를 그대로 떠넣어 [브래킷]을 채운다.
+권위 원본(정확한 색·문구·폰트 스펙)은 `BRAND_KIT.md`/`brand-tokens.json`이고, 이 문서는 **형태·생성 방향**을 정의한다. 둘이 어긋나면 md/tokens가 정답이다. 사용법: §1에서 카테고리 의미를 형태로 끌어내고 → §2에서 컨셉 방법을 고르고 → §3 기하 언어와 §4 유형/락업으로 다듬고 → §6 Avoid를 네거티브로 붙이고 → 독립 로고는 §7 풀 청크를, 종합 보드의 로고 섹션은 §7.1 압축 블록을 떠넣어 [브래킷]을 채운다 → 생성물은 §8 품질 테스트·§9 체크리스트로 판정한다.
 
 ## 1. 전략 → 마크 로직
 
@@ -43,6 +43,8 @@ circle / arc / concentric rings · square frame / rounded square · diagonal 45�
 품질을 끌어올리는 표현(프롬프트에 그대로 붙임): "precise, intentional, balanced; built on a grid/keyline; geometrically constructed; optically balanced; consistent stroke weight; strong, instantly recognizable silhouette; reads clearly at favicon size (16px); looks researched and reduced, not decorative; reduced to its essential form; high contrast against background."
 
 ## 4. 로고 유형 / 락업 / 단색·반전
+
+**독립 심볼 필수.** 로고 방향을 워드마크만으로 끝내지 않는다 — 제품명 없이 단독으로 쓸 수 있는 심볼/마크를 반드시 포함한다. **글자만 있는 로고는 실패로 간주한다.** (워드마크는 심볼과 함께 쓰는 요소다.)
 
 - **워드마크** — 브랜드명 전체를 커스텀 타입으로. 이름이 짧고 기억성 있을 때.
 - **레터마크(모노그램)** — 1~2 이니셜. 이름이 길거나 이니셜이 강할 때, 작은 공간용.
@@ -84,3 +86,36 @@ Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxur
 ```
 
 위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·near-black/white·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
+
+### 7.1 보드 주입용 압축 블록 (3줄 고정)
+
+위 풀 청크는 **독립 단색 로고용**이다. 종합 보드의 "Logo Direction" 섹션은 로고가 12섹션 중 1칸이라 풀 청크를 떠넣으면 과대표집돼 보드가 일그러진다. 보드 프롬프트에는 아래 **3줄만** `BRAND_KIT.md §6`(구성·의미)로 채워 넣는다 — 빈 generic 줄로 두지 않는다.
+
+```text
+Logo Direction section: wordmark + standalone monogram/symbol + app-icon tile.
+Mark concept: [BRAND_KIT.md §6 구성·의미 — 예: "monogram F fused with a scaffold-frame corner via negative space"], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at small size, valid in solid monochrome; the symbol reads on its own without the name.
+Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo.
+```
+
+## 8. 품질 테스트 (결과물 평가용 — 프롬프트 재료 아님)
+
+생성된 로고를 사용자에게 보여주기 전 아래로 자가 판정한다. 떨어지면 §1·§2·§7을 한 가지씩 보강해 재생성한다.
+
+- **Silhouette** — 단색 실루엣으로도 형태가 기억되나? (실패: 그라데이션 사라지면 무너짐, 내부 디테일 과다)
+- **Small-Size** — 16·24·32px에서 핵심 형태가 읽히나? (실패: favicon에서 뭉개짐, 얇은 선 소실)
+- **No-Text** — 브랜드명을 지워도 심볼만으로 작동하나? (실패: 글자 없으면 의미 없음, 심볼이 일반 도형)
+- **One-Color** — 그라데이션·그림자·질감 없이 작동하나? (실패: 단색 버전이 복잡, 음영 없이 형태 구분 불가)
+- **System** — UI 헤더·사이드바·파비콘·앱 아이콘·문서·배지에 반복 적용되나?
+- **Meaning** — 형태가 브랜드 전략·핵심 메타포와 연결되나? (실패: 예쁘지만 왜 이 형태인지 설명 못 함; 보안이라 방패, AI라 반짝임, 동물명이라 동물 얼굴을 그대로)
+
+## 9. 로고 체크리스트
+
+- [ ] 워드마크만 있는 게 아니라 독립 심볼이 있나?
+- [ ] 심볼만으로도 브랜드 방향이 느껴지나?
+- [ ] 작은 크기(16px)에서 읽히나?
+- [ ] 단색(흑/백)으로 작동하나?
+- [ ] UI·문서·앱 아이콘에 반복 사용 가능하나?
+- [ ] 브랜드 전략/핵심 메타포와 연결되나?
+- [ ] 흔한 방패·눈·반짝임·번개에 의존하지 않나?
+- [ ] 실제 브랜드 로고를 연상시키지 않나?
+- [ ] 그라데이션·효과 없이도 형태가 유지되나?
