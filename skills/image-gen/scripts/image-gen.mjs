@@ -23,6 +23,7 @@
 
 import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
+import { loadEnv } from '../../../scripts/lib/load-env.mjs';
 
 const ENDPOINT = 'https://api.openai.com/v1/images/generations';
 const TIMEOUT_MS = 300_000;
@@ -115,14 +116,14 @@ async function main() {
     return;
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = loadEnv().OPENAI_API_KEY;
   if (!apiKey) {
     die(
       [
-        '오류: OPENAI_API_KEY 환경변수가 설정돼 있지 않습니다.',
-        '`.env`에 적은 뒤 `npm run env:apply`로 OS에 등록하거나, 직접 환경변수로 설정하세요:',
-        '  PowerShell: $env:OPENAI_API_KEY = "sk-..."',
-        '  bash:       export OPENAI_API_KEY="sk-..."',
+        '오류: OPENAI_API_KEY 가 설정돼 있지 않습니다.',
+        '플러그인 루트의 `.env`에 OPENAI_API_KEY=sk-... 를 추가하세요 (저장 즉시 반영, 재시작 불필요).',
+        'Codex에서는 `.env` 수정 후 `npm run codex:reinstall`로 번들을 갱신하세요.',
+        '또는 직접 환경변수로: PowerShell `$env:OPENAI_API_KEY = "sk-..."`, bash `export OPENAI_API_KEY="sk-..."`.',
       ].join('\n'),
       2,
     );
