@@ -92,6 +92,9 @@ async function main() {
   if (!prompt || !prompt.trim()) die('오류: --prompt 또는 --prompt-file 가 필요합니다.');
   if (!opts.out) die('오류: --out <경로> 가 필요합니다.');
   if (!Number.isInteger(opts.n) || opts.n < 1 || opts.n > 10) die('오류: --n 은 1-10 사이 정수여야 합니다.');
+  for (const img of opts.images) {
+    if (!existsSync(img)) die(`오류: --image 파일을 찾을 수 없습니다: ${img}`);
+  }
 
   const ext = '.' + (opts.outputFormat === 'jpeg' ? 'jpg' : opts.outputFormat);
   const targets = outPaths(opts.out, opts.n, ext);

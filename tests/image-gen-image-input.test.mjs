@@ -41,3 +41,10 @@ test('--image 가 없으면 dry-run 이 generations 엔드포인트를 유지한
   assert.equal(res.status, 0, res.stderr);
   assert.match(res.stdout, /POST https:\/\/api\.openai\.com\/v1\/images\/generations/);
 });
+
+test('존재하지 않는 --image 경로는 비0 종료로 실패한다', () => {
+  const missing = path.join(tmpdir(), 'no-such-image-' + Date.now() + '.png');
+  const res = run(['--prompt', 'x', '--out', outPath(), '--image', missing, '--dry-run']);
+  assert.equal(res.status, 2);
+  assert.match(res.stderr, /찾을 수 없습니다/);
+});
