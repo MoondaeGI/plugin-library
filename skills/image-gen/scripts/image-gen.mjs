@@ -58,6 +58,7 @@ function parseArgs(argv) {
       case '--prompt': opts.prompt = next(); break;
       case '--prompt-file': opts.promptFile = next(); break;
       case '--image': opts.images.push(next()); break;
+      case '--input-fidelity': opts.inputFidelity = next(); break;
       case '--out': opts.out = next(); break;
       case '--size': opts.size = next(); break;
       case '--quality': opts.quality = next(); break;
@@ -95,6 +96,9 @@ async function main() {
   for (const img of opts.images) {
     if (!existsSync(img)) die(`오류: --image 파일을 찾을 수 없습니다: ${img}`);
   }
+  if (opts.inputFidelity && !['high', 'low'].includes(opts.inputFidelity)) {
+    die('오류: --input-fidelity 는 high 또는 low 여야 합니다.');
+  }
 
   const ext = '.' + (opts.outputFormat === 'jpeg' ? 'jpg' : opts.outputFormat);
   const targets = outPaths(opts.out, opts.n, ext);
@@ -115,6 +119,7 @@ async function main() {
     quality: opts.quality,
     output_format: opts.outputFormat,
   };
+  if (useEdits && opts.inputFidelity) fields.input_fidelity = opts.inputFidelity;
 
   if (opts.dryRun) {
     const preview = prompt.trim().slice(0, 80) + (prompt.trim().length > 80 ? '…' : '');

@@ -48,3 +48,23 @@ test('존재하지 않는 --image 경로는 비0 종료로 실패한다', () => 
   assert.equal(res.status, 2);
   assert.match(res.stderr, /찾을 수 없습니다/);
 });
+
+test('잘못된 --input-fidelity 값은 비0 종료로 실패한다', () => {
+  const res = run(['--prompt', 'x', '--out', outPath(), '--input-fidelity', 'medium', '--dry-run']);
+  assert.equal(res.status, 2);
+  assert.match(res.stderr, /high 또는 low/);
+});
+
+test('--input-fidelity high 는 edits 페이로드에 포함된다', () => {
+  const img = makeImage();
+  const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--input-fidelity', 'high', '--dry-run']);
+  assert.equal(res.status, 0, res.stderr);
+  assert.match(res.stdout, /"input_fidelity": "high"/);
+});
+
+test('--input-fidelity 미지정이면 페이로드에 input_fidelity 가 없다', () => {
+  const img = makeImage();
+  const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--dry-run']);
+  assert.equal(res.status, 0, res.stderr);
+  assert.doesNotMatch(res.stdout, /input_fidelity/);
+});
