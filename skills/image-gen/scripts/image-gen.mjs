@@ -120,6 +120,11 @@ async function main() {
     output_format: opts.outputFormat,
   };
   if (useEdits && opts.inputFidelity) fields.input_fidelity = opts.inputFidelity;
+  // --input-fidelity 는 edits 경로(이미지 입력) 전용이라, --image 없이 주면 적용되지 않는다.
+  // 조용히 버리면 사용자가 적용된 줄 오해하므로 경고만 하고 생성은 진행한다.
+  if (opts.inputFidelity && !useEdits) {
+    console.warn('경고: --input-fidelity 는 --image 와 함께 쓸 때만 적용됩니다 — 무시하고 진행합니다.');
+  }
 
   if (opts.dryRun) {
     const preview = prompt.trim().slice(0, 80) + (prompt.trim().length > 80 ? '…' : '');

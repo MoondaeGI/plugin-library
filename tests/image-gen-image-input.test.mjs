@@ -68,3 +68,17 @@ test('--input-fidelity 미지정이면 페이로드에 input_fidelity 가 없다
   assert.equal(res.status, 0, res.stderr);
   assert.doesNotMatch(res.stdout, /input_fidelity/);
 });
+
+test('--input-fidelity 를 --image 없이 쓰면 경고하고 페이로드에서 제외한다', () => {
+  const res = run(['--prompt', 'x', '--out', outPath(), '--input-fidelity', 'high', '--dry-run']);
+  assert.equal(res.status, 0, res.stderr);
+  assert.match(res.stderr, /경고: --input-fidelity/);
+  assert.doesNotMatch(res.stdout, /input_fidelity/);
+});
+
+test('--input-fidelity low 는 edits 페이로드에 포함된다', () => {
+  const img = makeImage();
+  const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--input-fidelity', 'low', '--dry-run']);
+  assert.equal(res.status, 0, res.stderr);
+  assert.match(res.stdout, /"input_fidelity": "low"/);
+});
