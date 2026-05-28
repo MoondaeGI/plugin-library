@@ -28,7 +28,8 @@ export function extractPlaceholders(source) {
 export function renderEnvExample(placeholders, extras = []) {
   const lines = [
     '# Auto-generated from mcp.servers.json + 스킬 env 선언 — 직접 수정하지 말 것',
-    '# .env로 복사해 값을 채운 뒤 `npm run env:apply` 실행.',
+    '# .env로 복사해 값을 채우면 스크립트가 바로 읽습니다 (재시작·apply 불필요).',
+    '# Codex는 .env 수정 후 `npm run codex:reinstall`로 번들을 갱신하세요.',
   ];
   if (placeholders.length > 0) {
     lines.push('', '# MCP 서버 (mcp.servers.json의 ${VAR})');
