@@ -9,6 +9,11 @@
 // skills/. This script mirrors the single source of truth (root skills/) into
 // plugins/personal/skills/ and writes the bundle's .codex-plugin/plugin.json.
 //
+// The bundle now also mirrors scripts/lib/ (shared utilities like loadEnv) and,
+// when present, the root .env file so that skills using .env-direct reads work
+// correctly from the Codex snapshot cache without needing to traverse up the
+// repo tree.
+//
 // The bundle is generated — do not edit plugins/personal/ by hand. Edit root
 // skills/ and run `npm run sync`.
 import {
@@ -29,6 +34,8 @@ const SKILLS_SRC = path.join(PLUGIN_ROOT, 'skills');
 const BUNDLE_DIR = path.join(PLUGIN_ROOT, 'plugins', 'personal');
 const BUNDLE_SKILLS = path.join(BUNDLE_DIR, 'skills');
 const BUNDLE_MANIFEST = path.join(BUNDLE_DIR, '.codex-plugin', 'plugin.json');
+const LIB_SRC = path.join(PLUGIN_ROOT, 'scripts', 'lib');
+const ENV_SRC = path.join(PLUGIN_ROOT, '.env');
 
 export function buildManifest() {
   return {
@@ -59,12 +66,19 @@ export function collectFiles(dir) {
 
 // Returns the desired bundle contents as a map of relative-path -> text.
 // Keys are POSIX-style relative to BUNDLE_DIR.
-export function buildBundle(skillsSrc) {
+export function buildBundle(skillsSrc, { libSrc, envPath } = {}) {
   const files = new Map();
   files.set('.codex-plugin/plugin.json', manifestText());
   for (const rel of collectFiles(skillsSrc)) {
-    const text = readFileSync(path.join(skillsSrc, rel), 'utf8');
-    files.set('skills/' + rel.split(path.sep).join('/'), text);
+    files.set('skills/' + rel.split(path.sep).join('/'), readFileSync(path.join(skillsSrc, rel), 'utf8'));
+  }
+  if (libSrc) {
+    for (const rel of collectFiles(libSrc)) {
+      files.set('scripts/lib/' + rel.split(path.sep).join('/'), readFileSync(path.join(libSrc, rel), 'utf8'));
+    }
+  }
+  if (envPath && existsSync(envPath)) {
+    files.set('.env', readFileSync(envPath, 'utf8'));
   }
   return files;
 }
@@ -72,13 +86,18 @@ export function buildBundle(skillsSrc) {
 // Current on-disk bundle contents (same key shape as buildBundle).
 function readExistingBundle(bundleDir) {
   const files = new Map();
-  const manifestRel = '.codex-plugin/plugin.json';
   const manifestAbs = path.join(bundleDir, '.codex-plugin', 'plugin.json');
-  if (existsSync(manifestAbs)) files.set(manifestRel, readFileSync(manifestAbs, 'utf8'));
+  if (existsSync(manifestAbs)) files.set('.codex-plugin/plugin.json', readFileSync(manifestAbs, 'utf8'));
   const skillsDir = path.join(bundleDir, 'skills');
   for (const rel of collectFiles(skillsDir)) {
     files.set('skills/' + rel.split(path.sep).join('/'), readFileSync(path.join(skillsDir, rel), 'utf8'));
   }
+  const libDir = path.join(bundleDir, 'scripts', 'lib');
+  for (const rel of collectFiles(libDir)) {
+    files.set('scripts/lib/' + rel.split(path.sep).join('/'), readFileSync(path.join(libDir, rel), 'utf8'));
+  }
+  const envAbs = path.join(bundleDir, '.env');
+  if (existsSync(envAbs)) files.set('.env', readFileSync(envAbs, 'utf8'));
   return files;
 }
 
@@ -95,8 +114,10 @@ function diffBundles(desired, actual) {
 }
 
 function writeBundle(bundleDir, desired) {
-  // Rebuild skills/ from scratch so deleted source skills don't linger.
+  // skills/·scripts/·.env を갈아엎어 삭제된 소스가 남지 않게 한다.
   rmSync(path.join(bundleDir, 'skills'), { recursive: true, force: true });
+  rmSync(path.join(bundleDir, 'scripts'), { recursive: true, force: true });
+  rmSync(path.join(bundleDir, '.env'), { force: true });
   for (const [rel, text] of desired) {
     const abs = path.join(bundleDir, rel.split('/').join(path.sep));
     mkdirSync(path.dirname(abs), { recursive: true });
@@ -104,8 +125,8 @@ function writeBundle(bundleDir, desired) {
   }
 }
 
-export function syncBundle({ skillsSrc, bundleDir, mode = 'write', log = console } = {}) {
-  const desired = buildBundle(skillsSrc);
+export function syncBundle({ skillsSrc, libSrc, envPath, bundleDir, mode = 'write', log = console } = {}) {
+  const desired = buildBundle(skillsSrc, { libSrc, envPath });
 
   if (mode === 'check') {
     const failures = diffBundles(desired, readExistingBundle(bundleDir));
@@ -155,6 +176,8 @@ if (isMain) {
   }
   const result = syncBundle({
     skillsSrc: SKILLS_SRC,
+    libSrc: LIB_SRC,
+    envPath: ENV_SRC,
     bundleDir: BUNDLE_DIR,
     mode: parseMode(process.argv.slice(2)),
   });

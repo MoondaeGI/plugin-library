@@ -40,6 +40,58 @@ test('collectFiles returns sorted relative paths and walks nested dirs', () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+function makeLib(libSrc, name, body) {
+  mkdirSync(libSrc, { recursive: true });
+  writeFileSync(path.join(libSrc, name), body, 'utf8');
+}
+
+test('buildBundle includes scripts/lib files when libSrc is given', () => {
+  const skillsSrc = tmp();
+  const libSrc = tmp();
+  makeSkill(skillsSrc, 'design-brand-kit', '# brand');
+  makeLib(libSrc, 'load-env.mjs', '// load');
+  const bundle = buildBundle(skillsSrc, { libSrc });
+  assert.equal(bundle.get('scripts/lib/load-env.mjs'), '// load');
+  rmSync(skillsSrc, { recursive: true, force: true });
+  rmSync(libSrc, { recursive: true, force: true });
+});
+
+test('buildBundle includes .env when envPath exists, omits when absent', () => {
+  const skillsSrc = tmp();
+  makeSkill(skillsSrc, 'design-brand-kit', '# brand');
+  const envDir = tmp();
+  const envPath = path.join(envDir, '.env');
+  writeFileSync(envPath, 'OPENAI_API_KEY=sk-test\n', 'utf8');
+  const withEnv = buildBundle(skillsSrc, { envPath });
+  assert.equal(withEnv.get('.env'), 'OPENAI_API_KEY=sk-test\n');
+  const noEnv = buildBundle(skillsSrc, { envPath: path.join(envDir, 'nope.env') });
+  assert.equal(noEnv.has('.env'), false);
+  rmSync(skillsSrc, { recursive: true, force: true });
+  rmSync(envDir, { recursive: true, force: true });
+});
+
+test('write mode bundles lib + .env, check mode then passes', () => {
+  const skillsSrc = tmp();
+  const libSrc = tmp();
+  const bundleDir = tmp();
+  const envDir = tmp();
+  makeSkill(skillsSrc, 'design-brand-kit', '# brand');
+  makeLib(libSrc, 'load-env.mjs', '// load');
+  const envPath = path.join(envDir, '.env');
+  writeFileSync(envPath, 'OPENAI_API_KEY=sk-test\n', 'utf8');
+
+  const w = syncBundle({ skillsSrc, libSrc, envPath, bundleDir, mode: 'write', log: quiet });
+  assert.equal(w.ok, true);
+  assert.equal(readFileSync(path.join(bundleDir, 'scripts', 'lib', 'load-env.mjs'), 'utf8'), '// load');
+  assert.equal(readFileSync(path.join(bundleDir, '.env'), 'utf8'), 'OPENAI_API_KEY=sk-test\n');
+
+  const c = syncBundle({ skillsSrc, libSrc, envPath, bundleDir, mode: 'check', log: quiet });
+  assert.equal(c.ok, true);
+  assert.deepEqual(c.failures, []);
+
+  [skillsSrc, libSrc, bundleDir, envDir].forEach((d) => rmSync(d, { recursive: true, force: true }));
+});
+
 test('buildBundle mirrors skills under skills/ plus the manifest', () => {
   const skillsSrc = tmp();
   makeSkill(skillsSrc, 'design-brand-kit', '# brand');
