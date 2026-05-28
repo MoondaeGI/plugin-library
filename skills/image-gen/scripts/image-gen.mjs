@@ -16,6 +16,8 @@
 //   --quality        low | medium | high | auto   (기본 medium)
 //   --model          이미지 모델             (기본 gpt-image-2; 키에 접근권 없으면 gpt-image-1)
 //   --n              변형 개수 1-10          (기본 1; >1이면 파일명에 -1,-2… 접미)
+//   --image          입력/레퍼런스 이미지     (반복 가능; 1개+면 /edits 로 분기 — 레퍼런스·편집 공용)
+//   --input-fidelity high | low             (선택; gpt-image-2 전용. high=원본 충실/편집, 생략=느슨한 참고. --image 없이 주면 무시·경고)
 //   --output-format  png | jpeg | webp       (기본 png)
 //   --force          기존 파일 덮어쓰기 허용
 //   --dry-run        API 호출 없이 페이로드·출력 경로만 출력 (키 불필요)
@@ -31,8 +33,9 @@ const TIMEOUT_MS = 300_000;
 
 const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존)
 
-  node image-gen.mjs --prompt-file <파일> --out <경로> [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--dry-run]
+  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--input-fidelity high] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--dry-run]
 
+--image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트와 --input-fidelity 로).
 OPENAI_API_KEY 환경변수가 필요하다 (--dry-run 제외). --help로 이 도움말 출력.`;
 
 function die(msg, code = 2) {
