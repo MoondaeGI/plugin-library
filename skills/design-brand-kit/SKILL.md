@@ -240,9 +240,9 @@ primary 적용 + 흑/백 단색 버전 고려
   ```
 - **저장 경로**: `--out`에 **대상 프로젝트 cwd 기준 절대 경로** — 종합 보드·추가 탐색은 `<cwd>/.design/generated/brand-kit/`, (선택) 단색 로고는 `<cwd>/.design/generated/logo/`. 파일명 식별 가능(`brand-overview-1.png`, `logo-concept-1.png`), 재생성 시 버전(`-v2`).
 - **크기/품질**: 보드는 콘텐츠 양에 맞는 세로/가로 크기(세로 예: `1024x1536`), 빠른 초안 `--quality low`, 확정본 `--quality high`.
-- 보드의 섹션 시스템·비주얼 모드·텍스트 규칙·프롬프트 템플릿은 `references/brand-kit-image.md` 참조.
+- 보드의 섹션 시스템·비주얼 모드·텍스트 규칙·프롬프트 템플릿은 `references/brand-kit-image.md` 참조. **로고/아이콘의 깊은 생성 스펙·프롬프트 청크는 형제 공유 ref `../references/design/logo-art-direction.md`·`../references/design/icon-art-direction.md`에 있다** — 보드의 로고/아이콘 섹션·독립 로고·아이콘 세트 생성 시 끌어다 쓴다.
 - 종합 보드는 텍스트(섹션 타이틀·HEX·타입 스케일·짧은 문구)를 담되 **읽히고 위계가 또렷하게** 한다. **보이는 텍스트(섹션 타이틀·라벨·태그라인·미션/약속·UI 카피 등)는 한국어로 렌더**한다 (제품·타깃이 영어권이면 한/영 병기 가능; 한글 글리프 렌더 한계를 감안해 짧고 또렷한 라벨로). 단 **정확한 색/폰트 스펙의 권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`** — 보드는 그 시각화다.
-- (선택) 단색 로고는 단색 버전을 고려하고 배경을 깨끗하게 둔다 (향후 로고 수정 단계의 입력이 되므로).
+- (선택) 단색 로고는 단색 버전을 고려하고 배경을 깨끗하게 둔다 (향후 로고 수정 단계의 입력이 되므로). **프롬프트는 `../references/design/logo-art-direction.md`의 프롬프트 청크를 기반으로 구성한다.**
 
 ## 흐름 (디자이너 협업 루프)
 

@@ -15,6 +15,9 @@
 # 루트 skills/와의 중복(바이트 단위 복사본)을 피한다.
 /plugins/personal/
 
+# 검증용 스크래치 (로고 before/after 등) — 커밋하지 않음
+/.scratch/
+
 # Node
 node_modules/
 

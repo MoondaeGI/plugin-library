@@ -57,21 +57,13 @@
 
 심볼을 랜덤하게 고르지 않는다.
 
-## 2. 로고 생성 표준
+## 2. 로고 생성 표준 (보드 섹션용 요약)
 
-로고는 **단순·기억성·상징적·확장 가능·소유 가능(ownable)·시각적 균형**, 그리고 브랜드 아이디어와 연결되어야 한다. 아이콘·워드마크·배지·UI 마크·패턴으로 쓸 수 있어야 한다.
+로고는 **단순·기억성·상징적·확장 가능·소유 가능(ownable)·시각적 균형**, 그리고 브랜드 아이디어와 연결되어야 한다. 아이콘·워드마크·배지·UI 마크·패턴으로 쓸 수 있어야 한다. 로고는 **리서치와 축약**에서 나온 느낌이어야 한다.
 
-피할 것: 정당화 없는 번개, 랜덤 동물, 가짜 럭셔리 크레스트, 유명 마크 모방, 과도하게 복잡한 심볼, 클립아트 아이콘, 의미 없는 반짝임(sparkle), 일관성 없는 변형. 로고는 **리서치와 축약**에서 나온 느낌이어야 한다.
+보드의 "로고 방향" 섹션에는 워드마크 · 모노그램/심볼 컨셉 · 앱 아이콘 · **구성·의미 노트**(왜 이 마크인지)를 함께 보여준다. 컨셉 방법 5가지: 모노그램+의미 · 제품 액션 · 메타포 융합 · 네거티브 스페이스 · 구성 기하.
 
-보드의 "로고 방향" 섹션에는 워드마크 · 모노그램/심볼 컨셉 · 앱 아이콘 · **구성·의미 노트**(왜 이 마크인지)를 함께 보여준다.
-
-### 로고 컨셉 방법 (하나, 최대 둘 조합)
-
-1. **모노그램 + 의미** — 브랜드 이니셜 + 메타포 (예: `K`+kite/frame/direction, `N`+folded path, `S`+sound wave, `A`+ascent/architecture). 지루한 글자 아이콘 금지 — 네거티브 스페이스·컷·폴드·기하 사용.
-2. **제품 액션** — 제품의 핵심 동작을 심볼로 (build→frame/scaffold/block/cursor, protect→shield/boundary/watch, convert→switch/arrow, speak→waveform/mic/pulse, hunt→eye/raptor/radar, automate→loop/handoff/path). 직설적이지 않고 추상·프리미엄하게.
-3. **메타포 융합** — 의미 있는 두 아이디어를 하나의 축약 마크로 (owl+drone vision, shield+mountain, moon+waveform, dog+seal, dice+economy, cursor+speed, kite+frame). 미묘하고 읽히게.
-4. **네거티브 스페이스** — 빈 공간으로 지능을 만든다 (숨은 화살표, 보호된 중심, 컷아웃 이니셜, 내부 패스, 폴드된 모서리, 교차로 만든 눈). 선명하게.
-5. **구성 기하(construction geometry)** — 명확한 시스템에서 마크를 만든다 (원, 대각 컷, 그리드, 프레임, 모듈 블록, 레이어드 카드, 궤도, 크로스헤어, 측정된 선).
+> 독립 단색 로고 생성의 깊은 스펙·형태 언어·컨셉 방법 상세·프롬프트 청크·피해야 할 클리셰 전체 목록은 **`../../references/design/logo-art-direction.md`** 참조.
 
 ## 3. 종합 오버뷰 보드 — 섹션 시스템 (기본 · 메인)
 
@@ -90,7 +82,6 @@
 9. **Voice & Tone** — "X, not Y" 형식 4개 (예: "Calm, not alarmist").
 10. **Visual & UI Direction** — 카드 / 상태 배지 / 컨트롤 같은 미니 UI 목업 조각으로 분위기 제시.
 11. **Imagery / Iconography** — 아이콘 세트 + 스타일 노트(선 굵기, 조인, 톤).
-12. **Next Decisions to Confirm** — 확정이 필요한 항목 체크리스트.
 
 섹션 수·순서·이름은 제품에 맞게 조정 가능하지만, **로고 외에 최소 8개 이상의 의미 있는 섹션**이 한눈에 들어오게 한다. 모든 섹션이 똑같이 시끄럽지 않게 리듬을 둔다: 큰 커버(개요) → 기능적(에센스·가치) → 시스템(색·타이포) → 적용(UI·아이콘) → 정리(다음 결정).
 
@@ -132,7 +123,7 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 ## 7. 이미지·목업 디렉션
 
-- **이미지/아이콘**: 의미 있고 일관된 시각 — 미니멀 라인 아이콘(일관된 스트로크, 둥근 조인), 모니터링/증거를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치.
+- **이미지/아이콘**: 의미 있고 일관된 시각 — 미니멀 라인 아이콘(일관된 스트로크, 둥근 조인), 모니터링/증거를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치. **아이콘 세트의 깊은 시스템 스펙(스트로크·그리드·상태)·프롬프트 청크는 `../../references/design/icon-art-direction.md` 참조.**
 - **목업**: 미니멀하고 믿을 만하게 — 브라우저 크롬, URL 바, 앱 아이콘, soft rounded 카드, 상태 배지, 미니멀 컨트롤, 활동 리스트 조각, 대시보드 조각. 금지: 데이터 과밀 가짜 대시보드, 싸구려 글로시 목업, 디바이스 과잉, 빽빽한 앱 화면, 아이콘 과잉. **목업은 기능 데모가 아니라 아이덴티티 적용이다.**
 
 ## 8. 프리미엄 디테일 언어
@@ -186,7 +177,6 @@ Sections (each labeled and legible):
 9. Voice & Tone ("X, not Y" x4)
 10. Visual & UI Direction (mini UI mockups: cards, status badges, controls)
 11. Imagery / Iconography (icon set + style note)
-12. Next Decisions to Confirm (checklist)
 
 Visual mode: [모드]
 Palette: [절제된 팔레트 — brand-tokens.json 기반, single dominant accent]
@@ -196,7 +186,7 @@ Language: render visible text in Korean (Hangul) — short, legible labels; bili
 Logo: professional, symbolic, simple, ownable, brand-purpose based, consistent across the board.
 ```
 
-(선택) 단색 클린 로고는 **별도 호출**로(스크립트 재실행, `--out`은 `logo/`): 같은 전략·메타포·팔레트를 쓰되 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소.
+(선택) 단색 클린 로고는 **별도 호출**로(스크립트 재실행, `--out`은 `logo/`): 같은 전략·메타포·팔레트를 쓰되 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소. **프롬프트는 `../../references/design/logo-art-direction.md`의 프롬프트 청크를 기반으로 구성한다.**
 
 ## 최종 기준
 
