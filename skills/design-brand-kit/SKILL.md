@@ -181,12 +181,15 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 ## 종합 브랜드 오버뷰 보드 (필수 · 메인)
 ### 캔버스 / 레이아웃 (라이트/다크, 기본 12섹션 그리드)
-### 비주얼 모드 (references/brand-kit-image.md의 모드 중 선택)
 ### 섹션 구성 메모
 Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline Options · Logo Direction · Color System · Typography · Voice & Tone · Visual & UI Direction · Imagery/Iconography · Next Decisions — 로고 외 최소 8개 이상의 섹션이 한눈에.
 ### 태그라인 (짧고 구체적으로)
-### 이미지 생성 Prompt
-### Negative Prompt
+### 발산 3 루트 (메인 보드 첫 생성용)
+12섹션 구조·콘텐츠는 공통, 루트마다 **비주얼 모드 · 팔레트 방향 · 구도 에너지 · 이미지 생성 Prompt(루트별 델타)** 로만 분기. 모드/매핑은 references/brand-kit-image.md "발산 3 루트".
+- 루트 A — 안전한 SaaS형:
+- 루트 B — 프리미엄 에디토리얼형:
+- 루트 C — 대담한 실험형:
+### Negative Prompt (공통)
 (텍스트는 읽히고 위계 또렷하게. 정확한 색/폰트 스펙의 권위 원본은 BRAND_KIT.md/tokens — 보드는 그 시각화)
 
 ## 단색 클린 로고 (선택)
@@ -231,7 +234,7 @@ primary 적용 + 흑/백 단색 버전 고려
 - **여러 장은 항상 `--n`이 아니라 개별 호출.** (`--n`은 같은 프롬프트 샘플링이라 시안 용도로 부적합 — 비슷하게 나온다.)
 - **메인 보드 첫 생성만 예외적으로 3장 발산**: 3 시각 루트를 각각 다른 프롬프트로 개별 호출(`--quality low` 초안). 그 외 — 방향 확정 후 재수정, (선택) 로고, 추가 탐색 — 는 모두 **1개씩**. 메인은 종합 오버뷰 보드다 — 로고만 따로 만들고 끝내지 않는다.
 - 프롬프트는 브리프의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)를 `references/brand-kit-image.md`의 템플릿대로 구성해 **임시 파일에 쓰고 `--prompt-file`로 넘긴다**.
-- **임시 파일에는 `### 이미지 생성 Prompt` 섹션 내용만 쓴다.** 캔버스/레이아웃·비주얼 모드·섹션 구성 메모·태그라인 설명·로고 유형·형태 언어 등 다른 서브섹션은 포함하지 않는다. Negative Prompt는 프롬프트 마지막에 `Avoid: ...` 한 줄로 합친다.
+- **임시 파일에는 해당 호출의 프롬프트 본문만 쓴다** — 메인 보드 발산은 `### 발산 3 루트`의 해당 루트 프롬프트(루트별 델타를 12섹션 공통 구조에 적용), 로고·추가 탐색은 각 `### 이미지 생성 Prompt`. 캔버스/레이아웃·섹션 구성 메모·태그라인 설명·로고 유형·형태 언어 등 다른 서브섹션은 포함하지 않는다. Negative Prompt는 프롬프트 마지막에 `Avoid: ...` 한 줄로 합친다.
 - 호출 예:
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
