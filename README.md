@@ -69,7 +69,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 - `mcp.servers.json` — MCP 서버 정의의 단일 소스 (편집은 여기만)
 - `scripts/sync-mcp.mjs` — 소스로부터 `.claude-plugin/mcp.json`, `.codex-plugin/mcp.json`, `.env.example`를 재생성
 - `scripts/sync-codex-plugin.mjs` — 루트 `skills/`에서 Codex 번들 `plugins/personal/`를 재생성
-- `scripts/apply-env.mjs` (`npm run env:apply`) — `.env`(비밀 단일 소스, gitignore됨) 값을 OS 사용자 환경변수로 등록 (Windows `setx`). MCP 서버와 일반 스크립트(예: 디자인 스킬 `image-gen.mjs`)가 모두 `process.env`로 읽게 한다. 새 세션부터 적용
+- `scripts/lib/load-env.mjs` (`loadEnv()`) — `.env`(비밀 단일 소스, gitignore됨)를 읽어 `process.env`와 병합한다(OS env 우선). 스크립트(예: 디자인 스킬 `image-gen.mjs`)가 이걸로 `.env`를 직접 읽으므로, Claude는 `.env` 저장 즉시 반영된다. Codex 번들은 `npm run codex:reinstall`로 갱신
 - `skills/` — Claude와 Codex가 공유하는 스킬의 **단일 소스** (Claude는 여기서 직접 읽음)
 - `agents/` — Claude 서브에이전트 **소스** (`designer.md` 등; Claude가 직접 읽음)
 - `codex-agents/` — **생성물**: `agents/*.md`에서 만든 Codex 에이전트 TOML (`npm run sync`가 생성, `codex:reinstall`이 `~/.codex/agents/`로 설치)
@@ -94,12 +94,12 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 }
 ```
 
-`${EXAMPLE_API_KEY}`는 런타임이 **OS 환경변수**에서 치환한다. 따라서 비밀은 `.env`에 적은 뒤 `npm run env:apply`로 OS에 등록해야 한다(아래 참고).
+`${EXAMPLE_API_KEY}`는 MCP 런타임이 **OS 환경변수**에서 치환한다(MCP 서버가 있을 경우). 한편 일반 스크립트는 공용 `loadEnv()`로 `.env`를 직접 읽으므로, 비밀은 `.env`에 적기만 하면 된다.
 
 이후:
 ```powershell
 npm run sync          # 생성 파일 갱신
-npm run env:apply     # .env의 비밀을 OS 환경변수로 등록 (새 세션부터 적용)
+# .env에 비밀을 적으면 스크립트가 바로 읽음 (Claude 즉시 / Codex는 npm run codex:reinstall)
 ```
 
 그다음 `/reload-plugins`(Claude) 또는 세션 재시작(Codex).

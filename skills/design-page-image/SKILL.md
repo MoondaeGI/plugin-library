@@ -95,7 +95,7 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
-이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY` 환경변수가 필요**하다(`.env` + `npm run env:apply`). 키가 없으면 그때만 사람이 직접 드롭한다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
+이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 그때만 사람이 직접 드롭한다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
 
 스크립트 경로(형제 스킬): `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
 

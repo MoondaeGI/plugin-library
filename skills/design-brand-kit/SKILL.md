@@ -224,12 +224,13 @@ primary 적용 + 흑/백 단색 버전 고려
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
-이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY` 환경변수가 필요**하다(`.env` + `npm run env:apply`). 키가 없으면 생성할 수 없고, 그때만 사람이 직접 드롭하는 폴백을 쓴다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
+이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 생성할 수 없고, 그때만 사람이 직접 드롭하는 폴백을 쓴다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
 
 스크립트 경로(형제 스킬): `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
 
 - **항목당 1회 호출.** 한 번에 한 개만 만든다 (여러 장은 `--n`이 아니라 개별 호출). 메인은 종합 오버뷰 보드 한 장이다 — 로고만 따로 만들고 끝내지 않는다.
 - 프롬프트는 브리프의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)를 `references/brand-kit-image.md`의 템플릿대로 구성해 **임시 파일에 쓰고 `--prompt-file`로 넘긴다**.
+- **임시 파일에는 `### 이미지 생성 Prompt` 섹션 내용만 쓴다.** 캔버스/레이아웃·비주얼 모드·섹션 구성 메모·태그라인 설명·로고 유형·형태 언어 등 다른 서브섹션은 포함하지 않는다. Negative Prompt는 프롬프트 마지막에 `Avoid: ...` 한 줄로 합친다.
 - 호출 예:
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \

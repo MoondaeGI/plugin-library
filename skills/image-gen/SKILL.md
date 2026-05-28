@@ -15,7 +15,7 @@ description: 구성된 텍스트 프롬프트를 래스터 이미지 파일로 �
 
 ## 전제: OPENAI_API_KEY
 
-OpenAI Images API를 직접 호출하므로 `OPENAI_API_KEY` 환경변수가 필요하다. `.env`에 적은 뒤 `npm run env:apply`로 OS에 등록(또는 직접 환경변수 설정). 없으면 생성 불가 — 그때만 사람이 이미지를 직접 드롭하는 폴백을 쓴다.
+OpenAI Images API를 직접 호출하므로 `OPENAI_API_KEY`가 필요하다. 공용 `loadEnv()`로 `.env`를 직접 읽으니 `.env`에 적기만 하면 된다 (Claude 즉시 반영; Codex는 `.env` 수정 후 `npm run codex:reinstall`). 직접 OS 환경변수로 설정해도 된다(우선함). 없으면 생성 불가 — 그때만 사람이 이미지를 직접 드롭하는 폴백을 쓴다.
 
 ## 사용
 
