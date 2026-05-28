@@ -26,6 +26,7 @@ import path from 'node:path';
 import { loadEnv } from '../../../scripts/lib/load-env.mjs';
 
 const ENDPOINT = 'https://api.openai.com/v1/images/generations';
+const EDITS_ENDPOINT = 'https://api.openai.com/v1/images/edits';
 const TIMEOUT_MS = 300_000;
 
 const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존)
@@ -48,6 +49,7 @@ function parseArgs(argv) {
     outputFormat: 'png',
     force: false,
     dryRun: false,
+    images: [],
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -55,6 +57,7 @@ function parseArgs(argv) {
     switch (a) {
       case '--prompt': opts.prompt = next(); break;
       case '--prompt-file': opts.promptFile = next(); break;
+      case '--image': opts.images.push(next()); break;
       case '--out': opts.out = next(); break;
       case '--size': opts.size = next(); break;
       case '--quality': opts.quality = next(); break;
@@ -98,7 +101,10 @@ async function main() {
     if (clash) die(`오류: 이미 존재합니다: ${clash}\n(덮어쓰려면 --force, 또는 버전 파일명 -v2 를 쓰세요.)`);
   }
 
-  const body = {
+  const useEdits = opts.images.length > 0;
+  const endpoint = useEdits ? EDITS_ENDPOINT : ENDPOINT;
+
+  const fields = {
     model: opts.model,
     prompt,
     n: opts.n,
@@ -109,8 +115,12 @@ async function main() {
 
   if (opts.dryRun) {
     const preview = prompt.trim().slice(0, 80) + (prompt.trim().length > 80 ? '…' : '');
-    console.log('[dry-run] POST ' + ENDPOINT);
-    console.log('[dry-run] payload: ' + JSON.stringify({ ...body, prompt: preview }, null, 2));
+    console.log('[dry-run] POST ' + endpoint);
+    if (useEdits) {
+      console.log(`[dry-run] images (${opts.images.length}):`);
+      opts.images.forEach((p) => console.log('  ' + path.resolve(p)));
+    }
+    console.log('[dry-run] payload: ' + JSON.stringify({ ...fields, prompt: preview }, null, 2));
     console.log('[dry-run] out:');
     targets.forEach((p) => console.log('  ' + path.resolve(p)));
     return;
@@ -133,10 +143,10 @@ async function main() {
   const timer = setTimeout(() => ac.abort(), TIMEOUT_MS);
   let res;
   try {
-    res = await fetch(ENDPOINT, {
+    res = await fetch(endpoint, {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      body: JSON.stringify(fields),
       signal: ac.signal,
     });
   } catch (err) {
