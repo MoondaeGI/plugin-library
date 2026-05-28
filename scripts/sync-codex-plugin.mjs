@@ -158,7 +158,7 @@ export function syncBundle({ skillsSrc, libSrc, envPath, bundleDir, mode = 'writ
     return { ok: true, changed: false };
   }
   writeBundle(bundleDir, desired);
-  log.log(`sync-codex-plugin: wrote plugins/personal/ (.codex-plugin/plugin.json + ${desired.size - 1} skill file(s))`);
+  log.log(`sync-codex-plugin: wrote plugins/personal/ (${desired.size} file(s): manifest + skills + scripts/lib + .env)`);
   return { ok: true, changed: true };
 }
 
