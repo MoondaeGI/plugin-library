@@ -6,10 +6,10 @@
 
 ## 산출물
 
-1. **종합 브랜드 오버뷰 보드 (필수 · 메인)** — 브랜드 개요·에센스·타깃·가치·태그라인·로고 방향·색·타이포·보이스·UI·이미지까지 **여러 섹션을 한 장에 담아 한눈에 보이는 브랜드 가이드라인 원페이저**. 로고는 이 보드 안의 한 섹션(로고 방향)으로 들어간다. → `.design/generated/brand-kit/`.
-2. **단색 클린 로고 (선택)** — 독립된 깨끗한 로고 이미지. 단색(흑/백) 버전 고려, 배경 깔끔. → `.design/generated/logo/brand-kit-logo.png`. **`design-logo` 스킬의 시드 입력**이 되므로 **보드에 박힌 형태가 아니라 단독**으로 만든다. **final로 잠그지 않는다** — 확정 로고는 design-logo가 `.design/final/logo/`에 만든다. 메인은 어디까지나 종합 보드이며, 로고만 따로 만들고 끝내지 않는다.
+1. **종합 브랜드 오버뷰 보드 (필수 · 메인)** — 브랜드 개요·에센스·타깃·가치·태그라인·로고 방향·색·타이포·보이스·UI·이미지까지 **여러 섹션을 한 장에 담아 한눈에 보이는 브랜드 가이드라인 원페이저**. 로고는 이 보드 안의 한 섹션(§6 로고 방향)으로만 들어간다 — 독립 로고 이미지는 만들지 않으며, 확정 로고는 `design-logo`가 보드 §6을 읽어 `.design/final/logo/`에 만든다. → `.design/generated/brand-kit/`.
+2. **(선택) 추가 탐색 이미지** — 대안 무드·키 비주얼·히어로 배경 등. → `.design/generated/brand-kit/`.
 
-종합 보드는 첫 생성에서 3 루트로 **발산**(3 초안 시안)했다가 고른 방향으로 **수렴**한 뒤 한 섹션씩 고치고, (선택) 로고·추가 탐색은 한 개씩 만들고 → 보여주고 → 한 번에 한 가지만 고쳐 재생성하는 협업 루프로 진행한다(SKILL.md "흐름" 참고).
+종합 보드는 첫 생성에서 3 루트로 **발산**(3 초안 시안)했다가 고른 방향으로 **수렴**한 뒤 한 섹션씩 고치고, (선택) 추가 탐색은 한 개씩 만들고 → 보여주고 → 한 번에 한 가지만 고쳐 재생성하는 협업 루프로 진행한다(SKILL.md "흐름" 참고).
 
 ## 결과물 품질 기준
 
@@ -65,7 +65,7 @@
 
 **보드 프롬프트의 로고 줄은 generic하게 두지 않는다.** `../../references/design/logo-art-direction.md` §7.1 "보드 주입용 압축 블록"(3줄)을 `BRAND_KIT.md §6`의 구성·의미로 채워 §12 템플릿의 `Logo:` 자리에 넣는다. 보드 로고가 떨어지면 같은 ref의 §8 품질 테스트로 판정한다.
 
-> 독립 단색 로고 생성의 깊은 스펙·형태 언어·컨셉 방법 상세·프롬프트 청크(독립용 풀 청크 §7 / 보드용 압축 블록 §7.1)·품질 테스트(§8)·체크리스트(§9)·피해야 할 클리셰 전체 목록은 **`../../references/design/logo-art-direction.md`** 참조.
+> 보드 §6 로고 마크의 형태 언어·컨셉 방법 상세·보드용 압축 블록(§7.1)·품질 테스트(§8)·체크리스트(§9)·피해야 할 클리셰 전체 목록은 **`../../references/design/logo-art-direction.md`** 참조. (독립 로고용 풀 청크 §7은 design-logo가 쓴다 — brand-kit은 보드 §6만 채운다.)
 
 ## 3. 종합 오버뷰 보드 — 섹션 시스템 (기본 · 메인)
 
@@ -73,7 +73,7 @@
 
 기본 11섹션 (보드용; 각 섹션은 `BRAND_KIT.md`의 §1–11과 1:1 매핑된다 — `BRAND_KIT.md §12 다음 결정 사항`은 작업용 텍스트라 **보드에 렌더하지 않으므로 아래 목록에 없다**):
 
-1. **Brand Overview** — 큰 워드마크/제품명, 한 줄 설명, 포지셔닝 요약.
+1. **Brand Overview** — 큰 워드마크/제품명, 한 줄 설명, 포지셔닝 요약. **+ 코너/엣지에서 살짝 블리드되는 대표 분위기 키 비주얼을 항상 포함**(앰비언트 — 텍스트가 주인공, 워드마크와 겹치거나 가독성 해치지 않게). 피사체/모티프는 `BRAND_KIT.md §1 커버 키 비주얼`에서 가져오며 브랜드 도메인·core metaphor에 묶인다. **로고 마크가 아니고**(§6과 중복 금지) **의미 없는 장식 blob도 아니다**(§9 anti-generic 유지). 매체는 비주얼 모드 따라 적응(§7 참조).
 2. **Brand Essence** — 미션 / 약속 / 핵심 특성. 각 항목에 작은 아이콘 + 짧은 문구.
 3. **Target Audience** — 주 사용자 · 상황/제약 · 니즈. 아이콘 + 짧은 라벨.
 4. **Value Pillars** — 3~4개 가치 기둥 카드. 각 카드: 아이콘 + 제목 + 한 줄 설명.
@@ -139,7 +139,8 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 ## 7. 이미지·목업 디렉션
 
-- **이미지/아이콘**: 의미 있고 일관된 시각 — 미니멀 라인 아이콘(일관된 스트로크, 둥근 조인), 모니터링/증거를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치. **아이콘 세트의 깊은 시스템 스펙(스트로크·그리드·상태)·프롬프트 청크는 `../../references/design/icon/icon-rules.md` 참조.** 스타일 선택은 `icon/icon-style-catalog.md`, 도메인 메타포는 `icon/icon-domain-examples.md`(도메인 섹션만) — 결정은 `BRAND_KIT.md §11`에 증류돼 있다.
+- **§1 커버 키 비주얼 (강제)**: §1 Brand Overview에는 항상 브랜드 대표 분위기 비주얼을 **코너/엣지에서 부드럽게 블리드**시킨다 — 앰비언트로, 워드마크·설명·포지셔닝 텍스트가 주인공이고 비주얼은 가독성을 해치지 않는다. 피사체는 `BRAND_KIT.md §1 커버 키 비주얼`(도메인·core metaphor에 묶인 것). **매체는 비주얼 모드에 따라 적응한다** — 라이트 클린/SaaS·네이처/캄·럭셔리/뷰티·에디토리얼·보이스 모드는 **큐레이트된 도메인 피사체 사진**(소프트 라이트, 팔레트 일치)으로, 다크 디벨로퍼/빌더·컬처럴/실험·다크 시큐리티처럼 사진이 안 맞는 모드는 **분위기 그래픽/렌더 모티프**(텍스처 패널·메타포 추상 폼)로 같은 코너 앰비언트 처리를 한다. **로고 마크가 아니고**(§6과 중복 금지) generic 스톡 인물·오피스 사진·의미 없는 장식 blob이 아니다. 아래 "스톡 사진 금지"의 의도된 큐레이트 예외다.
+- **이미지/아이콘**: 의미 있고 일관된 시각 — **아이콘 스타일은 `BRAND_KIT.md §11`이 확정한 하나를 그대로 따른다** (line / filled / duotone / solid glyph / outline+minimal-fill 중). line이라고 가정하지 않는다 — 형태 규칙은 그 스타일에 맞춰 묘사한다(line이면 일관된 스트로크·둥근 조인, filled면 일관된 fill·코너 반경, solid glyph면 단단한 실루엣). 도메인 메타포를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치. **아이콘 세트의 깊은 시스템 스펙(스타일별 형태·그리드·상태)·프롬프트 청크는 `../../references/design/icon/icon-rules.md` 참조.** 스타일 선택은 `icon/icon-style-catalog.md`, 도메인 메타포는 `icon/icon-domain-examples.md`(도메인 섹션만) — 결정은 `BRAND_KIT.md §11`에 증류돼 있다.
 - **목업**: 미니멀하고 믿을 만하게 — 브라우저 크롬, URL 바, 앱 아이콘, soft rounded 카드, 상태 배지, 미니멀 컨트롤, 활동 리스트 조각, 대시보드 조각. 금지: 데이터 과밀 가짜 대시보드, 싸구려 글로시 목업, 디바이스 과잉, 빽빽한 앱 화면, 아이콘 과잉. **목업은 기능 데모가 아니라 아이덴티티 적용이다.**
 
 ## 8. 프리미엄 디테일 언어
@@ -162,8 +163,8 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드는 `BRAND_KIT.md`의 §1–11을 렌더하며 1:1로 대응한다 — **§12 다음 결정 사항은 md 전용이라 보드에 렌더하지 않는다.**
 - **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다. 폰트 스펙의 실존 출처는 `../../references/design/font-catalog.md`이며, 토큰의 font-family는 거기서 고른 실존값이다.
-- **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀) — 종합 오버뷰 보드 → `<cwd>/.design/generated/brand-kit/`, (선택) 단색 클린 로고 → `<cwd>/.design/generated/logo/`. 파일명 식별 가능 — 발산 초안 `brand-overview-route-a/b/c.png`(재시도 `-v2`), 확정본 `brand-overview.png`, 로고 `brand-kit-logo.png`(design-logo 시드 — final로 복사하지 않음). 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다(`--force` 없이는 덮지 않음).
-- **협업 루프**: 메인 보드는 3 루트 발산(초안 3장) → 방향 선택(또는 재시도) → **고른 루트를 `--image`로 첨부해 high 편집** → **직전 보드를 `--image`로 첨부한 증분 편집으로 한 섹션씩** 고쳐 재생성 → 확정 → (선택) 단색 로고 → 다음. **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 `--image` 편집**(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 로고·추가 탐색은 한 장씩.
+- **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀) — 종합 오버뷰 보드·(선택) 추가 탐색 → `<cwd>/.design/generated/brand-kit/`. 파일명 식별 가능 — 발산 초안 `brand-overview-route-a/b/c.png`(재시도 `-v2`), 확정본 `brand-overview.png`. 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다(`--force` 없이는 덮지 않음).
+- **협업 루프**: 메인 보드는 3 루트 발산(초안 3장) → 방향 선택(또는 재시도) → **고른 루트를 `--image`로 첨부해 high 편집** → **직전 보드를 `--image`로 첨부한 증분 편집으로 한 섹션씩** 고쳐 재생성 → 확정 → (선택) 추가 탐색 → 다음. **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 `--image` 편집**(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 추가 탐색은 한 장씩. (로고는 보드 §6 섹션으로만 들어가고, 독립 로고는 design-logo가 만든다.)
 
 ## 12. 프롬프트 템플릿 (내부 구조)
 
@@ -182,7 +183,7 @@ Brand strategy:
 Layout: single board, [light/dark] canvas, clean numbered-section grid with strong gutters and thin dividers, generous whitespace, clear hierarchy. At-a-glance, scannable.
 
 Sections (each labeled and legible):
-1. Brand Overview (large wordmark + one-line description + positioning)
+1. Brand Overview (large wordmark + one-line description + positioning) WITH a brand-representative atmospheric cover key visual bleeding softly from one corner/edge — [BRAND_KIT.md §1 커버 키 비주얼: subject/motif], rendered as [curated domain subject photography | atmospheric textured graphic/rendered motif] to match the visual mode, palette-consistent, ambient and low-key so it never overlaps the wordmark or hurts legibility. NOT the logo mark, NOT a meaningless decorative blob, NOT generic stock people/office.
 2. Brand Essence (mission / promise / core traits, small icons)
 3. Target Audience
 4. Value Pillars (3–4 cards with icon + title + one line)
@@ -193,7 +194,7 @@ Sections (each labeled and legible):
 9. Voice & Tone — for each of 3-4 principles show the "X, not Y" label AND a short do/don't example beneath: a good line (O / ✓) and a bad line (X / ✗). Render the authored Korean phrases [from BRAND_KIT.md §9] exactly as given; do NOT invent copy. Keep each example to one short line.
 10. Visual & UI Direction (mini UI mockups: cards, status badges, controls)
 11. Imagery / Iconography (icon set + style note)
-All section icons (Essence, Target, Value Pillars, Imagery) follow ONE icon system defined in BRAND_KIT.md §11 — identical stroke weight, join/terminal, grid, and metaphor language. No section uses a different icon look.
+All section icons (Essence, Target, Value Pillars, Imagery) follow ONE icon system defined in BRAND_KIT.md §11 — the SAME style chosen there (line / filled / duotone / solid glyph / outline+fill — do NOT default to line), with consistent form rules for that style (line → uniform stroke weight + join/terminal; filled → uniform fill + corner radius; glyph → solid silhouette), a shared grid, and one metaphor language. No section uses a different icon look.
 
 Do NOT render a "Next Decisions" / "다음 결정" section, nor any checklist of pending or to-confirm decisions, on the board — that lives only in BRAND_KIT.md, never on the image.
 
@@ -210,11 +211,11 @@ Avoid (logo): shield/lock/globe/gear clichés, meaningless gradient/3D bevel/spa
 
 > 위 마지막 3줄(`Logo Direction section:` ~ `Avoid (logo):`)은 `../../references/design/logo-art-direction.md` §7.1 압축 블록이다 — `[BRAND_KIT.md §6 구성·의미]`·`[grid / ...]` 브래킷을 이 브랜드의 실제 마크 컨셉·기하로 채워 넣는다. 비워두거나 generic 문구로 두지 않는다.
 
-**발산 3 루트**: 위 템플릿을 루트마다 한 번씩, `Visual mode`·`Palette`·`Layout`(구도·에너지) 줄만 루트별로 바꿔 3개 프롬프트로 인스턴스화한다(§3 "발산 3 루트" 매핑). `Sections`·`Brand strategy`·`Language` 등 나머지는 공통. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 `brand-overview-route-a/b/c.png`로 개별 호출(`--quality low` 초안).
+**발산 3 루트**: 위 템플릿을 루트마다 한 번씩, `Visual mode`·`Palette`·`Layout`(구도·에너지) 줄만 루트별로 바꿔 3개 프롬프트로 인스턴스화한다(§3 "발산 3 루트" 매핑). `Sections`·`Brand strategy`·`Language` 등 나머지는 공통. **§1 커버 키 비주얼의 피사체/모티프는 세 루트 공통이되, 매체·처리(사진 vs 분위기 그래픽)는 각 루트의 비주얼 모드를 따른다** — 같은 브랜드의 세 해석으로 읽히게. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 `brand-overview-route-a/b/c.png`로 개별 호출(`--quality low` 초안).
 
 **증분 편집(수정·수렴)**: 첫 생성 이후의 모든 수정은 직전 이미지를 `--image`로 첨부해 보낸다(SKILL.md "이미지 생성" 참고; gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리). 이때 프롬프트는 위 풀 템플릿이 아니라 **바꿀 한 가지만** 기술한다 — 예: "9번 Voice & Tone 섹션의 O/X 예시 문구만 …로 교체, 나머지 섹션·색·레이아웃은 그대로 유지". 풀 템플릿을 다시 넣으면 편집이 아니라 재생성이 되어 나머지까지 바뀐다.
 
-(선택) 단색 클린 로고는 **별도 호출**로(스크립트 재실행, `--out`은 `logo/`): 같은 전략·메타포·팔레트를 쓰되 단일 마크/워드마크를 깨끗한 단색 배경에 크게, 단색(흑/백) 버전 고려, 텍스트 최소. **프롬프트는 `../../references/design/logo-art-direction.md` §7 풀 청크를 `BRAND_KIT.md`로 채워 구성한다 — 워드마크만으로 끝내지 말고 독립 심볼을 반드시 포함하고, 사용자에게 보여주기 전 같은 ref의 §8 품질 테스트로 자가 판정한다(떨어지면 §1·§2·§7을 한 가지씩 보강해 재생성).**
+> 로고는 보드 §6 "Logo Direction" 섹션으로만 그린다 — 독립 로고 이미지는 brand-kit에서 만들지 않는다. 확정 로고는 design-logo가 이 보드 §6을 읽어 만든다.
 
 ## 최종 기준
 

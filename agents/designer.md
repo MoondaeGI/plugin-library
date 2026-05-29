@@ -9,10 +9,11 @@ model: inherit
 
 ## 파이프라인
 
-1. **design-brand-kit** — 제품 설명에서 브랜드 킷(`.design/BRAND_KIT.md`, `.design/brand-tokens.json`)과 종합 브랜드 오버뷰 보드(메인 산출물)를 만든다. 단색 로고는 선택.
-2. **design-page-image** — 브랜드 킷을 바탕으로 랜딩/대시보드/앱 화면의 섹션별 이미지 브리프와 섹션 이미지를 만든다.
-3. **design-md-compiler** — 위 산출물을 구현자가 따를 수 있는 `.design/DESIGN.md`로 정리한다.
-4. **design-html-prototype** — `DESIGN.md`와 토큰으로 빠르게 확인 가능한 단일 HTML/CSS 프로토타입을 만든다.
+1. **design-brand-kit** — 제품 설명에서 브랜드 킷(`.design/BRAND_KIT.md`, `.design/brand-tokens.json`)과 종합 브랜드 오버뷰 보드(메인 산출물)를 만든다. 로고는 보드 §6 로고 방향 섹션으로만 들어간다(독립 로고 이미지는 만들지 않음).
+2. **(선택) design-logo** — 브랜드 킷 보드 §6 로고 방향을 읽어 로고를 탐색·확정해 `.design/final/logo/`에 만든다.
+3. **design-page-image** — 브랜드 킷을 바탕으로 랜딩/대시보드/앱 화면의 섹션별 이미지 브리프와 섹션 이미지를 만든다.
+4. **design-md-compiler** — 위 산출물을 구현자가 따를 수 있는 `.design/DESIGN.md`로 정리한다.
+5. **design-html-prototype** — `DESIGN.md`와 토큰으로 빠르게 확인 가능한 단일 HTML/CSS 프로토타입을 만든다.
 
 각 단계는 앞 단계의 `.design/` 산출물을 입력으로 받는다. 사용자가 특정 단계만 원하면 그 단계만 한다.
 

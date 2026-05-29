@@ -20,8 +20,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 - `.design/BRAND_KIT.md` — §6 로고 방향(구성·의미·금지), §1 개요, 금지 패턴, §8 타이포(워드마크용).
 - `.design/brand-tokens.json` — 색 HEX·타이포.
-- `.design/final/brand-kit/brand-overview.png` — 시드 출처(로고만 추출).
-- (있으면) `.design/generated/logo/brand-kit-logo.png` — brand-kit이 만든 단독 로고 시드. 있으면 추출 대신 우선 사용.
+- `.design/final/brand-kit/brand-overview.png` — 시드 출처. 보드를 **통째로** 들고가 §6 로고 방향(Logo Direction) 영역의 마크를 재현한다.
 
 > brand kit가 **없으면** 위 입력 대신 Phase 0의 로고 Q&A로 최소 정보를 모은다 — 시드 이미지가 없으므로 첫 보드는 텍스트→이미지로 만든다.
 
@@ -65,7 +64,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ### Phase 1 — 시드 + 승인 게이트 (brand kit가 있을 때)
 1. 입력 읽기(BRAND_KIT.md §6·tokens·확정 보드).
-2. **시드 추출**: `--image <brand-overview.png>` + 프롬프트 "이 브랜드 보드에서 로고 마크만 깨끗이 중앙에 재현, plain near-white 단색 배경(no scenery), 보드의 텍스트·다른 섹션 제외, 단일 마크만" → `.design/generated/logo/seed.png`(gpt-image-2, `--quality low`). 보여주고 "이 마크 맞아요?" 확인. (`brand-kit-logo.png`가 있으면 추출 생략하고 그걸 시드로.)
+2. **시드 추출 (brand kit를 통째로 들고가 §6 영역 확인)**: `brand-overview.png` 보드 **전체**를 `--image`로 첨부하고 `BRAND_KIT.md §6`의 구성·의미를 프롬프트에 실어 — "첨부한 브랜드 보드의 **§6 로고 방향(Logo Direction) 영역에 있는 로고 마크**를 확인해 그대로 깨끗이 격리 재현, 그 마크의 **형태·기하·비율을 보존**, 중앙 정렬, plain near-white 단색 배경(no scenery), 보드의 텍스트·다른 섹션 제외, 단일 마크만" → `.design/generated/logo/seed.png`(gpt-image-2, `--quality low`). gpt-image-2는 `--image`를 항상 high fidelity로 처리하므로 §6 마크가 잘 보존된다. 보여주고 "이 마크 맞아요?" 확인.
 3. `logo-briefs.md` 작성(시드 출처·탐색 방향·컨셉 방법 분포·제약).
 4. **승인 게이트 (보드 생성 전 필수)**: 시드 + brief를 제시하고 방향 확인. 이미지는 실비가 들고 brief가 어긋나면 보드를 통째로 날리므로 텍스트 단계에서 잡는다. 승인 전엔 보드를 생성하지 않는다.
 
