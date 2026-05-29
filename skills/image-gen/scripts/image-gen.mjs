@@ -20,6 +20,7 @@
 //   --input-fidelity high | low             (선택; gpt-image-2 전용. high=원본 충실/편집, 생략=느슨한 참고. --image 없이 주면 무시·경고)
 //   --output-format  png | jpeg | webp       (기본 png)
 //   --force          기존 파일 덮어쓰기 허용
+//   --auto-version   기존 파일 충돌 시 다음 -vN 으로 자동 증분(시안 보존)
 //   --dry-run        API 호출 없이 페이로드·출력 경로만 출력 (키 불필요)
 //   --help
 
@@ -33,7 +34,7 @@ const TIMEOUT_MS = 300_000;
 
 const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존)
 
-  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--input-fidelity high] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--dry-run]
+  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--input-fidelity high] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--auto-version] [--dry-run]
 
 --image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트와 --input-fidelity 로).
 OPENAI_API_KEY 환경변수가 필요하다 (--dry-run 제외). --help로 이 도움말 출력.`;
@@ -51,6 +52,7 @@ function parseArgs(argv) {
     n: 1,
     outputFormat: 'png',
     force: false,
+    autoVersion: false,
     dryRun: false,
     images: [],
   };
@@ -69,6 +71,9 @@ function parseArgs(argv) {
       case '--n': opts.n = parseInt(next(), 10); break;
       case '--output-format': opts.outputFormat = next(); break;
       case '--force': opts.force = true; break;
+      // --auto-version: --out 충돌 시 die 대신 다음 -vN 으로 자동 증분(시안 보존).
+      // 플래그를 주지 않으면 기존 동작(충돌 시 --force 없으면 die) 그대로 — 범용 호출자 영향 0.
+      case '--auto-version': opts.autoVersion = true; break;
       case '--dry-run': opts.dryRun = true; break;
       case '--help': case '-h': opts.help = true; break;
       default: die(`오류: 알 수 없는 인자 "${a}" (--help 참고).`);
@@ -82,6 +87,24 @@ function outPaths(out, n, ext) {
   const dir = path.dirname(out);
   const base = path.basename(out, path.extname(out));
   return Array.from({ length: n }, (_, i) => path.join(dir, `${base}-${i + 1}${ext}`));
+}
+
+// --out 에 -v{N} 을 끼운 경로. base.png → base-v2.png (원본 확장자 유지).
+function versionedOut(out, v) {
+  const dir = path.dirname(out);
+  const ext0 = path.extname(out);
+  const base = path.basename(out, ext0);
+  return path.join(dir, `${base}-v${v}${ext0}`);
+}
+
+// 충돌 없는 다음 버전의 타깃 세트를 찾는다. 원본(접미 없음)을 v1로 보고 v2부터 스캔.
+// --n>1 이면 변형 세트 전체가 비어 있는 첫 버전을 고른다. 999에서 안전 차단.
+function nextVersionTargets(out, n, ext) {
+  for (let v = 2; v < 1000; v++) {
+    const candidates = outPaths(versionedOut(out, v), n, ext);
+    if (!candidates.some((p) => existsSync(p))) return candidates;
+  }
+  die(`오류: --auto-version 버전 한도(999)를 초과했습니다: ${out}`);
 }
 
 const MIME_BY_EXT = {
@@ -114,11 +137,19 @@ async function main() {
   }
 
   const ext = '.' + (opts.outputFormat === 'jpeg' ? 'jpg' : opts.outputFormat);
-  const targets = outPaths(opts.out, opts.n, ext);
+  let targets = outPaths(opts.out, opts.n, ext);
 
+  // --force 가 최우선(지정 경로 그대로 덮어씀). 아니면 충돌 시:
+  //   --auto-version → 다음 -vN 으로 증분 / 미지정 → die.
   if (!opts.force) {
     const clash = targets.find((p) => existsSync(p));
-    if (clash) die(`오류: 이미 존재합니다: ${clash}\n(덮어쓰려면 --force, 또는 버전 파일명 -v2 를 쓰세요.)`);
+    if (clash) {
+      if (opts.autoVersion) {
+        targets = nextVersionTargets(opts.out, opts.n, ext);
+      } else {
+        die(`오류: 이미 존재합니다: ${clash}\n(덮어쓰려면 --force, 자동 버전은 --auto-version, 또는 버전 파일명 -v2 를 쓰세요.)`);
+      }
+    }
   }
 
   const useEdits = opts.images.length > 0;
