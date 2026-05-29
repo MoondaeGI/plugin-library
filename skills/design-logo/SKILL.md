@@ -13,7 +13,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ## 전제
 
-- `design-brand-kit`이 확정돼 `.design/final/brand-kit/brand-overview.png`·`.design/BRAND_KIT.md`·`.design/brand-tokens.json`이 있어야 한다. 없으면 먼저 `design-brand-kit`을 안내한다.
+- `design-brand-kit` 산출물(`.design/final/brand-kit/brand-overview.png`·`.design/BRAND_KIT.md`·`.design/brand-tokens.json`)이 있으면 그걸 쓴다. **없으면 흐름 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 만들기 / 로고용 최소 Q&A로 바로 진행).
 - 이미지는 공유 `image-gen` 스킬로 생성한다 (`OPENAI_API_KEY` 필요; **키를 사전 점검하지 말고 바로 호출** — 부재 시 스크립트가 고치는 법을 안내하며 즉시 실패). 키가 없으면 사람이 직접 드롭하는 폴백.
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
@@ -22,6 +22,8 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 - `.design/brand-tokens.json` — 색 HEX·타이포.
 - `.design/final/brand-kit/brand-overview.png` — 시드 출처(로고만 추출).
 - (있으면) `.design/generated/logo/brand-kit-logo.png` — brand-kit이 만든 단독 로고 시드. 있으면 추출 대신 우선 사용.
+
+> brand kit가 **없으면** 위 입력 대신 Phase 0의 로고 Q&A로 최소 정보를 모은다 — 시드 이미지가 없으므로 첫 보드는 텍스트→이미지로 만든다.
 
 ## 출력 파일 (대상 프로젝트 cwd 기준)
 
@@ -54,14 +56,21 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ## 흐름 (디자이너 협업 루프)
 
-### Phase 1 — 시드 + 승인 게이트
+### Phase 0 — brand kit 감지 (시작 시 필수)
+- `.design/BRAND_KIT.md`와 `.design/final/brand-kit/brand-overview.png` 존재를 확인한다.
+- **있으면** → Phase 1로(시드 추출).
+- **없으면** → 두 길을 제시하고 고르게 한다:
+  - **(1) 브랜드 킷 먼저** — "design-brand-kit으로 브랜드 킷부터 만들까요? (권장 — 색·타이포·보이스까지 갖춰 마크 근거가 탄탄)". 고르면 design-brand-kit을 안내하고 종료.
+  - **(2) 로고용 최소 Q&A** — 여기서 바로 진행. 로고에 필요한 최소 정보를 **한 번에 하나씩** 묻는다: 제품명·한 줄 소개 / 분야 / 브랜드 성격·톤(페르소나 한 줄) / 핵심 메타포·심볼 방향 / 색(HEX 또는 방향) / 워드마크 타입 방향 / 피할 클리셰. 추측 금지 — 답으로 마크 방향·색을 정할 수 있을 때까지 파고든다. 수집분을 `logo-briefs.md`에 적는다(가짜 `BRAND_KIT.md`를 만들지 않음). **시드 추출(Phase 1)은 건너뛰고** Phase 2의 보드 생성을 **텍스트→이미지**(시드 미첨부, Q&A 마크 DNA를 프롬프트에 채움)로 한다. 끝에 "더 완전한 시스템(색·타이포·보이스)이 필요하면 design-brand-kit"을 안내.
+
+### Phase 1 — 시드 + 승인 게이트 (brand kit가 있을 때)
 1. 입력 읽기(BRAND_KIT.md §6·tokens·확정 보드).
 2. **시드 추출**: `--image <brand-overview.png>` + 프롬프트 "이 브랜드 보드에서 로고 마크만 깨끗이 중앙에 재현, plain near-white 단색 배경(no scenery), 보드의 텍스트·다른 섹션 제외, 단일 마크만" → `.design/generated/logo/seed.png`(gpt-image-2, `--quality low`). 보여주고 "이 마크 맞아요?" 확인. (`brand-kit-logo.png`가 있으면 추출 생략하고 그걸 시드로.)
 3. `logo-briefs.md` 작성(시드 출처·탐색 방향·컨셉 방법 분포·제약).
 4. **승인 게이트 (보드 생성 전 필수)**: 시드 + brief를 제시하고 방향 확인. 이미지는 실비가 들고 brief가 어긋나면 보드를 통째로 날리므로 텍스트 단계에서 잡는다. 승인 전엔 보드를 생성하지 않는다.
 
 ### Phase 2 — 탐색 보드 → 단독 로고 확정
-5. **보드 생성**: `--image seed.png`(모티브) + 보드 프롬프트(`--size 1024x1024`, `--quality low`) → `exploration-board.png`. 40개 번호 컨셉을 보여준다.
+5. **보드 생성**: 보드 프롬프트(`--size 1024x1024`, `--quality low`) → `exploration-board.png`. 40개 번호 컨셉을 보여준다. brand kit 경로는 `--image seed.png`(모티브)를 첨부하고, **brand kit 없이 진행하는 경우(Phase 0의 (2))는 `--image` 없이** Q&A 마크 DNA를 보드 프롬프트(`Mark DNA`·`[BRAND NAME]`)에 채워 텍스트→이미지로 생성한다.
 6. **수정 루프**: 사용자가 "N번 기준 다시" / "N·M 모양 별로"라고 하면 — **직전 보드를 `--image`로 첨부** + 프롬프트엔 번호만: "이 보드 기준으로 다시 만들되 #N 방향을 살려 40칸을 다시 그리고, #M·#K 계열은 빼고 대체". gpt-image-2는 항상 high fidelity라 좋은 칸은 유지되고 지목 방향으로 옮겨간다. 더 과감한 새 보드를 원하면 보드 대신 **시드만 첨부**. `--auto-version`. 원하는 컨셉이 보일 때까지 반복.
 7. **단독 로고**: 사용자가 #N을 고르면 — **그 보드를 `--image`로 첨부** + "첨부 보드 #N 칸의 마크만 크고 깨끗한 단독 로고로 재현, 중앙 정렬, plain 단색 배경, 형태·기하 유지, 브랜드 컬러 <HEX>, 단일 마크만(보드 아님)". `--quality high` → `logo-candidate.png`. `logo-art-direction.md` §7 품질 프레이밍 문구를 덧붙이고 §8 품질 테스트로 자가 판정(떨어지면 §1·§2·§7 보강해 재시도).
 8. **다듬기 루프**: 직전 후보를 `--image`로 첨부해 한 번에 한 가지만 증분 편집(gpt-image-2가 나머지를 보존), `--auto-version`. lock까지.
