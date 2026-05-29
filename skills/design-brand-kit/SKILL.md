@@ -175,6 +175,8 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 }
 ```
 
+> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 2~3개는 카탈로그의 specimen URL과 함께 사용자에게 제시해 승인 게이트(흐름 3)에서 확정받는다. gpt-image는 폰트 파일을 로드하지 않으므로, 보드 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다.
+
 ## brand-briefs.md 구조
 
 ```md
@@ -230,6 +232,7 @@ primary 적용 + 흑/백 단색 버전 고려
 - 의미 없는 AI glow·사이버 네온·해커 후드티·매트릭스 배경을 기본값으로 쓰지 않는다.
 - 보안 제품이라고 방패·자물쇠·클라우드 아이콘만 반복하지 않는다.
 - 색상 이름만 쓰고 실제 값을 쓰지 않는 것을 금지한다.
+- 카탈로그에 없는/실존하지 않는 폰트명을 지어내지 않는다 — 폰트는 `../references/design/font-catalog.md`에서만 고른다.
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
@@ -267,7 +270,7 @@ primary 적용 + 흑/백 단색 버전 고려
 
 ## 흐름 (디자이너 협업 루프)
 
-1. `.design/BRAND_KIT.md` + `.design/brand-tokens.json` 작성 (방향 문서; 색·타이포 권위 원본은 여기에. §1–11은 보드 섹션과 1:1, §12 다음 결정 사항은 md 전용·보드 제외).
+1. `.design/BRAND_KIT.md` + `.design/brand-tokens.json` 작성 (방향 문서; 색·타이포 권위 원본은 여기에. §1–11은 보드 섹션과 1:1, §12 다음 결정 사항은 md 전용·보드 제외). §8 타이포는 `../references/design/font-catalog.md`에서 실존 폰트를 골라 토큰에 실제 family+폴백을 박고, 승인 게이트(3)에서 specimen URL로 확인받는다.
 2. `.design/image-briefs/brand-briefs.md` 작성 (종합 오버뷰 보드·(선택) 로고·추가 탐색 브리프).
 3. **승인 게이트 (이미지 생성 전 필수)** — 세 문서(`BRAND_KIT.md`·`brand-tokens.json`·`brand-briefs.md`)를 사용자에게 제시하고 방향이 맞는지 확인받는다. **승인 전에는 초안 한 장도 생성하지 않는다** — 이미지는 OpenAI API 실비가 들고, brief가 어긋나면 발산 3장을 통째로 날리므로 가장 싼 텍스트 단계에서 잡는다. 수정 요청은 문서를 고쳐 다시 확인받고, 명시적으로 승인되면 다음으로.
 4. **종합 브랜드 오버뷰 보드(필수·메인)** — 발산 → (재시도) → 수렴으로 진행한다:

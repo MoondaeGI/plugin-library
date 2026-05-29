@@ -134,6 +134,8 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 > **권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`이다.** 보드는 그 내용을 시각화한 한눈에 보는 원페이저일 뿐 — 보드 텍스트와 md/tokens가 어긋나면 md/tokens가 정답이다. 정확한 HEX·폰트 스펙은 항상 md/tokens에서 확정한다.
 
+> **폰트는 `../../references/design/font-catalog.md`의 실존 폰트만.** 보드 Typography 섹션엔 실제 폰트명을 라벨로 적되, 이미지 프롬프트엔 폰트명이 아니라 **타입 스타일**(카탈로그의 성격 한 줄: 예 "low-contrast geometric sans", "high-contrast modern serif")을 묘사한다 — gpt-image는 폰트 파일을 로드하지 않고 스타일만 근사하므로 이름만 적으면 반영되지 않는다.
+
 ## 7. 이미지·목업 디렉션
 
 - **이미지/아이콘**: 의미 있고 일관된 시각 — 미니멀 라인 아이콘(일관된 스트로크, 둥근 조인), 모니터링/증거를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치. **아이콘 세트의 깊은 시스템 스펙(스트로크·그리드·상태)·프롬프트 청크는 `../../references/design/icon-art-direction.md` 참조.**
@@ -158,7 +160,7 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 ## 11. 우리 파이프라인 연결
 
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드는 `BRAND_KIT.md`의 §1–11을 렌더하며 1:1로 대응한다 — **§12 다음 결정 사항은 md 전용이라 보드에 렌더하지 않는다.**
-- **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다.
+- **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다. 폰트 스펙의 실존 출처는 `../../references/design/font-catalog.md`이며, 토큰의 font-family는 거기서 고른 실존값이다.
 - **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀) — 종합 오버뷰 보드 → `<cwd>/.design/generated/brand-kit/`, (선택) 단색 클린 로고 → `<cwd>/.design/generated/logo/`. 파일명 식별 가능 — 발산 초안 `brand-overview-route-a/b/c.png`(재시도 `-v2`), 확정본 `brand-overview.png`, 로고 `logo-concept-1.png`. 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다(`--force` 없이는 덮지 않음).
 - **협업 루프**: 메인 보드는 3 루트 발산(초안 3장) → 방향 선택(또는 재시도) → **고른 루트를 `--image`로 첨부해 high 편집** → **직전 보드를 `--image`로 첨부한 증분 편집으로 한 섹션씩** 고쳐 재생성 → 확정 → (선택) 단색 로고 → 다음. **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 `--image` + `--input-fidelity high` 편집**(나머지 보존, 한 가지만 변경). 로고·추가 탐색은 한 장씩.
 
@@ -196,7 +198,7 @@ Do NOT render a "Next Decisions" / "다음 결정" section, nor any checklist of
 Visual mode: [모드]
 Palette: [절제된 팔레트 — brand-tokens.json 기반, single dominant accent]
 Style: premium, clean, intentional, polished brand-guidelines one-pager, no clutter, no copied real-world logos.
-Typography: readable, organized, high hierarchy; render labels/HEX/type-scale legibly; no tiny fake body text, no lorem ipsum.
+Typography: readable, organized, high hierarchy; render labels/HEX/type-scale legibly; for each typeface show its name as a label AND render text in its described style (e.g. "geometric low-contrast sans", "high-contrast modern serif") per the font catalog — the model approximates the style, not a literal font file; no tiny fake body text, no lorem ipsum.
 Language: render visible text in Korean (Hangul) — short, legible labels; bilingual KR/EN only if the brand is English-facing.
 Logo Direction section: show ONE well-crafted mark in a few clean placements only — (1) symbol + wordmark lockup, (2) the standalone symbol on its own, (3) favicon + app-icon tile (small size), (4) a one-line construction/meaning note. Restrained — NOT an exploration sheet, NOT a row of many logo variants.
 Mark concept: [BRAND_KIT.md §6 구성·의미], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at favicon size, valid in solid monochrome; the symbol reads on its own without the name.

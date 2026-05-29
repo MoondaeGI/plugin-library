@@ -57,6 +57,9 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
   --color-background: ;
   --color-surface: ;
   --color-text: ;
+  --font-display: ;
+  --font-body: ;
+  --font-mono: ;
   --radius-md: ;
   --shadow-md: ;
 }
@@ -67,6 +70,8 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 .badge {}
 .section {}
 ```
+
+- **폰트**: `--font-*`는 `.design/brand-tokens.json`의 `typography`(카탈로그에서 고른 실존 family+폴백)로 채운다. 그 폰트가 카탈로그(`../references/design/font-catalog.md`)의 웹폰트면 출처에서 로드한다 — Google Fonts는 `<head>`에 `<link>`, Pretendard·SUIT 등은 jsDelivr/CDN `<link>`/`@import`. 그래야 고른 폰트가 프로토타입에서 실제로 렌더된다. 상용·system 폰트(Apple SD Gothic Neo 등)는 폴백 스택에 의존한다.
 
 ## 품질 기준
 
