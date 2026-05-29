@@ -66,19 +66,21 @@ export function collectFiles(dir) {
 
 // Returns the desired bundle contents as a map of relative-path -> text.
 // Keys are POSIX-style relative to BUNDLE_DIR.
+// Values are Buffers (read without an encoding) so binary skill assets like
+// PNGs survive byte-for-byte — a utf8 round-trip would corrupt them.
 export function buildBundle(skillsSrc, { libSrc, envPath } = {}) {
   const files = new Map();
-  files.set('.codex-plugin/plugin.json', manifestText());
+  files.set('.codex-plugin/plugin.json', Buffer.from(manifestText()));
   for (const rel of collectFiles(skillsSrc)) {
-    files.set('skills/' + rel.split(path.sep).join('/'), readFileSync(path.join(skillsSrc, rel), 'utf8'));
+    files.set('skills/' + rel.split(path.sep).join('/'), readFileSync(path.join(skillsSrc, rel)));
   }
   if (libSrc) {
     for (const rel of collectFiles(libSrc)) {
-      files.set('scripts/lib/' + rel.split(path.sep).join('/'), readFileSync(path.join(libSrc, rel), 'utf8'));
+      files.set('scripts/lib/' + rel.split(path.sep).join('/'), readFileSync(path.join(libSrc, rel)));
     }
   }
   if (envPath && existsSync(envPath)) {
-    files.set('.env', readFileSync(envPath, 'utf8'));
+    files.set('.env', readFileSync(envPath));
   }
   return files;
 }
@@ -87,25 +89,25 @@ export function buildBundle(skillsSrc, { libSrc, envPath } = {}) {
 function readExistingBundle(bundleDir) {
   const files = new Map();
   const manifestAbs = path.join(bundleDir, '.codex-plugin', 'plugin.json');
-  if (existsSync(manifestAbs)) files.set('.codex-plugin/plugin.json', readFileSync(manifestAbs, 'utf8'));
+  if (existsSync(manifestAbs)) files.set('.codex-plugin/plugin.json', readFileSync(manifestAbs));
   const skillsDir = path.join(bundleDir, 'skills');
   for (const rel of collectFiles(skillsDir)) {
-    files.set('skills/' + rel.split(path.sep).join('/'), readFileSync(path.join(skillsDir, rel), 'utf8'));
+    files.set('skills/' + rel.split(path.sep).join('/'), readFileSync(path.join(skillsDir, rel)));
   }
   const libDir = path.join(bundleDir, 'scripts', 'lib');
   for (const rel of collectFiles(libDir)) {
-    files.set('scripts/lib/' + rel.split(path.sep).join('/'), readFileSync(path.join(libDir, rel), 'utf8'));
+    files.set('scripts/lib/' + rel.split(path.sep).join('/'), readFileSync(path.join(libDir, rel)));
   }
   const envAbs = path.join(bundleDir, '.env');
-  if (existsSync(envAbs)) files.set('.env', readFileSync(envAbs, 'utf8'));
+  if (existsSync(envAbs)) files.set('.env', readFileSync(envAbs));
   return files;
 }
 
 function diffBundles(desired, actual) {
   const failures = [];
-  for (const [rel, text] of desired) {
+  for (const [rel, content] of desired) {
     if (!actual.has(rel)) failures.push(`${rel} (missing)`);
-    else if (actual.get(rel) !== text) failures.push(`${rel} (differs)`);
+    else if (!actual.get(rel).equals(content)) failures.push(`${rel} (differs)`);
   }
   for (const rel of actual.keys()) {
     if (!desired.has(rel)) failures.push(`${rel} (stale — not in source)`);
@@ -118,10 +120,10 @@ function writeBundle(bundleDir, desired) {
   rmSync(path.join(bundleDir, 'skills'), { recursive: true, force: true });
   rmSync(path.join(bundleDir, 'scripts'), { recursive: true, force: true });
   rmSync(path.join(bundleDir, '.env'), { force: true });
-  for (const [rel, text] of desired) {
+  for (const [rel, content] of desired) {
     const abs = path.join(bundleDir, rel.split('/').join(path.sep));
     mkdirSync(path.dirname(abs), { recursive: true });
-    writeFileSync(abs, text, 'utf8');
+    writeFileSync(abs, content);
   }
 }
 

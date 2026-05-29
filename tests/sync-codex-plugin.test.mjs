@@ -51,7 +51,7 @@ test('buildBundle includes scripts/lib files when libSrc is given', () => {
   makeSkill(skillsSrc, 'design-brand-kit', '# brand');
   makeLib(libSrc, 'load-env.mjs', '// load');
   const bundle = buildBundle(skillsSrc, { libSrc });
-  assert.equal(bundle.get('scripts/lib/load-env.mjs'), '// load');
+  assert.equal(bundle.get('scripts/lib/load-env.mjs').toString('utf8'), '// load');
   rmSync(skillsSrc, { recursive: true, force: true });
   rmSync(libSrc, { recursive: true, force: true });
 });
@@ -63,7 +63,7 @@ test('buildBundle includes .env when envPath exists, omits when absent', () => {
   const envPath = path.join(envDir, '.env');
   writeFileSync(envPath, 'OPENAI_API_KEY=sk-test\n', 'utf8');
   const withEnv = buildBundle(skillsSrc, { envPath });
-  assert.equal(withEnv.get('.env'), 'OPENAI_API_KEY=sk-test\n');
+  assert.equal(withEnv.get('.env').toString('utf8'), 'OPENAI_API_KEY=sk-test\n');
   const noEnv = buildBundle(skillsSrc, { envPath: path.join(envDir, 'nope.env') });
   assert.equal(noEnv.has('.env'), false);
   rmSync(skillsSrc, { recursive: true, force: true });
@@ -97,7 +97,7 @@ test('buildBundle mirrors skills under skills/ plus the manifest', () => {
   makeSkill(skillsSrc, 'design-brand-kit', '# brand');
   const bundle = buildBundle(skillsSrc);
   assert.ok(bundle.has('.codex-plugin/plugin.json'));
-  assert.equal(bundle.get('skills/design-brand-kit/SKILL.md'), '# brand');
+  assert.equal(bundle.get('skills/design-brand-kit/SKILL.md').toString('utf8'), '# brand');
   rmSync(skillsSrc, { recursive: true, force: true });
 });
 
@@ -134,6 +134,32 @@ test('check mode fails when a bundled skill is out of date', () => {
   const c = syncBundle({ skillsSrc, bundleDir, mode: 'check', log: quiet });
   assert.equal(c.ok, false);
   assert.ok(c.failures.some((f) => f.includes('design-brand-kit/SKILL.md')));
+
+  rmSync(skillsSrc, { recursive: true, force: true });
+  rmSync(bundleDir, { recursive: true, force: true });
+});
+
+test('write mode copies binary skill files byte-for-byte (no utf8 corruption)', () => {
+  const skillsSrc = tmp();
+  const bundleDir = tmp();
+  makeSkill(skillsSrc, 'design-brand-kit', '# brand');
+  // PNG 헤더 + 단독 0xff/0xfe/0x80 등 유효하지 않은 UTF-8 바이트 — utf8 왕복이면 손상된다.
+  const pngBytes = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0xff, 0xfe, 0x00, 0x80, 0x7f]);
+  mkdirSync(path.join(skillsSrc, 'design-brand-kit', 'references'), { recursive: true });
+  writeFileSync(path.join(skillsSrc, 'design-brand-kit', 'references', 'brand-kit-example.png'), pngBytes);
+
+  const w = syncBundle({ skillsSrc, bundleDir, mode: 'write', log: quiet });
+  assert.equal(w.ok, true);
+
+  const written = readFileSync(
+    path.join(bundleDir, 'skills', 'design-brand-kit', 'references', 'brand-kit-example.png'),
+  );
+  assert.ok(written.equals(pngBytes), '번들된 PNG 바이트가 원본과 바이트 단위로 같아야 한다');
+
+  // 바이너리도 드리프트 검사(byte 비교)가 통과해야 한다.
+  const c = syncBundle({ skillsSrc, bundleDir, mode: 'check', log: quiet });
+  assert.equal(c.ok, true);
+  assert.deepEqual(c.failures, []);
 
   rmSync(skillsSrc, { recursive: true, force: true });
   rmSync(bundleDir, { recursive: true, force: true });
