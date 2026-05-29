@@ -49,36 +49,17 @@ test('존재하지 않는 --image 경로는 비0 종료로 실패한다', () => 
   assert.match(res.stderr, /찾을 수 없습니다/);
 });
 
-test('잘못된 --input-fidelity 값은 비0 종료로 실패한다', () => {
-  const res = run(['--prompt', 'x', '--out', outPath(), '--input-fidelity', 'medium', '--dry-run']);
+// gpt-image-2 는 input_fidelity 를 지원하지 않아 옵션을 제거했다.
+// 이제 --input-fidelity 는 알 수 없는 인자로 비0 종료해야 한다(회귀 가드).
+test('--input-fidelity 는 제거되어 알 수 없는 인자로 거부된다', () => {
+  const res = run(['--prompt', 'x', '--out', outPath(), '--input-fidelity', 'high', '--dry-run']);
   assert.equal(res.status, 2);
-  assert.match(res.stderr, /high 또는 low/);
+  assert.match(res.stderr, /알 수 없는 인자/);
 });
 
-test('--input-fidelity high 는 edits 페이로드에 포함된다', () => {
-  const img = makeImage();
-  const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--input-fidelity', 'high', '--dry-run']);
-  assert.equal(res.status, 0, res.stderr);
-  assert.match(res.stdout, /"input_fidelity": "high"/);
-});
-
-test('--input-fidelity 미지정이면 페이로드에 input_fidelity 가 없다', () => {
+test('--image 만으로 보낸 edits 페이로드에는 input_fidelity 가 없다', () => {
   const img = makeImage();
   const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--dry-run']);
   assert.equal(res.status, 0, res.stderr);
   assert.doesNotMatch(res.stdout, /input_fidelity/);
-});
-
-test('--input-fidelity 를 --image 없이 쓰면 경고하고 페이로드에서 제외한다', () => {
-  const res = run(['--prompt', 'x', '--out', outPath(), '--input-fidelity', 'high', '--dry-run']);
-  assert.equal(res.status, 0, res.stderr);
-  assert.match(res.stderr, /경고: --input-fidelity/);
-  assert.doesNotMatch(res.stdout, /input_fidelity/);
-});
-
-test('--input-fidelity low 는 edits 페이로드에 포함된다', () => {
-  const img = makeImage();
-  const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--input-fidelity', 'low', '--dry-run']);
-  assert.equal(res.status, 0, res.stderr);
-  assert.match(res.stdout, /"input_fidelity": "low"/);
 });

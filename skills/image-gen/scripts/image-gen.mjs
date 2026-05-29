@@ -17,7 +17,6 @@
 //   --model          이미지 모델             (기본 gpt-image-2; 키에 접근권 없으면 gpt-image-1)
 //   --n              변형 개수 1-10          (기본 1; >1이면 파일명에 -1,-2… 접미)
 //   --image          입력/레퍼런스 이미지     (반복 가능; 1개+면 /edits 로 분기 — 레퍼런스·편집 공용)
-//   --input-fidelity high | low             (선택; gpt-image-2 전용. high=원본 충실/편집, 생략=느슨한 참고. --image 없이 주면 무시·경고)
 //   --output-format  png | jpeg | webp       (기본 png)
 //   --force          기존 파일 덮어쓰기 허용
 //   --auto-version   기존 파일 충돌 시 다음 -vN 으로 자동 증분(시안 보존)
@@ -34,9 +33,9 @@ const TIMEOUT_MS = 300_000;
 
 const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존)
 
-  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--input-fidelity high] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--auto-version] [--dry-run]
+  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--auto-version] [--dry-run]
 
---image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트와 --input-fidelity 로).
+--image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트로).
 OPENAI_API_KEY 환경변수가 필요하다 (--dry-run 제외). --help로 이 도움말 출력.`;
 
 function die(msg, code = 2) {
@@ -63,7 +62,6 @@ function parseArgs(argv) {
       case '--prompt': opts.prompt = next(); break;
       case '--prompt-file': opts.promptFile = next(); break;
       case '--image': opts.images.push(next()); break;
-      case '--input-fidelity': opts.inputFidelity = next(); break;
       case '--out': opts.out = next(); break;
       case '--size': opts.size = next(); break;
       case '--quality': opts.quality = next(); break;
@@ -132,9 +130,6 @@ async function main() {
   for (const img of opts.images) {
     if (!existsSync(img)) die(`오류: --image 파일을 찾을 수 없습니다: ${img}`);
   }
-  if (opts.inputFidelity && !['high', 'low'].includes(opts.inputFidelity)) {
-    die('오류: --input-fidelity 는 high 또는 low 여야 합니다.');
-  }
 
   const ext = '.' + (opts.outputFormat === 'jpeg' ? 'jpg' : opts.outputFormat);
   let targets = outPaths(opts.out, opts.n, ext);
@@ -163,12 +158,8 @@ async function main() {
     quality: opts.quality,
     output_format: opts.outputFormat,
   };
-  if (useEdits && opts.inputFidelity) fields.input_fidelity = opts.inputFidelity;
-  // --input-fidelity 는 edits 경로(이미지 입력) 전용이라, --image 없이 주면 적용되지 않는다.
-  // 조용히 버리면 사용자가 적용된 줄 오해하므로 경고만 하고 생성은 진행한다.
-  if (opts.inputFidelity && !useEdits) {
-    console.warn('경고: --input-fidelity 는 --image 와 함께 쓸 때만 적용됩니다 — 무시하고 진행합니다.');
-  }
+  // input_fidelity 는 gpt-image-2 가 지원하지 않는다(항상 high fidelity로 입력 이미지를 처리).
+  // 따라서 페이로드에 넣지 않는다 — gpt-image-1/1.5 만 low/high 선택을 지원했던 옵션이라 제거함.
 
   if (opts.dryRun) {
     const preview = prompt.trim().slice(0, 80) + (prompt.trim().length > 80 ? '…' : '');
