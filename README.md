@@ -64,6 +64,12 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 - **Codex**: 플러그인이 에이전트를 번들하지 못한다. `npm run sync`가 `agents/designer.md` → `codex-agents/designer.toml`을 생성하고, `npm run codex:reinstall`이 이를 `~/.codex/agents/`로 복사한다. (수동: `copy codex-agents\designer.toml %USERPROFILE%\.codex\agents\`.) 열려 있던 Codex 세션은 재시작해야 반영된다.
 - **`model`/`tools`는 Claude 전용** frontmatter라 Codex TOML로 옮기지 않는다(`opus`/`sonnet`은 Anthropic 슬러그). Codex는 세션 모델을 상속한다.
 
+### 예시: `design-brand-kit` 종합 브랜드 오버뷰 보드
+
+`design-brand-kit`이 만들어 내는 종합 오버뷰 보드 예시다 (가상 제품 "LeafSignal" — §1~11 한 장).
+
+![design-brand-kit 종합 브랜드 오버뷰 보드 예시 — LeafSignal](assets/brand-kit-example.png)
+
 ## 레이아웃
 
 - `mcp.servers.json` — MCP 서버 정의의 단일 소스 (편집은 여기만)
