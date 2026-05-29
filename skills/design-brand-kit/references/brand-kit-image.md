@@ -194,7 +194,7 @@ Sections (each labeled and legible):
 9. Voice & Tone — for each of 3-4 principles show the "X, not Y" label AND a short do/don't example beneath: a good line (O / ✓) and a bad line (X / ✗). Render the authored Korean phrases [from BRAND_KIT.md §9] exactly as given; do NOT invent copy. Keep each example to one short line.
 10. Visual & UI Direction (mini UI mockups: cards, status badges, controls)
 11. Imagery / Iconography (icon set + style note)
-All section icons (Essence, Target, Value Pillars, Imagery) follow ONE icon system defined in BRAND_KIT.md §11 — the SAME style chosen there (line / filled / duotone / solid glyph / outline+fill — do NOT default to line), with consistent form rules for that style (line → uniform stroke weight + join/terminal; filled → uniform fill + corner radius; glyph → solid silhouette), a shared grid, and one metaphor language. No section uses a different icon look.
+All section icons (Essence, Target, Value Pillars, Imagery) follow ONE icon system defined in BRAND_KIT.md §11 — the SAME style chosen there (line / filled / duotone / solid glyph / outline+fill — do NOT default to line), with consistent form rules for that style (line → uniform stroke weight + join/terminal [round OR square per §11 — do NOT default to rounded]; filled → uniform fill + corner radius; glyph → solid silhouette), a shared grid, and one metaphor language. No section uses a different icon look.
 
 Do NOT render a "Next Decisions" / "다음 결정" section, nor any checklist of pending or to-confirm decisions, on the board — that lives only in BRAND_KIT.md, never on the image.
 

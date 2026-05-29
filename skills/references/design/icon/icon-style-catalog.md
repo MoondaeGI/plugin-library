@@ -48,3 +48,4 @@
   - Empty state: illustrative
   - Status badge: solid glyph
 - 고른 스타일과 근거를 `BRAND_KIT.md §11 아이콘 스타일` 필드에 한 줄로 박는다.
+- 조인/터미널(round vs square)·코너 반경·스트로크 굵기는 `icon-rules.md §2`에서 브랜드 성격에 맞춰 정하고 `BRAND_KIT.md §11 아이콘 폼 규칙` 필드에 박는다 — **기본 round로 흘려보내지 않는다**(친근·소프트=round / 정밀·테크=square).

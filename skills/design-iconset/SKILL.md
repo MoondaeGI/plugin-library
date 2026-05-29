@@ -22,7 +22,7 @@ description: 확정된 brand kit를 바탕으로 아이콘 세트를 한눈에 �
 
 Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다. 권위 원본은 md/tokens — 시드 이미지와 어긋나면 md/tokens가 정답이다(`icon-rules.md` §0).
 
-- `.design/BRAND_KIT.md` — **§11** 아이코노그래피(아이콘 스타일+근거 / 메타포 모티프 / 상태 아이콘 규칙) · **§6** 로고 방향(로고보다 안 튀게) · **§1·에센스·타깃**(아이콘 목록 제안 근거) · **§10** 비주얼/UI(피할 시각 요소) · **금지 패턴**.
+- `.design/BRAND_KIT.md` — **§11** 아이코노그래피(아이콘 스타일+근거 / 폼 규칙[조인·터미널·코너·굵기] / 메타포 모티프 / 상태 아이콘 규칙) · **§6** 로고 방향(로고보다 안 튀게) · **§1·에센스·타깃**(아이콘 목록 제안 근거) · **§10** 비주얼/UI(피할 시각 요소) · **금지 패턴**.
 - `.design/brand-tokens.json` — 색 HEX(라인색·액센트).
 - `.design/final/brand-kit/brand-overview.png` — §11 Imagery/Iconography 영역 = 스타일 시드 출처.
 
@@ -65,7 +65,7 @@ Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다.
   - **(2) 아이콘용 최소 Q&A** — 여기서 바로 진행. 한 번에 하나씩 묻는다: 제품명·한 줄 소개 / 분야 / 아이콘 스타일 방향(`../references/design/icon/icon-style-catalog.md` 참고) / 도메인 메타포 모티프 / 색(HEX 또는 방향) / 상태 아이콘 필요 여부 / 아이콘 목록 초안 / 피할 클리셰. 추측 금지 — 답으로 스타일·모티프·색·목록을 정할 수 있을 때까지 파고든다. 수집분을 `iconset-briefs.md`에 적는다(가짜 `BRAND_KIT.md`를 만들지 않음). **시드 추출(Phase 1 2단계)은 건너뛰고** Phase 2의 시트 생성을 **텍스트→이미지**(시드 미첨부)로 한다. 끝에 design-brand-kit을 안내.
 
 ### Phase 1 — md+이미지 흡수 → 시드 → 목록 → 승인 게이트 (brand kit가 있을 때)
-1. **md/tokens 최대 흡수**: BRAND_KIT §11 3필드·§6·§1/에센스·§10 피할요소·금지패턴·tokens 색 HEX를 읽어 스타일 파라미터(스타일·굵기·join/cap·코너·라인색·액센트·메타포 모티프·상태 규칙)를 확정한다(추측 없음). `../references/design/icon/icon-rules.md`·`icon-style-catalog.md`·`icon-domain-examples.md`로 보정.
+1. **md/tokens 최대 흡수**: BRAND_KIT §11 4필드(스타일·폼 규칙·모티프·상태 규칙)·§6·§1/에센스·§10 피할요소·금지패턴·tokens 색 HEX를 읽어 스타일 파라미터(스타일·굵기·join/cap·코너·라인색·액센트·메타포 모티프·상태 규칙)를 확정한다(추측 없음). **§11 폼 규칙에 박힌 조인/터미널(round/square)·코너·굵기를 그대로 따른다 — 기본 round로 흘려보내지 않는다.** `../references/design/icon/icon-rules.md`·`icon-style-catalog.md`·`icon-domain-examples.md`로 보정.
 2. **스타일 시드 추출**: `--image <brand-overview.png>` + 프롬프트 "이 브랜드 보드의 아이코노그래피(아이콘) 부분만 깨끗이 재현, 같은 스타일의 아이콘 몇 개만, plain near-white 단색 배경(no scenery), 보드의 텍스트·다른 섹션 제외" → `.design/generated/iconset/style-seed.png`(gpt-image-2, `--quality low`). 보여주고 "이 아이콘 룩 맞아요?" 확인.
 3. **아이콘 목록 초안 제안**: §1/에센스/도메인(`icon-domain-examples.md` 해당 도메인 섹션) 근거로 기능 아이콘 목록(영어 kebab-case 라벨)을 제안 → 사용자가 추가/제거/직접요청으로 편집한다.
 4. `iconset-briefs.md` 작성(시드 출처·읽은 md 근거 요약·확정 목록·스타일 파라미터·상태 아이콘·색·제약).
