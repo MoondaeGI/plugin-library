@@ -15,6 +15,11 @@
 # 루트 skills/와의 중복(바이트 단위 복사본)을 피한다.
 /plugins/personal/
 
+# Codex 에이전트 TOML — 로컬 생성물 (npm run sync / prepare / codex:reinstall이
+# agents/*.md 에서 재생성). plugins/personal/와 동일 이유로 커밋하지 않는다:
+# 소스 agents/*.md 와 중복이고, 설치 전 항상 sync로 재생성된다.
+/codex-agents/
+
 # 검증용 스크래치 (로고 before/after 등) — 커밋하지 않음
 /.scratch/
 

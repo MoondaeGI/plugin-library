@@ -78,7 +78,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 - `scripts/lib/load-env.mjs` (`loadEnv()`) — `.env`(비밀 단일 소스, gitignore됨)를 읽어 `process.env`와 병합한다(OS env 우선). 스크립트(예: 디자인 스킬 `image-gen.mjs`)가 이걸로 `.env`를 직접 읽으므로, Claude는 `.env` 저장 즉시 반영된다. Codex 번들은 `npm run codex:reinstall`로 갱신
 - `skills/` — Claude와 Codex가 공유하는 스킬의 **단일 소스** (Claude는 여기서 직접 읽음)
 - `agents/` — Claude 서브에이전트 **소스** (`designer.md` 등; Claude가 직접 읽음)
-- `codex-agents/` — **생성물**: `agents/*.md`에서 만든 Codex 에이전트 TOML (`npm run sync`가 생성, `codex:reinstall`이 `~/.codex/agents/`로 설치)
+- `codex-agents/` — **로컬 생성물**: `agents/*.md`에서 만든 Codex 에이전트 TOML (`npm run sync`가 생성, **gitignore — 커밋 안 함**, `codex:reinstall`이 `~/.codex/agents/`로 설치)
 - `plugins/personal/` — **로컬 생성물**: Codex가 설치하는 자체 완결형 번들 (`npm run sync`가 생성, **gitignore — 커밋 안 함**, 직접 편집 금지)
 - `.agents/plugins/marketplace.json` — Codex 마켓플레이스 정의 / `.claude-plugin/marketplace.json` — Claude 마켓플레이스 정의
 - `hooks/hooks.json` — 세션 훅 (현재: mcp·codex-plugin stale-sync 검사)

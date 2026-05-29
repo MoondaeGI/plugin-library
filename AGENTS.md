@@ -18,11 +18,11 @@
   않습니다** — 루트 `skills/`와의 바이트 단위 중복을 피하기 위함이며, 설치/사용
   전 항상 sync를 돌리므로(`npm install`의 `prepare` 훅도 자동 재생성) 추적할
   필요가 없습니다.
-  추가로 `codex-agents/*.toml`은 `scripts/sync-agents.mjs`가 `agents/*.md`에서 생성하는 커밋 생성물입니다 — 직접 수정하지 말고 `agents/*.md`를 고친 뒤 `npm run sync`를 실행하세요.
+  추가로 `codex-agents/*.toml`은 `scripts/sync-agents.mjs`가 `agents/*.md`에서 생성하며, `plugins/personal/`과 동일하게 **gitignore된 로컬 생성물이라 커밋하지 않습니다**(소스 `agents/*.md`와의 중복을 피하고, 설치 전 항상 sync로 재생성됨) — 직접 수정하지 말고 `agents/*.md`를 고친 뒤 `npm run sync`를 실행하세요.
 
 ## 에이전트
 
-- `designer` 서브에이전트의 단일 소스는 `agents/designer.md`(Claude 네이티브)입니다. Claude는 `agents/`를 직접 번들로 읽지만, Codex는 에이전트를 번들하지 못하므로 `scripts/sync-agents.mjs`가 `codex-agents/designer.toml`을 생성합니다(커밋되는 생성물). `npm run codex:reinstall`이 그 TOML을 `~/.codex/agents/`로 복사합니다.
+- `designer` 서브에이전트의 단일 소스는 `agents/designer.md`(Claude 네이티브)입니다. Claude는 `agents/`를 직접 번들로 읽지만, Codex는 에이전트를 번들하지 못하므로 `scripts/sync-agents.mjs`가 `codex-agents/designer.toml`을 생성합니다(gitignore된 로컬 생성물 — 커밋 안 함). `npm run codex:reinstall`이 그 TOML을 `~/.codex/agents/`로 복사합니다.
 - `model`·`tools`는 Claude 전용 frontmatter라 Codex TOML로 옮기지 않습니다(`opus`/`sonnet`은 Anthropic 모델 슬러그라 Codex에 무의미하며, Codex는 세션 모델을 상속). 도구별 모델 고정이 필요해지면 소스에 `codex_model` 키를 추가합니다.
 - `agents/*.md`를 수정한 뒤 `npm run sync`로 `codex-agents/`를 재생성하고, Claude는 `/reload-plugins`로, Codex는 `npm run codex:reinstall`로 갱신합니다.
 

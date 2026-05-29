@@ -10,7 +10,7 @@ description: Use when committing changes in this Claude+Codex plugin monorepo �
 ## 절차
 
 1. **생성물 동기화 후 스테이징**
-   - `npm run sync` — `.claude-plugin/mcp.json`·`.codex-plugin/mcp.json`·`.env.example`·`codex-agents/*.toml` 등 커밋되는 생성물을 소스 기준으로 최신화.
+   - `npm run sync` — `.claude-plugin/mcp.json`·`.codex-plugin/mcp.json`·`.env.example` 등 커밋되는 생성물을 소스 기준으로 최신화. (`codex-agents/*.toml`·`plugins/personal/`도 함께 재생성되지만 둘 다 gitignore라 커밋 안 함.)
    - `npm run validate` 통과 확인(생성물이 소스와 일치하는지 게이트).
    - 소스와 생성물을 **함께** 스테이징. `git status`로 의도한 파일만 들어갔는지 확인.
 
@@ -20,7 +20,7 @@ description: Use when committing changes in this Claude+Codex plugin monorepo �
    - 메시지 끝에 트레일러: `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>`.
 
 3. **플러그인 영향 파일이 바뀌었으면 Codex 재설치**
-   - 영향 경로: `skills/`, `agents/`, `codex-agents/`, `mcp.servers.json`, `hooks/`, `.claude-plugin/`, `.codex-plugin/`.
+   - 영향 경로: `skills/`, `agents/`, `mcp.servers.json`, `hooks/`, `.claude-plugin/`, `.codex-plugin/`. (`agents/` 변경이 곧 `codex-agents/` 재생성 트리거 — 후자는 gitignore라 커밋엔 안 보임.)
    - 그 중 하나라도 이번 커밋에 포함됐으면 `npm run codex:reinstall` 실행(번들 재생성 → 플러그인 remove/add → 에이전트 TOML을 `~/.codex/agents/`로 복사). 문서/테스트만 바뀐 커밋이면 생략.
 
 4. **reload 안내 (직접 실행 불가)**
@@ -29,6 +29,6 @@ description: Use when committing changes in this Claude+Codex plugin monorepo �
 ## 주의
 
 - 생성물(`.claude-plugin/mcp.json`, `codex-agents/*.toml` 등)을 직접 수정하지 않는다 — 소스를 고치고 `npm run sync`.
-- `plugins/personal/` 번들은 gitignore된 로컬 생성물 — 스테이징하지 않는다.
+- `plugins/personal/`·`codex-agents/`는 gitignore된 로컬 생성물 — 스테이징하지 않는다.
 - 비밀은 `.env`(gitignore)에만. 실제 비밀 값을 스테이징하지 않는다.
 - 푸시는 사용자가 요청할 때만 한다.
