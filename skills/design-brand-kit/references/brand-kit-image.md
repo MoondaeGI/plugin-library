@@ -131,6 +131,7 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 - **보이스 O/X 예시는 authored 짧은 한국어 문구**(`BRAND_KIT.md §9`)를 그대로 렌더한다 — 모델이 지어내지 않는다. 원칙당 한 줄, 3~4개로 제한해 섹션이 빽빽해지지 않게.
 - 피할 것: 긴 문단, 가짜 본문(lorem ipsum), 안 읽히는 작은 텍스트, 빽빽한 밀도. 각 줄은 **짧고 또렷하게**.
 - 태그라인은 짧고 구체적으로 (예: "Quiet security for small teams.", "See the leak. Keep the workflow.", "Evidence-first DLD."). 일반 기업 슬로건·버즈워드·가짜 영감 문구 금지.
+- 보드 전체가 한 타입 시스템: UI 목업·HEX·숫자 등 데이터 텍스트도 선언한 폰트로, 숫자는 mono/탭ular numerals로 — 단 한글 라벨·본문은 본문 서체 유지(한글을 모노로 만들지 않는다).
 
 > **권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`이다.** 보드는 그 내용을 시각화한 한눈에 보는 원페이저일 뿐 — 보드 텍스트와 md/tokens가 어긋나면 md/tokens가 정답이다. 정확한 HEX·폰트 스펙은 항상 md/tokens에서 확정한다.
 
@@ -199,6 +200,7 @@ Visual mode: [모드]
 Palette: [절제된 팔레트 — brand-tokens.json 기반, single dominant accent]
 Style: premium, clean, intentional, polished brand-guidelines one-pager, no clutter, no copied real-world logos.
 Typography: readable, organized, high hierarchy; render labels/HEX/type-scale legibly; for each typeface show its name as a label AND render text in its described style (e.g. "geometric low-contrast sans", "high-contrast modern serif") per the font catalog — the model approximates the style, not a literal font file; no tiny fake body text, no lorem ipsum.
+Type consistency: all sections (UI mockups, HEX values, type-scale figures, numeric/data text) use the same declared type system; render numbers as tabular/monospaced figures — but keep Hangul labels/body in the body face (do NOT monospace Korean text).
 Language: render visible text in Korean (Hangul) — short, legible labels; bilingual KR/EN only if the brand is English-facing.
 Logo Direction section: show ONE well-crafted mark in a few clean placements only — (1) symbol + wordmark lockup, (2) the standalone symbol on its own, (3) favicon + app-icon tile (small size), (4) a one-line construction/meaning note. Restrained — NOT an exploration sheet, NOT a row of many logo variants.
 Mark concept: [BRAND_KIT.md §6 구성·의미], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at favicon size, valid in solid monochrome; the symbol reads on its own without the name.
