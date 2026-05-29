@@ -17,8 +17,9 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - `.design/brand-tokens.json`
 - `.design/image-briefs/brand-briefs.md`
 - `.design/image-briefs/page-briefs.md`
-- `.design/generated/**/*.{png,jpg,jpeg,webp}` (생성/드롭된 이미지 — 수동 드롭 시 PNG 외 형식도 포함)
-- `.design/generated/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타로 사용, 없으면 파일명 glob)
+- `.design/final/**/*.{png,jpg,jpeg,webp}` (확정본 — **있으면 이것을 우선** 사용)
+- `.design/generated/**/*.{png,jpg,jpeg,webp}` (final이 없을 때의 폴백; 시안 누적본 — 수동 드롭 시 PNG 외 형식도 포함)
+- `.design/manifest.json` 또는 `.design/generated/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타로 사용, 없으면 파일명 glob)
 
 ## 출력 파일
 
