@@ -92,9 +92,9 @@ Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxur
 위 풀 청크는 **독립 단색 로고용**이다. 종합 보드의 "Logo Direction" 섹션은 로고가 12섹션 중 1칸이라 풀 청크를 떠넣으면 과대표집돼 보드가 일그러진다. 보드 프롬프트에는 아래 **3줄만** `BRAND_KIT.md §6`(구성·의미)로 채워 넣는다 — 빈 generic 줄로 두지 않는다.
 
 ```text
-Logo Direction section: wordmark + standalone monogram/symbol + app-icon tile.
-Mark concept: [BRAND_KIT.md §6 구성·의미 — 예: "monogram F fused with a scaffold-frame corner via negative space"], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at small size, valid in solid monochrome; the symbol reads on its own without the name.
-Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo.
+Logo Direction section: show ONE well-crafted mark in a few clean placements only — (1) symbol + wordmark lockup, (2) the standalone symbol on its own, (3) favicon + app-icon tile (small size), (4) a one-line construction/meaning note. Restrained — NOT an exploration sheet, NOT a row of many logo variants.
+Mark concept: [BRAND_KIT.md §6 구성·의미 — 예: "monogram F fused with a scaffold-frame corner via negative space"], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at favicon size, valid in solid monochrome; the symbol reads on its own without the name.
+Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo, a grid/sheet of many logo variations.
 ```
 
 ## 8. 품질 테스트 (결과물 평가용 — 프롬프트 재료 아님)

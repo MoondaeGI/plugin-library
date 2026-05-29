@@ -81,7 +81,7 @@
 6. **Logo Direction** — 워드마크 + 모노그램/심볼 컨셉 + 앱 아이콘 + 구성·의미 노트.
 7. **Color System** — 스와치 그리드 + 각 색 HEX + 용도 라벨.
 8. **Typography** — 타입 스케일(Display / H1 / H2 / Body / Caption / Label)과 폰트, 짧은 샘플 문장.
-9. **Voice & Tone** — "X, not Y" 형식 4개 (예: "Calm, not alarmist").
+9. **Voice & Tone** — 원칙 3~4개. 각 원칙은 "X, not Y" 라벨 + 그 아래 짧은 O/X 예시 한 쌍(do/don't). 예: "명료하게, 모호하지 않게" 아래 O "유출이 감지되었습니다." / X "유출이 확인된 것 같습니다.".
 10. **Visual & UI Direction** — 카드 / 상태 배지 / 컨트롤 같은 미니 UI 목업 조각으로 분위기 제시.
 11. **Imagery / Iconography** — 아이콘 세트 + 스타일 노트(선 굵기, 조인, 톤).
 
@@ -127,7 +127,8 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 **언어: 보드의 보이는 텍스트(섹션 타이틀·라벨·태그라인·미션/약속·UI 카피 등)는 한국어로 렌더한다.** 제품·타깃이 영어권이면 한/영 병기도 가능. 단 한글 글리프는 모델이 부정확하게 렌더할 수 있으니 **짧고 또렷한 한국어 라벨**을 쓰고, 정확한 문구의 권위 원본은 `BRAND_KIT.md`에 둔다.
 
-- 담아야 할 것: 섹션 번호·타이틀, 워드마크/제품명, 한 줄 설명, 미션/약속/특성 짧은 문구, 태그라인 옵션, 가치 기둥 한 줄 설명, 색 HEX + 용도, 타입 스케일(예: `Display 48/60`), 보이스 "X, not Y", 다음 결정 체크리스트.
+- 담아야 할 것: 섹션 번호·타이틀, 워드마크/제품명, 한 줄 설명, 미션/약속/특성 짧은 문구, 태그라인 옵션, 가치 기둥 한 줄 설명, 색 HEX + 용도, 타입 스케일(예: `Display 48/60`), 보이스 원칙 "X, not Y" + 각 원칙의 짧은 O/X 예시 문구, 다음 결정 체크리스트.
+- **보이스 O/X 예시는 authored 짧은 한국어 문구**(`BRAND_KIT.md §9`)를 그대로 렌더한다 — 모델이 지어내지 않는다. 원칙당 한 줄, 3~4개로 제한해 섹션이 빽빽해지지 않게.
 - 피할 것: 긴 문단, 가짜 본문(lorem ipsum), 안 읽히는 작은 텍스트, 빽빽한 밀도. 각 줄은 **짧고 또렷하게**.
 - 태그라인은 짧고 구체적으로 (예: "Quiet security for small teams.", "See the leak. Keep the workflow.", "Evidence-first DLD."). 일반 기업 슬로건·버즈워드·가짜 영감 문구 금지.
 
@@ -186,7 +187,7 @@ Sections (each labeled and legible):
 6. Logo Direction (wordmark + monogram concept + app icon + construction/meaning note)
 7. Color System (swatches with HEX + usage)
 8. Typography (type scale: Display/H1/H2/Body/Caption/Label)
-9. Voice & Tone ("X, not Y" x4)
+9. Voice & Tone — for each of 3-4 principles show the "X, not Y" label AND a short do/don't example beneath: a good line (O / ✓) and a bad line (X / ✗). Render the authored Korean phrases [from BRAND_KIT.md §9] exactly as given; do NOT invent copy. Keep each example to one short line.
 10. Visual & UI Direction (mini UI mockups: cards, status badges, controls)
 11. Imagery / Iconography (icon set + style note)
 
@@ -195,9 +196,9 @@ Palette: [절제된 팔레트 — brand-tokens.json 기반, single dominant acce
 Style: premium, clean, intentional, polished brand-guidelines one-pager, no clutter, no copied real-world logos.
 Typography: readable, organized, high hierarchy; render labels/HEX/type-scale legibly; no tiny fake body text, no lorem ipsum.
 Language: render visible text in Korean (Hangul) — short, legible labels; bilingual KR/EN only if the brand is English-facing.
-Logo Direction section: wordmark + standalone monogram/symbol + app-icon tile.
-Mark concept: [BRAND_KIT.md §6 구성·의미], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at small size, valid in solid monochrome; the symbol reads on its own without the name.
-Avoid (logo): shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo.
+Logo Direction section: show ONE well-crafted mark in a few clean placements only — (1) symbol + wordmark lockup, (2) the standalone symbol on its own, (3) favicon + app-icon tile (small size), (4) a one-line construction/meaning note. Restrained — NOT an exploration sheet, NOT a row of many logo variants.
+Mark concept: [BRAND_KIT.md §6 구성·의미], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at favicon size, valid in solid monochrome; the symbol reads on its own without the name.
+Avoid (logo): shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo, a grid/sheet of many logo variations.
 ```
 
 > 위 마지막 3줄(`Logo Direction section:` ~ `Avoid (logo):`)은 `../../references/design/logo-art-direction.md` §7.1 압축 블록이다 — `[BRAND_KIT.md §6 구성·의미]`·`[grid / ...]` 브래킷을 이 브랜드의 실제 마크 컨셉·기하로 채워 넣는다. 비워두거나 generic 문구로 두지 않는다.
