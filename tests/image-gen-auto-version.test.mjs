@@ -48,5 +48,5 @@ test('--force 는 --auto-version 보다 우선 — 지정 경로를 그대로 �
   const res = run(['--prompt', 'x', '--out', out, '--auto-version', '--force', '--dry-run']);
   assert.equal(res.status, 0, res.stderr);
   assert.match(res.stdout, /pic\.png/);
-  assert.doesNotMatch(res.stdout, /pic-v\d/);
+  assert.doesNotMatch(res.stdout, /pic-v\d+/);
 });

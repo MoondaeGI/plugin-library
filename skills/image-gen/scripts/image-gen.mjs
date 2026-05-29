@@ -89,7 +89,7 @@ function outPaths(out, n, ext) {
   return Array.from({ length: n }, (_, i) => path.join(dir, `${base}-${i + 1}${ext}`));
 }
 
-// --out 에 -v{N} 을 끼운 경로. base.png → base-v2.png (원본 확장자 유지).
+// --out 줄기에 -v{N} 을 삽입한 경로(확장자는 호출부 outPaths 가 ext 로 붙임). base.png → base-v2.png
 function versionedOut(out, v) {
   const dir = path.dirname(out);
   const ext0 = path.extname(out);
