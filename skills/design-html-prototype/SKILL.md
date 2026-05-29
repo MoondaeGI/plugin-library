@@ -15,7 +15,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 
 - `DESIGN.md`
 - `.design/brand-tokens.json`
-- `.design/generated/**/*.{png,jpg,jpeg,webp}` (+ 선택 `.design/generated/manifest.json`)
+- `.design/final/**/*.{png,jpg,jpeg,webp}` (확정본 — 있으면 우선) → 없으면 `.design/generated/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)
 
 ## 출력 파일
 
