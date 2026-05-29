@@ -106,9 +106,10 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <임시 프롬프트 파일> \
     --out "<cwd>/.design/generated/page/section-1-hero.png" \
-    --quality high
+    --auto-version --quality high
   ```
-- **저장 경로**: `--out`에 **대상 프로젝트 cwd 기준 절대 경로** `<cwd>/.design/generated/page/`. 파일명 `section-1-hero.png` 식, 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다.
+- **저장 경로**: 시안은 `<cwd>/.design/generated/page/`에 누적한다 — `--auto-version`을 항상 붙여 재생성 때 `-v2`,`-v3`…로 증분하고 기존 시안을 덮지 않는다. 파일명 `section-1-hero.png` 식.
+- **확정본 분리**: 섹션을 lock하면 그 시안을 `<cwd>/.design/final/page/`로 복사하고(버전 접미를 뗀 의미 이름, 예: `section-1-hero-v3.png` → `final/page/section-1-hero.png`), 시안은 지우지 않는다. 다운스트림(`design-md-compiler`·`design-html-prototype`)은 `.design/final/`을 우선 읽는다.
 
 ## 흐름 (디자이너 협업 루프)
 
@@ -116,7 +117,7 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 2. **섹션을 하나씩** 진행한다. 각 섹션마다:
    - 이미지 1장 생성(`image-gen` 스크립트; 키 없으면 사람이 드롭) → 보여주고 피드백을 청한다 (예: "이 섹션 어때요? 뭘 바꿀까요?").
    - 피드백을 받아 **한 번에 한 가지만** 고쳐 재생성한다. 만족(lock)할 때까지 반복.
-   - 확정되면 `.design/generated/page/`에 저장하고 다음 섹션으로.
+   - 확정(lock)되면 그 시안을 `.design/final/page/`로 복사(버전 접미 뗀 이름)하고 다음 섹션으로. 시안은 `.design/generated/page/`에 그대로 둔다.
 3. 필요한 섹션이 다 확정되면 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-md-compiler`"**.
 
 전체 섹션을 한꺼번에 생성하지 않는다 — 한 섹션 만들고, 고치고, 다음으로.
