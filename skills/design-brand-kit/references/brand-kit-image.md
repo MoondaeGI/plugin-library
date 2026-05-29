@@ -139,7 +139,7 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 ## 7. 이미지·목업 디렉션
 
-- **이미지/아이콘**: 의미 있고 일관된 시각 — 미니멀 라인 아이콘(일관된 스트로크, 둥근 조인), 모니터링/증거를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치. **아이콘 세트의 깊은 시스템 스펙(스트로크·그리드·상태)·프롬프트 청크는 `../../references/design/icon-art-direction.md` 참조.**
+- **이미지/아이콘**: 의미 있고 일관된 시각 — 미니멀 라인 아이콘(일관된 스트로크, 둥근 조인), 모니터링/증거를 전달하는 심볼. 금지: 일반 스톡 인물, 랜덤 오피스 사진, 클리셰 로봇, 과밀 씬, 무관한 이미지. 팔레트·메타포와 일치. **아이콘 세트의 깊은 시스템 스펙(스트로크·그리드·상태)·프롬프트 청크는 `../../references/design/icon/icon-rules.md` 참조.** 스타일 선택은 `icon/icon-style-catalog.md`, 도메인 메타포는 `icon/icon-domain-examples.md`(도메인 섹션만) — 결정은 `BRAND_KIT.md §11`에 증류돼 있다.
 - **목업**: 미니멀하고 믿을 만하게 — 브라우저 크롬, URL 바, 앱 아이콘, soft rounded 카드, 상태 배지, 미니멀 컨트롤, 활동 리스트 조각, 대시보드 조각. 금지: 데이터 과밀 가짜 대시보드, 싸구려 글로시 목업, 디바이스 과잉, 빽빽한 앱 화면, 아이콘 과잉. **목업은 기능 데모가 아니라 아이덴티티 적용이다.**
 
 ## 8. 프리미엄 디테일 언어
@@ -193,6 +193,7 @@ Sections (each labeled and legible):
 9. Voice & Tone — for each of 3-4 principles show the "X, not Y" label AND a short do/don't example beneath: a good line (O / ✓) and a bad line (X / ✗). Render the authored Korean phrases [from BRAND_KIT.md §9] exactly as given; do NOT invent copy. Keep each example to one short line.
 10. Visual & UI Direction (mini UI mockups: cards, status badges, controls)
 11. Imagery / Iconography (icon set + style note)
+All section icons (Essence, Target, Value Pillars, Imagery) follow ONE icon system defined in BRAND_KIT.md §11 — identical stroke weight, join/terminal, grid, and metaphor language. No section uses a different icon look.
 
 Do NOT render a "Next Decisions" / "다음 결정" section, nor any checklist of pending or to-confirm decisions, on the board — that lives only in BRAND_KIT.md, never on the image.
 
