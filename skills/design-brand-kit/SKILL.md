@@ -59,6 +59,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - `.design/image-briefs/brand-briefs.md` — 종합 오버뷰 보드·(선택) 로고·추가 탐색 브리프
 - `.design/generated/brand-kit/` — 종합 브랜드 오버뷰 보드·추가 탐색 이미지 (메인)
 - `.design/generated/logo/` — 단색 클린 로고 이미지 (선택)
+- `.design/final/{brand-kit,logo}/` — 확정본(다운스트림이 우선 읽음); 시안은 `.design/generated/`에 보존
 
 생성 폴더는 동봉 스크립트가 채운다 (아래 "이미지 생성"·"흐름" 참고).
 
@@ -245,7 +246,7 @@ primary 적용 + 흑/백 단색 버전 고려
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <임시 프롬프트 파일> \
     --out "<cwd>/.design/generated/brand-kit/brand-overview-route-a.png" \
-    --size 1024x1536 --quality low --model gpt-image-2
+    --auto-version --size 1024x1536 --quality low --model gpt-image-2
   ```
 - **수정은 텍스트 재생성이 아니라 증분 편집(`--image`)으로 한다.** 첫 생성(발산 3장·(선택) 로고/탐색 첫 1장)만 텍스트→이미지다. 그 뒤 "한 가지만 고쳐 재생성"하는 모든 단계 — 발산 수렴(고른 루트→high), 보드 섹션 수정, 로고·탐색 수정 — 는 **직전 이미지를 `--image <경로>`로 첨부하고 `--input-fidelity high`**로 보낸다(`--image`가 1개+면 스크립트가 `/v1/images/edits`로 분기). 그래야 나머지를 보존한 채 그 한 가지만 바뀐다. `--image` 없이 프롬프트만으로 재생성하면 색·레이아웃·다른 섹션까지 통째로 달라진다. 편집 프롬프트에는 **바꿀 한 가지만** 기술한다(전체 보드 프롬프트를 다시 넣지 않음). ⚠ 편집을 거듭하면 한글 텍스트 가독성이 조금씩 뭉개질 수 있으니, 수정은 모아서 한 번에, 텍스트가 망가지면 그 섹션 문구를 `BRAND_KIT.md` 권위값으로 다시 박는다.
   ```bash
@@ -254,11 +255,11 @@ primary 적용 + 흑/백 단색 버전 고려
     --prompt-file <바꿀 한 가지만 적은 프롬프트 파일> \
     --image "<cwd>/.design/generated/brand-kit/brand-overview.png" \
     --input-fidelity high \
-    --out "<cwd>/.design/generated/brand-kit/brand-overview-v2.png" \
-    --size 1024x1536 --quality high --model gpt-image-2
+    --out "<cwd>/.design/generated/brand-kit/brand-overview.png" \
+    --auto-version --size 1024x1536 --quality high --model gpt-image-2
   ```
-- **저장 경로**: `--out`에 **대상 프로젝트 cwd 기준 절대 경로** — 종합 보드·추가 탐색은 `<cwd>/.design/generated/brand-kit/`, (선택) 단색 로고는 `<cwd>/.design/generated/logo/`.
-- **파일명**: 발산 초안은 루트별 `brand-overview-route-a.png` · `-route-b.png` · `-route-c.png`. 재시도(가챠)는 버전 접미(`-route-a-v2.png` 등). 수렴은 고른 루트 초안을 `--image`로 첨부해 high 편집 → `brand-overview.png`. 이후 섹션 수정도 직전 보드를 `--image`로 편집해 버전 출력(`brand-overview-v2.png`·`-v3` …; `--force` 없이 기존본을 덮지 않음). (선택) 로고는 `logo-concept-1.png`(수정본 `-v2`). lock되면 최종 편집본만 `brand-overview.png`로 남긴다.
+- **저장 경로**: `--out`에 **대상 프로젝트 cwd 기준 절대 경로** — 종합 보드·추가 탐색은 `<cwd>/.design/generated/brand-kit/`, (선택) 단색 로고는 `<cwd>/.design/generated/logo/`. 확정본은 lock 시 `<cwd>/.design/final/{brand-kit,logo}/`로 복사하고 시안은 그대로 둔다.
+- **파일명**: 발산 초안은 루트별 `brand-overview-route-a.png` · `-route-b.png` · `-route-c.png`. 재시도(가챠)는 버전 접미(`-route-a-v2.png` 등). 수렴은 고른 루트 초안을 `--image`로 첨부해 high 편집 → `brand-overview.png`. 이후 섹션 수정도 직전 보드를 `--image`로 편집하되 `--out`은 `brand-overview.png`에 `--auto-version`을 붙여 호출하면 `-v2`·`-v3`…로 자동 증분된다(기존본을 덮지 않음, 수동 버전 표기·`--force` 불필요). 재시도(가챠)도 같은 `--out`에 `--auto-version`이면 `-route-a-v2`처럼 자동 증분된다. (선택) 로고는 `logo-concept-1.png`. lock되면 최종 편집본을 `.design/final/brand-kit/brand-overview.png`(로고는 `.design/final/logo/`)로 복사한다.
 - **크기/품질**: 보드는 콘텐츠 양에 맞는 세로/가로 크기(세로 예: `1024x1536`), 빠른 초안 `--quality low`, 확정본 `--quality high`.
 - 보드의 섹션 시스템·비주얼 모드·텍스트 규칙·프롬프트 템플릿은 `references/brand-kit-image.md` 참조. **로고/아이콘의 깊은 생성 스펙·프롬프트 청크는 형제 공유 ref `../references/design/logo-art-direction.md`·`../references/design/icon-art-direction.md`에 있다** — 보드의 로고 섹션에는 logo-art-direction.md §7.1 압축 블록을 `BRAND_KIT.md §6`으로 채워 넣고(generic 줄 금지), 독립 로고는 §7 풀 청크, 아이콘 세트는 icon-art-direction.md를 끌어다 쓴다.
 - 종합 보드는 텍스트(섹션 타이틀·HEX·타입 스케일·짧은 문구)를 담되 **읽히고 위계가 또렷하게** 한다. **보이는 텍스트(섹션 타이틀·라벨·태그라인·미션/약속·UI 카피 등)는 한국어로 렌더**한다 (제품·타깃이 영어권이면 한/영 병기 가능; 한글 글리프 렌더 한계를 감안해 짧고 또렷한 라벨로). 단 **정확한 색/폰트 스펙의 권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`** — 보드는 그 시각화다.
@@ -276,8 +277,8 @@ primary 적용 + 흑/백 단색 버전 고려
      - (b) **방향 조정**: 뭐가 별로였는지 받아 루트를 교체하거나 팔레트·구도 축을 틀어 새 3장.
      - 마음에 드는 방향이 나올 때까지 반복(모두 `--quality low` 초안).
    - **4b · 수렴**: 고른 루트 초안을 `--image`로 첨부해 `--input-fidelity high` + `--quality high`로 편집 렌더 → `brand-overview.png`(고른 구도를 보존해 고품질화). 이후 피드백을 받아 **한 번에 한 섹션/한 가지만** — 직전 보드를 `--image`로 첨부한 증분 편집으로 — 고쳐 재생성(`-v2`·`-v3` …), lock까지 반복.
-   - **정리**: 방향이 lock되면 안 고른 루트·이전 버전(초안·편집 중간본)을 삭제하고, 최종 편집본만 `brand-overview.png`로 남긴다.
-5. **(선택) 단색 클린 로고 → (선택) 추가 탐색 이미지** — 각 항목을 **1개씩**: 1장 생성(키 없으면 드롭) → 보여주고 피드백 → 한 번에 한 가지만 — 직전 이미지를 `--image` + `--input-fidelity high`로 첨부한 증분 편집으로 — 고쳐 재생성 → 확정되면 해당 `.design/generated/<폴더>/`에 저장하고 다음으로.
+   - **확정(복사)**: 방향이 lock되면 최종 편집본을 `<cwd>/.design/final/brand-kit/brand-overview.png`로 복사한다. 시안(`.design/generated/brand-kit/`의 안 고른 루트·이전 버전)은 지우지 않고 보존한다 — 다운스트림은 `.design/final/`을 우선 읽는다.
+5. **(선택) 단색 클린 로고 → (선택) 추가 탐색 이미지** — 각 항목을 **1개씩**: 1장 생성(키 없으면 드롭) → 보여주고 피드백 → 한 번에 한 가지만 — 직전 이미지를 `--image` + `--input-fidelity high`로 첨부한 증분 편집으로 — 고쳐 재생성 → 확정되면 그 시안을 `.design/final/<폴더>/`로 복사(버전 접미 뗀 이름)하고 다음으로. 시안은 `.design/generated/<폴더>/`에 그대로 둔다.
 6. 메인 보드가 확정되면(필요 시 로고·추가 탐색까지) 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-page-image`"**.
 
 메인 보드는 첫 단계에서만 3장 발산하고 곧장 1개 루프로 수렴한다 — 그 외에는 한꺼번에 생성하지 않고 한 개 만들고, 고치고, 다음으로 넘어간다.
