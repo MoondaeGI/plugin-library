@@ -147,6 +147,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 ## 11. 이미지 / 아이코노그래피 (Imagery / Iconography)
 - 이미지 성향:
 - 아이콘 스타일: (icon-style-catalog에서 고른 하나 + 근거 한 줄)
+- 아이콘 폼 규칙: (조인/터미널 = round join+round cap | square·miter join+butt cap [친근·소프트=round / 정밀·테크=square] · 코너 반경 [예: ~2px] · 스트로크 굵기 [예: ~1.75–2px] — icon-rules.md §2에서 확정. **round로 기본 흘려보내지 말고 브랜드 성격에 맞춰 명시 선택**)
 - 아이콘 메타포 모티프: (icon-domain-examples의 도메인 추상 모티프)
 - 상태 아이콘 규칙: (형태 동일·색만 분기)
 - 피해야 할 이미지:
@@ -257,7 +258,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 ## 흐름 (디자이너 협업 루프)
 
-1. `.design/BRAND_KIT.md` + `.design/brand-tokens.json` 작성 (방향 문서; 색·타이포 권위 원본은 여기에. §1–11은 보드 섹션과 1:1, §12 다음 결정 사항은 md 전용·보드 제외). §8 타이포는 `../references/design/font-catalog.md`에서 실존 폰트를 골라 토큰에 실제 family+폴백을 박고, 승인 게이트(3)에서 specimen URL로 확인받는다. §11 아이코노그래피는 `../references/design/icon/icon-rules.md`(핵심 원칙·시스템 파라미터)를 읽고, `icon-style-catalog.md`에서 브랜드 성격·사용 환경에 맞는 스타일 하나를 확정하며, `icon-domain-examples.md`에서 프로젝트 도메인 섹션만 읽어 추상 메타포 모티프를 끌어와 §11 3필드(스타일·모티프·상태 규칙)에 증류한다. (선택) `icon-reference-vendors.md`로 스타일을 보정하되 벤더명은 §11·프롬프트에 쓰지 않는다.
+1. `.design/BRAND_KIT.md` + `.design/brand-tokens.json` 작성 (방향 문서; 색·타이포 권위 원본은 여기에. §1–11은 보드 섹션과 1:1, §12 다음 결정 사항은 md 전용·보드 제외). §8 타이포는 `../references/design/font-catalog.md`에서 실존 폰트를 골라 토큰에 실제 family+폴백을 박고, 승인 게이트(3)에서 specimen URL로 확인받는다. §11 아이코노그래피는 `../references/design/icon/icon-rules.md`(핵심 원칙·시스템 파라미터)를 읽고, `icon-style-catalog.md`에서 브랜드 성격·사용 환경에 맞는 스타일 하나를 확정하며, `icon-domain-examples.md`에서 프로젝트 도메인 섹션만 읽어 추상 메타포 모티프를 끌어와 §11 4필드(스타일·폼 규칙·모티프·상태 규칙)에 증류한다. **폼 규칙(조인/터미널·코너·굵기)은 icon-rules.md §2에서 round/square를 브랜드 성격에 맞춰 명시 확정한다 — 기본 round로 흘려보내지 않는다.** (선택) `icon-reference-vendors.md`로 스타일을 보정하되 벤더명은 §11·프롬프트에 쓰지 않는다.
 2. `.design/image-briefs/brand-briefs.md` 작성 (종합 오버뷰 보드·(선택) 추가 탐색 브리프).
 3. **승인 게이트 (이미지 생성 전 필수)** — 세 문서(`BRAND_KIT.md`·`brand-tokens.json`·`brand-briefs.md`)를 사용자에게 제시하고 방향이 맞는지 확인받는다. **승인 전에는 초안 한 장도 생성하지 않는다** — 이미지는 OpenAI API 실비가 들고, brief가 어긋나면 발산 3장을 통째로 날리므로 가장 싼 텍스트 단계에서 잡는다. 수정 요청은 문서를 고쳐 다시 확인받고, 명시적으로 승인되면 다음으로.
 4. **종합 브랜드 오버뷰 보드(필수·메인)** — 발산 → (재시도) → 수렴으로 진행한다:
