@@ -210,7 +210,8 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - 금지 패턴:
 
 ## HTML 오버뷰 (필수 · 메인)
-### 레이아웃 메모 (라이트/다크, 기본 11섹션 §1–11 그리드 — §12 다음 결정은 제외)
+### 레이아웃 메모 (아키타입 + 라이트/다크 + §1–11 — §12 다음 결정은 제외)
+**고른 레이아웃 아키타입(A/B/C/D 또는 블렌드) + 한 줄 근거(브랜드 성격에 묶어)**를 여기 먼저 적는다. 아키타입 메뉴·선택 규칙은 `references/brand-kit-html-direction.md`, 개별 골격은 `references/archetypes/<name>.md`.
 ### 섹션 구성 메모
 Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline Options · Logo Direction · Color System · Typography · Voice & Tone · Visual & UI Direction · Imagery/Iconography — 로고 외 최소 8개 이상의 섹션이 한눈에. **§12 다음 결정 사항(Next Decisions)은 HTML 오버뷰에 넣지 않는다 (md 전용).**
 ### 태그라인 (짧고 구체적으로)
@@ -282,7 +283,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 ### overview.html 저작 (이미지 아님)
 
-`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(상대 경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만).
+`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(상대 경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만). 저작 전 `brief.md`의 레이아웃 메모에서 **고른 아키타입**을 확인하고, `references/brand-kit-html-direction.md`(선택·공통 규칙)와 해당 `references/archetypes/<name>.md`(스켈레톤·불변·자유 존)를 따른다. 단일 아키타입으로 흘려보내지 말고 브랜드 신호에 맞춰 고른다.
 
 ### 라이브 프리뷰 (자동 새로고침)
 
@@ -300,8 +301,8 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/brand-kit
 1. **킷 작성 (분위기 분기)** — §1–11은 오버뷰 섹션과 1:1, §12는 md 전용. 분위기 **고정** → `.design/brand-kit/`에 단일 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md` 직행. 분위기 **열림** → `directions.json`(3방향 최소 데이터)을 작성한다(풀 킷 3벌이 아님). §8 폰트는 `../references/design/font-catalog.md`에서, §11 아이코노그래피는 `../references/design/icon/icon-rules.md`로 확정(폼 규칙 명시).
 2. **brief 작성** — 고정이면 `.design/brand-kit/brief.md`. 열림이면 게이트에서 방향을 고른 뒤 그 1벌만 작성(Step 4). (자산·HTML 오버뷰·선택 추가탐색.)
 3. **승인 게이트 (생성 전 필수)** — 분위기 **열림** → `build-contact-sheet.mjs`로 `directions.html`(3열 컨택트 시트)을 생성해 제시 → 한 열 선택. 분위기 **고정** → data-only `overview.html`(이미지 슬롯 플레이스홀더)을 제시 → 승인. 어느 쪽이든 게이트까지 이미지 0콜이며, 승인/선택 전 한 장도 생성하지 않는다.
-4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 `.design/brand-kit/`에 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md`로 인스턴스화하고 data-only `overview.html`을 저작한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
+4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 `.design/brand-kit/`에 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md`로 인스턴스화하고 data-only `overview.html`을 (brief의 레이아웃 메모에서 고른 아키타입에 따라) 저작한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
 5. **자산 생산 (`.design/brand-kit/assets/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icons/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
-6. **overview.html 마무리** — data-only `overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`assets/key-visual.png`·`assets/ui-base.png`·`assets/icons/*.png` 등)으로 채워 **재저작 또는 외과 편집**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
+6. **overview.html 마무리** — data-only `overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`assets/key-visual.png`·`assets/ui-base.png`·`assets/icons/*.png` 등)으로 채워 **재저작 또는 외과 편집(아키타입 불변은 유지, 자유 존만 조정)**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
 8. **lock** — `.design/brand-kit/{BRAND_KIT.md,brand-tokens.json,overview.html,brief.md,assets/}`를 `.design/final/brand-kit/`로 **순수 복사**. 확정되면 산출물 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-page-image`"** (각자 `.design/brand-kit/assets/`를 시드로 읽음). 라이브 프리뷰 서버가 떠 있으면 종료한다(포트 점유 방지).
