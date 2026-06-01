@@ -289,7 +289,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 `overview.html`을 **처음 피드백용으로 제시할 때** 공유 런처로 로컬 라이브 서버를 **한 번 백그라운드로** 띄운다 — 이후 자산 재생성·HTML 외과 편집 때마다 브라우저가 자동 새로고침된다(수동 새로고침 불필요). watch·reload·브라우저 오픈은 `five-server`에 위임한다(우리는 구현하지 않음).
 
 ```
-node ../../scripts/serve-design.mjs <cwd>/.design/brand-kit
+node ../../scripts/lib/serve-design.mjs <cwd>/.design/brand-kit
 ```
 
 - 명령 실행이므로 **최초 1회만 사용자 확인** 후 백그라운드 기동(이후 같은 서버 유지).

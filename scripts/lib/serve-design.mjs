@@ -6,10 +6,11 @@
 //   이 스크립트는 그 로직을 구현하지 않는다. (overview.html은 형제 assets/ 상대경로라
 //   서빙 루트만 맞으면 그대로 동작.)
 //
-// 사용: node scripts/serve-design.mjs <dir|html경로> [--port N] [--no-open]
-//       node scripts/serve-design.mjs <...> --print-options   # 옵션만 출력, 서버 미기동(테스트용)
+// 사용: node scripts/lib/serve-design.mjs <dir|html경로> [--port N] [--no-open]
+//       node scripts/lib/serve-design.mjs <...> --print-options   # 옵션만 출력, 서버 미기동(테스트용)
 //
 // 여러 design 스킬(design-brand-kit·design-html-prototype 등)이 공유한다.
+// scripts/lib/ 에 두는 이유: Codex 번들이 미러링하는 유일한 최상위 공유 위치라 Claude·Codex 둘 다 ../../scripts/lib/ 로 참조 가능.
 
 import { statSync } from "node:fs";
 import { resolve, dirname, basename } from "node:path";
