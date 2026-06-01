@@ -1,0 +1,65 @@
+<!doctype html>
+<!--
+  brand-kit 컨택트 시트 템플릿 (directions.html 생성용 스켈레톤)
+  - 책임: 레이아웃·CSS 골격만 보유. 자유 저작 금지 — build-contact-sheet.mjs 가 아래 토큰을 directions.json 값으로 치환한다.
+  - 치환 토큰: TITLE, PRODUCT, FONT_LINKS, COLUMNS (이중 중괄호 형식)
+  - 3열은 완전히 동일한 레이아웃이고 데이터(색·폰트·문구)만 다르다 → 차이가 또렷이 비교된다.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+{{FONT_LINKS}}
+<style>
+  :root{ --page:#e9e7e2; --pageInk:#2a2722; --line:#cfccc4; }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--page); color:var(--pageInk);
+    font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+    padding:40px 22px 64px;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; }
+  .topbar{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#8a857c; margin-bottom:14px;
+  }
+  .lede{ margin:0 0 26px; }
+  .lede h1{ font-size:22px; margin:0 0 5px; letter-spacing:-.01em; }
+  .lede p{ margin:0; color:#6c6860; font-size:13.5px; line-height:1.6; }
+  .sheet{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 30px 60px rgba(0,0,0,.14);
+  }
+  /* 각 열은 자기 방향의 색·폰트로 themed — 인라인 --bg/--text/--accent/--display/--body 주입 */
+  .col{
+    background:var(--bg); color:var(--text);
+    padding:26px 24px 30px; display:flex; flex-direction:column; gap:16px; min-height:560px;
+  }
+  .col .id{ font-size:11px; letter-spacing:.18em; text-transform:uppercase; opacity:.55; }
+  .col .mood{ font-size:14.5px; line-height:1.55; font-weight:600; opacity:.95; }
+  .col .wordmark{ font-family:var(--display); font-size:38px; line-height:1.02; margin:2px 0 0; letter-spacing:-.01em; }
+  .col .headline{ font-family:var(--display); font-size:21px; line-height:1.15; margin:0; opacity:.92; }
+  .col .body{ font-family:var(--body); font-size:13.5px; line-height:1.75; opacity:.9; margin:0; }
+  .palette{ display:flex; flex-direction:column; gap:7px; }
+  .sw{ display:flex; align-items:center; gap:10px; font-size:12px; }
+  .sw .chip{ width:18px; height:18px; border-radius:5px; flex:none; border:1px solid rgba(127,127,127,.28); }
+  .sw .hex{ font-variant-numeric:tabular-nums; letter-spacing:.02em; opacity:.85; }
+  .sw .role{ opacity:.55; margin-left:auto; }
+  .tagline{ font-family:var(--display); font-size:19px; line-height:1.3; color:var(--accent); margin-top:auto; }
+  .fontnote{ font-size:11px; opacity:.5; line-height:1.5; }
+  .divider{ height:1px; background:currentColor; opacity:.13; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><span>{{PRODUCT}} · 브랜드 방향 비교</span><span>Contact Sheet</span></div>
+  <div class="lede">
+    <h1>세 방향 중 하나를 고르세요</h1>
+    <p>색·폰트·태그라인만 보고 끌리는 열을 고르면, 그 방향만 풀 브랜드 킷으로 전개합니다.</p>
+  </div>
+  <div class="sheet">{{COLUMNS}}</div>
+</div>
+</body>
+</html>
