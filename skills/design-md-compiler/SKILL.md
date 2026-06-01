@@ -17,6 +17,8 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - `.design/brand-tokens.json`
 - `.design/image-briefs/brand-briefs.md`
 - `.design/image-briefs/page-briefs.md`
+- `.design/final/brand-kit/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)
+- `.design/final/brand-kit/assets/*.png`, `.design/final/brand-kit/assets/icons/*.png` (확정 base 자산 — 로고·키비주얼·UI·아이콘)
 - `.design/final/**/*.{png,jpg,jpeg,webp}` (확정본 — **있으면 이것을 우선** 사용)
 - `.design/generated/**/*.{png,jpg,jpeg,webp}` (final이 없을 때의 폴백; 시안 누적본 — 수동 드롭 시 PNG 외 형식도 포함)
 - `.design/manifest.json` 또는 `.design/generated/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타로 사용, 없으면 파일명 glob)
@@ -90,7 +92,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - **이미지 레퍼런스의 살릴 점과 구현 시 버릴 점을 구분한다.**
 - 최종 문구는 이미지가 아니라 코드에 있어야 한다고 명시한다.
 - 모든 필드를 비워두지 않는다 — 입력 파일에서 추론 가능한 값을 채우고, 추측한 값은 표시한다.
-- 이미지는 경로의 서브디렉터리 이름(`brand-kit/` vs `page/`)으로 종류를 구분한다.
+- 이미지는 경로의 서브디렉터리 이름으로 종류를 구분한다: `brand-kit/assets/`(로고·키비주얼·UI·아이콘 — 1급 재사용 자산) vs `page/`(페이지 섹션). `overview.html`은 브랜드 오버뷰 룩의 참조다.
 
 ## 금지 사항
 
