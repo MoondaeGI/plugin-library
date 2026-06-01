@@ -38,6 +38,10 @@
     padding:26px 24px 30px; display:flex; flex-direction:column; gap:16px; min-height:560px;
   }
   .col .id{ font-size:11px; letter-spacing:.18em; text-transform:uppercase; opacity:.55; }
+  /* primary 색 헤더 밴드 — 배경이 비슷한 방향끼리도 primary로 또렷이 구분. .col 패딩만큼 음수 마진으로 full-bleed */
+  .col .head{ background:var(--primary); color:var(--on-primary); margin:-26px -24px 4px; padding:24px 24px 20px; display:flex; flex-direction:column; gap:7px; }
+  .col .head .id{ opacity:.72; }
+  .col .head .wordmark{ color:inherit; }
   .col .mood{ font-size:14.5px; line-height:1.55; font-weight:600; opacity:.95; }
   .col .wordmark{ font-family:var(--display); font-size:38px; line-height:1.02; margin:2px 0 0; letter-spacing:-.01em; }
   .col .headline{ font-family:var(--display); font-size:21px; line-height:1.15; margin:0; opacity:.92; }

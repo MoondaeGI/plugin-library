@@ -107,6 +107,19 @@ function googleFallback(family) {
   return `https://fonts.googleapis.com/css2?family=${family.replace(/ /g, "+")}&display=swap`;
 }
 
+// primary 밴드 위 텍스트(워드마크) 가독성 — 배경 hex의 상대 명도로 검정/흰색 자동 대비.
+// 잘못된 hex 면 안전하게 흰색.
+function onColor(hex) {
+  const h = String(hex).replace("#", "");
+  const n = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  if (!/^[0-9a-fA-F]{6}$/.test(n)) return "#ffffff";
+  const r = parseInt(n.slice(0, 2), 16);
+  const g = parseInt(n.slice(2, 4), 16);
+  const b = parseInt(n.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum > 0.6 ? "#111111" : "#ffffff";
+}
+
 function buildFontLinks(directions) {
   const families = new Set();
   for (const d of directions) {
@@ -148,12 +161,16 @@ function buildColumn(d) {
     `--bg:${p.background}`,
     `--text:${p.text}`,
     `--accent:${p.accent}`,
+    `--primary:${p.primary}`,
+    `--on-primary:${onColor(p.primary)}`,
     `--display:${d.typography.display.replace(/"/g, "'")}`,
     `--body:${d.typography.body.replace(/"/g, "'")}`,
   ].join(";");
   return `<div class="col" style="${style}">
-  <div class="id">방향 ${escHtml(d.id.toUpperCase())} · ${escHtml(d.label)}</div>
-  <div class="wordmark">${escHtml(d.wordmark)}</div>
+  <div class="head">
+    <div class="id">방향 ${escHtml(d.id.toUpperCase())} · ${escHtml(d.label)}</div>
+    <div class="wordmark">${escHtml(d.wordmark)}</div>
+  </div>
   <div class="mood">${escHtml(d.mood)}</div>
   <h2 class="headline">${escHtml(d.headline)}</h2>
   <p class="body">${escHtml(d.body)}</p>

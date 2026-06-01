@@ -46,6 +46,27 @@ test('팔레트 HEX·워드마크·태그라인 렌더', () => {
   assert.match(html, /태그라인/);
 });
 
+test('primary 색이 헤더 밴드로 themed 렌더된다 (on-primary 자동 대비 포함)', () => {
+  const { outPath } = run(validData());
+  const html = readFileSync(outPath, 'utf8');
+  assert.match(html, /class="head"/);
+  assert.match(html, /--primary:#0E7C7B/);
+  // #0E7C7B 는 어두운 색 → 밴드 위 텍스트는 흰색
+  assert.match(html, /--on-primary:#ffffff/);
+});
+
+test('밝은 primary 위에는 어두운 on-primary 가 선택된다', () => {
+  const data = validData();
+  data.directions[0].palette.primary = '#F2F2F2';
+  const d = mkdtempSync(path.join(tmpdir(), 'cs-'));
+  const inPath = path.join(d, 'directions.json');
+  const outPath = path.join(d, 'out.html');
+  writeFileSync(inPath, JSON.stringify(data), 'utf8');
+  const res = spawnSync('node', [SCRIPT, '--in', inPath, '--out', outPath], { encoding: 'utf8' });
+  assert.equal(res.status, 0, res.stderr);
+  assert.match(readFileSync(outPath, 'utf8'), /--primary:#F2F2F2;--on-primary:#111111/);
+});
+
 test('매핑된 폰트는 해당 CDN <link>', () => {
   const { outPath } = run(validData());
   const html = readFileSync(outPath, 'utf8');

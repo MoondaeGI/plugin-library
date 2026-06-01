@@ -69,7 +69,7 @@
 | `directions[n].headline` | string | 큰 헤드카피. 방향의 핵심 목소리를 대표. |
 | `directions[n].body` | string | 본문 카피 1–2문장. |
 | `directions[n].tagline` | string | 태그라인. 열 하단 따옴표로 감싸 표시. |
-| `directions[n].palette.primary` | string(HEX) | 주색. |
+| `directions[n].palette.primary` | string(HEX) | 주색. 열 상단 **헤더 밴드** 배경(`--primary`)으로 themed — 배경색이 비슷한 방향끼리도 또렷이 구분. 밴드 위 워드마크 색은 primary 명도로 흑/백 자동 대비(`--on-primary`). |
 | `directions[n].palette.accent` | string(HEX) | 강조색. 열 CSS 변수 `--accent`로 주입. |
 | `directions[n].palette.background` | string(HEX) | 배경. 열 CSS 변수 `--bg`로 주입. |
 | `directions[n].palette.surface` | string(HEX) | 표면(카드·입력 등). 스와치만 표시. |
