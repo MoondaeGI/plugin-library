@@ -1,6 +1,6 @@
 ---
 name: design-brand-kit
-description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타이포그래피·로고 방향·UI 분위기·금지 패턴을 정리한 브랜드 킷을 만들고, 여러 섹션을 한 장에 담아 한눈에 보이는 종합 브랜드 오버뷰 보드(메인)를 협업하며 생성·반복할 때 사용한다 (분위기가 열려 있으면 전략이 다른 3개 브랜드 방향—각 풀 BRAND_KIT—으로 발산해 하나로 수렴; 분위기를 정하면 1개 직행). 로고는 보드 §6 로고 방향 섹션으로만 들어가며, 단독 로고는 design-logo가 보드 §6을 읽어 만든다.
+description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타이포그래피·로고 방향·UI 분위기·금지 패턴을 정리한 브랜드 킷을 만들고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 HTML 오버뷰(overview.html)를 협업하며 만든다. 데이터 섹션은 토큰에서 HTML 렌더(진짜 HEX·실폰트). 다운스트림(design-logo·iconset·page-image)은 보드 재추출 없이 assets/를 직접 시드로 읽는다.
 ---
 
 # Design Brand Kit
@@ -9,7 +9,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 ## 목적
 
-제품 설명만 보고 바로 화면을 만들지 않는다. 먼저 브랜드의 성격·시각 방향·색상·타이포그래피·로고 방향·UI 분위기를 정리한 뒤, **여러 섹션을 한 장에 담아 한눈에 보이는 종합 브랜드 오버뷰 보드**(브랜드 개요·에센스·타깃·가치·태그라인·로고 방향·색·타이포·보이스·UI·이미지)를 **실제 디자이너처럼 만들어 보여주고, 피드백을 받아 반복 수정**한다. 로고는 그 보드 안의 §6 로고 방향 섹션으로만 다룬다 — 단독 로고 이미지는 만들지 않으며, 확정 로고는 design-logo가 보드 §6을 읽어 만든다. 품질 기준은 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 프리미엄 결과물**이다. 이미지 아트 디렉션·섹션 시스템·핵심 원칙(모든 보드가 답해야 할 다섯 질문 포함)은 `references/brand-kit-image.md`를 따른다.
+제품 설명만 보고 바로 화면을 만들지 않는다. 먼저 브랜드의 성격·시각 방향·색상·타이포그래피·로고 방향·UI 분위기를 정리한 뒤, **정체성 base 자산(로고·워드마크·키비주얼·UI·아이콘)을 안정적 PNG로 생산**하고, 여러 섹션을 한눈에 볼 수 있는 **HTML 오버뷰(overview.html)**(브랜드 개요·에센스·타깃·가치·태그라인·로고·색·타이포·보이스·UI·이미지)를 **실제 디자이너처럼 만들어 보여주고, 피드백을 받아 반복 수정**한다. 로고는 `logo-base` 자산으로 만들고, design-logo가 `logo-base`를 시드로 확정한다. 품질 기준은 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 프리미엄 결과물**이다. 자산 아트 디렉션·HTML 오버뷰 레이아웃 스펙·핵심 원칙은 `references/brand-kit-image.md`를 따른다.
 
 ## 입력
 
@@ -58,18 +58,19 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 ## 출력 파일 (대상 프로젝트 cwd 기준)
 
-- `.design/BRAND_KIT.md` — 브랜드 방향(텍스트). 색 HEX·타이포 스펙의 **권위 원본**은 여기와 토큰에 둔다 (보드는 이를 시각화).
-- `.design/brand-tokens.json`
-- `.design/image-briefs/brand-briefs.md` — 종합 오버뷰 보드·(선택) 로고·추가 탐색 브리프
-- `.design/generated/brand-kit/` — 종합 브랜드 오버뷰 보드·추가 탐색 이미지 (메인)
-- `.design/generated/brand-kit/candidates/direction-{a,b,c}/` — **발산 시(분위기 열림)** 후보 방향별 풀 `BRAND_KIT.md` + `brand-tokens.json` + `brief.md`. 보드는 `.design/generated/brand-kit/brand-overview-route-{a,b,c}.png`(route-X ↔ direction-X 매핑 고정). 고른 방향만 canonical(`.design/BRAND_KIT.md`·`brand-tokens.json`·`image-briefs/brand-briefs.md`)로 승격하고 안 고른 후보는 시안으로 보존한다. **분위기 고정이면 후보 없이 canonical 1벌을 직접 작성**한다(발산 안 함).
-- `.design/final/brand-kit/` — 보드 확정본(다운스트림이 우선 읽음); 시안은 `.design/generated/`에 보존. **로고 이미지는 만들지 않는다** — 로고 방향은 보드 §6에만 담고, 확정 로고는 design-logo가 보드 §6을 읽어 `.design/final/logo/`에 만든다.
+- `.design/BRAND_KIT.md` — 브랜드 방향(텍스트). 색 HEX·타이포 스펙의 **권위 원본**.
+- `.design/brand-tokens.json` — 토큰(권위 원본).
+- `.design/image-briefs/brand-briefs.md` — 자산·HTML 오버뷰·(선택) 추가 탐색 브리프.
+- `.design/generated/brand-kit/assets/` — base 자산 시안(`--auto-version` 누적).
+- `.design/generated/brand-kit/candidates/direction-{a,b,c}/` — 발산 시 후보별 풀 `BRAND_KIT.md`+`brand-tokens.json`+`brief.md`. 고른 방향만 canonical로 승격.
+- `.design/final/brand-kit/assets/` — 락된 base 자산: `logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icons/<name>.png`.
+- `.design/final/brand-kit/overview.html` — 자산을 끼워넣은 HTML 오버뷰(+선택 `overview.css`). 다운스트림이 우선 읽음.
 
-생성 폴더는 동봉 스크립트가 채운다 (아래 "이미지 생성"·"흐름" 참고).
+**로고/UI/아이콘은 base 자산으로 생산**하며, 풀 산출물(로고 시스템·풀 아이콘셋·페이지)은 다운스트림 몫이다.
 
 ## BRAND_KIT.md 구조
 
-§1~11은 종합 오버뷰 보드의 11섹션과 1:1로 대응한다. **§12 다음 결정 사항(Next Decisions to Confirm)은 작업용 텍스트 섹션이라 보드 이미지에는 렌더하지 않는다 — md에만 둔다.**
+§1~11은 HTML 오버뷰의 11섹션과 1:1로 대응한다. **§12 다음 결정 사항(Next Decisions to Confirm)은 작업용 텍스트 섹션이라 HTML 오버뷰에는 렌더하지 않는다 — md에만 둔다.**
 
 ```md
 # BRAND_KIT.md
@@ -183,7 +184,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 }
 ```
 
-> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 2~3개는 카탈로그의 specimen URL과 함께 사용자에게 제시해 승인 게이트(흐름 3)에서 확정받는다. gpt-image는 폰트 파일을 로드하지 않으므로, 보드 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다.
+> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 2~3개는 카탈로그의 specimen URL과 함께 사용자에게 제시해 승인 게이트(흐름 3)에서 확정받는다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다.
 
 ## brand-briefs.md 구조
 
@@ -195,18 +196,18 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - 발산 루트 사전 제약: (특정 루트/모드를 강제하거나 제외할 게 있으면 메모; 없으면 발산 3 루트 기본 매핑 사용. 루트별 모드는 references/brand-kit-image.md "발산 3 루트")
 - 금지 패턴:
 
-## 종합 브랜드 오버뷰 보드 (필수 · 메인)
-### 캔버스 / 레이아웃 (라이트/다크, 기본 11섹션 §1–11 그리드 — §12 다음 결정은 보드 제외)
+## HTML 오버뷰 (필수 · 메인)
+### 레이아웃 메모 (라이트/다크, 기본 11섹션 §1–11 그리드 — §12 다음 결정은 제외)
 ### 섹션 구성 메모
-Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline Options · Logo Direction · Color System · Typography · Voice & Tone · Visual & UI Direction · Imagery/Iconography — 로고 외 최소 8개 이상의 섹션이 한눈에. **§12 다음 결정 사항(Next Decisions)은 보드에 넣지 않는다 (md 전용).**
+Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline Options · Logo Direction · Color System · Typography · Voice & Tone · Visual & UI Direction · Imagery/Iconography — 로고 외 최소 8개 이상의 섹션이 한눈에. **§12 다음 결정 사항(Next Decisions)은 HTML 오버뷰에 넣지 않는다 (md 전용).**
 ### 태그라인 (짧고 구체적으로)
-### 발산 3 루트 (메인 보드 첫 생성용 · 분위기 열림일 때만)
-발산 시 각 루트는 자기 **후보 BRAND_KIT 전문**에서 인스턴스화한다 — 성격·팔레트·타이포·보이스·UI가 **모두** 방향별로 다르다(비주얼 모드 델타가 아니라 전략 전체 발산). 방향별 brief는 `candidates/direction-{a,b,c}/brief.md`에 둔다. 셋은 같은 제품 사실(§1·타깃·문제)과 Q6 회피 제약만 공유한다. 아래 3 아키타입은 **발산 스프레드의 출발점**이되 제품 무드(Q4–6)에 맞춰 또렷이 다른 세 방향으로 구체화한다. 모드/스프레드 매핑은 references/brand-kit-image.md "발산 3 루트". (분위기 고정이면 이 서브섹션을 건너뛰고 단일 방향 보드 brief만.)
+### 발산 3 루트 (자산 첫 생성용 · 분위기 열림일 때만)
+발산 시 각 루트는 자기 **후보 BRAND_KIT 전문**에서 인스턴스화한다 — 성격·팔레트·타이포·보이스·UI가 **모두** 방향별로 다르다(비주얼 모드 델타가 아니라 전략 전체 발산). 방향별 brief는 `candidates/direction-{a,b,c}/brief.md`에 둔다. 셋은 같은 제품 사실(§1·타깃·문제)과 Q6 회피 제약만 공유한다. 아래 3 아키타입은 **발산 스프레드의 출발점**이되 제품 무드(Q4–6)에 맞춰 또렷이 다른 세 방향으로 구체화한다. 모드/스프레드 매핑은 references/brand-kit-image.md "발산 3 루트". (분위기 고정이면 이 서브섹션을 건너뛰고 단일 방향 자산 brief만.)
 - 루트 A — 안전한 SaaS형 (출발점):
 - 루트 B — 프리미엄 에디토리얼형 (출발점):
 - 루트 C — 대담한 실험형 (출발점):
 ### Negative Prompt (공통)
-(텍스트는 읽히고 위계 또렷하게. 정확한 색/폰트 스펙의 권위 원본은 BRAND_KIT.md/tokens — 보드는 그 시각화)
+(정확한 색/폰트 스펙의 권위 원본은 BRAND_KIT.md/tokens — HTML 오버뷰는 그 실렌더)
 
 ## 추가 탐색 이미지 (선택)
 ### 용도 (대안 무드 / 키 비주얼 / 이미지 디렉션 / 히어로 배경 등)
@@ -231,57 +232,45 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
-이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 생성할 수 없고, 그때만 사람이 직접 드롭하는 폴백을 쓴다. 스크립트 옵션·전제는 `image-gen` 스킬 참조. **키는 사전 점검하지 말고 바로 생성을 호출한다** — 부재 시 스크립트가 고치는 법까지 안내하며 즉시 실패한다. 단, 생성은 흐름의 승인 게이트(3번)를 통과한 뒤에만 시작한다 — 키 사전 점검을 생략하는 것이지, 승인 게이트를 생략하는 게 아니다.
+이미지는 공유 `image-gen` 스킬 스크립트로 생성한다. `OPENAI_API_KEY` 필요(`.env`). **키 사전 점검 없이 바로 호출** — 없으면 스크립트가 안내하며 실패. 생성은 승인 게이트(흐름 3) 통과 후에만.
 
-스크립트 경로(형제 스킬): `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
+스크립트 경로: `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
 
-- **여러 장은 항상 `--n`이 아니라 개별 호출.** (`--n`은 같은 프롬프트 샘플링이라 시안 용도로 부적합 — 비슷하게 나온다.)
-- **메인 보드 첫 생성: 분위기 열림이면 3장 발산, 고정이면 1장**: 열림이면 **후보 킷별로**(direction-a/b/c) 각각 자기 BRAND_KIT 전문에서 구성한 다른 프롬프트로 개별 호출(`--quality low` 초안, route-a/b/c) — 비주얼 델타가 아니라 방향별 전체 분기. 고정이면 단일 방향 1장. 그 외 — 방향 확정 후 재수정, 추가 탐색 — 는 모두 **1개씩**. 메인은 종합 오버뷰 보드이며, 로고는 그 안의 §6 섹션으로만 들어간다(독립 로고 이미지는 만들지 않음).
-- 프롬프트는 브리프의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)를 `references/brand-kit-image.md`의 템플릿대로 구성해 **임시 파일에 쓰고 `--prompt-file`로 넘긴다**.
-- **임시 파일에는 해당 호출의 프롬프트 본문만 쓴다** — 메인 보드 발산은 해당 후보 킷(direction-X)에서 구성한 루트 프롬프트(방향별 전체 전략 반영), 추가 탐색은 `### 이미지 생성 Prompt`. 캔버스/레이아웃·섹션 구성 메모·태그라인 설명 등 다른 서브섹션은 포함하지 않는다. Negative Prompt는 프롬프트 마지막에 `Avoid: ...` 한 줄로 합친다.
-- 호출 예:
+- **자산별 개별 호출** (한 프롬프트의 변형이 아님 — `--n` 금지).
+- **투명 라우팅 (중요)**: 컷아웃 자산은 투명 PNG가 필요하다.
+  - `logo-base.png`·`wordmark-base.png`·`icons/<name>.png` → `--model gpt-image-1.5 --background transparent --output-format png`.
+  - `key-visual.png`·`ui-base.png` → `--model gpt-image-2`(불투명). (gpt-image-2는 `transparent` 미지원.)
+- **자산 간 일관성**: 먼저 **스타일 앵커**(또는 `key-visual`)를 만들고, 이후 각 자산을 그 앵커를 `--image`로 첨부 + 공통 스타일 프리앰블(BRAND_KIT/tokens)로 생성해 한 가족이 되게 한다. 아이콘은 가족 앵커(또는 첫 아이콘)를 `--image`로 시드.
+- **품질/비용**: 초안 `--quality low`. **사진류(key-visual·ui)만 `--quality high` 락**, 로고·아이콘은 low(필요 시 medium). 아이콘은 오버뷰 표시 크기엔 low로 충분.
+- **버전 보존**: 모든 재생성 `--auto-version`(`generated/brand-kit/assets/`에 `-v2`… 누적). 락된 자산만 `final/brand-kit/assets/`로 복사.
+- 프롬프트는 임시 파일에 써서 `--prompt-file`로. 자산 아트 디렉션·로고/아이콘 청크는 `references/brand-kit-image.md`·`../references/design/logo-art-direction.md`·`../references/design/icon/icon-rules.md`.
+- 호출 예(투명 로고 마크):
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
-    --prompt-file <임시 프롬프트 파일> \
-    --out "<cwd>/.design/generated/brand-kit/brand-overview-route-a.png" \
-    --auto-version --size 1024x1536 --quality low --model gpt-image-2
+    --prompt-file <로고 프롬프트 파일> \
+    --image "<cwd>/.design/generated/brand-kit/assets/style-anchor.png" \
+    --out "<cwd>/.design/generated/brand-kit/assets/logo-base.png" \
+    --auto-version --model gpt-image-1.5 --background transparent --quality low
   ```
-- **수정은 텍스트 재생성이 아니라 증분 편집(`--image`)으로 한다.** 첫 생성(발산 3장·(선택) 탐색 첫 1장)만 텍스트→이미지다. 그 뒤 "한 가지만 고쳐 재생성"하는 모든 단계 — 발산 수렴(고른 루트→high), 보드 섹션 수정, 탐색 수정 — 는 **직전 이미지를 `--image <경로>`로 첨부**해 보낸다(`--image`가 1개+면 스크립트가 `/v1/images/edits`로 분기, gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리). 그래야 나머지를 보존한 채 그 한 가지만 바뀐다. `--image` 없이 프롬프트만으로 재생성하면 색·레이아웃·다른 섹션까지 통째로 달라진다. 편집 프롬프트에는 **바꿀 한 가지만** 기술한다(전체 보드 프롬프트를 다시 넣지 않음). ⚠ 편집을 거듭하면 한글 텍스트 가독성이 조금씩 뭉개질 수 있으니, 수정은 모아서 한 번에, 텍스트가 망가지면 그 섹션 문구를 `BRAND_KIT.md` 권위값으로 다시 박는다.
+- 호출 예(불투명 키비주얼):
   ```bash
-  # 증분 편집(수정/수렴): 직전 이미지를 첨부, 프롬프트엔 바꿀 한 가지만
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
-    --prompt-file <바꿀 한 가지만 적은 프롬프트 파일> \
-    --image "<cwd>/.design/generated/brand-kit/brand-overview.png" \
-    --out "<cwd>/.design/generated/brand-kit/brand-overview.png" \
-    --auto-version --size 1024x1536 --quality high --model gpt-image-2
+    --prompt-file <키비주얼 프롬프트 파일> \
+    --out "<cwd>/.design/generated/brand-kit/assets/key-visual.png" \
+    --auto-version --model gpt-image-2 --size 1536x1024 --quality low
   ```
-- **저장 경로**: `--out`에 **대상 프로젝트 cwd 기준 절대 경로** — 종합 보드·추가 탐색은 `<cwd>/.design/generated/brand-kit/`. 보드·추가 탐색 확정본은 lock 시 `<cwd>/.design/final/brand-kit/`로 복사하고 시안은 그대로 둔다.
-- **파일명**: 발산 초안은 루트별 `brand-overview-route-a.png` · `-route-b.png` · `-route-c.png`. 재시도(가챠)는 버전 접미(`-route-a-v2.png` 등). 수렴은 고른 루트 초안을 `--image`로 첨부해 high 편집 → `brand-overview.png`. 이후 섹션 수정도 직전 보드를 `--image`로 편집하되 `--out`은 `brand-overview.png`에 `--auto-version`을 붙여 호출하면 `-v2`·`-v3`…로 자동 증분된다(기존본을 덮지 않음, 수동 버전 표기·`--force` 불필요). 재시도(가챠)도 같은 `--out`에 `--auto-version`이면 `-route-a-v2`처럼 자동 증분된다. lock되면 최종 보드 편집본을 `.design/final/brand-kit/brand-overview.png`로 복사한다.
-- **크기/품질**: 보드는 콘텐츠 양에 맞는 세로/가로 크기(세로 예: `1024x1536`), 빠른 초안 `--quality low`, 확정본 `--quality high`.
-- 보드의 섹션 시스템·비주얼 모드·텍스트 규칙·프롬프트 템플릿은 `references/brand-kit-image.md` 참조. **로고/아이콘의 깊은 생성 스펙·프롬프트 청크는 형제 공유 ref `../references/design/logo-art-direction.md`·`../references/design/icon/icon-rules.md`에 있다** — 보드의 로고 섹션에는 logo-art-direction.md §7.1 압축 블록을 `BRAND_KIT.md §6`으로 채워 넣고(generic 줄 금지), 아이콘 세트는 icon/icon-rules.md를 끌어다 쓴다. (독립 로고용 §7 풀 청크는 design-logo가 쓴다 — brand-kit은 보드 §6만 채운다.)
-- 종합 보드는 텍스트(섹션 타이틀·HEX·타입 스케일·짧은 문구)를 담되 **읽히고 위계가 또렷하게** 한다. **보이는 텍스트(섹션 타이틀·라벨·태그라인·미션/약속·UI 카피 등)는 한국어로 렌더**한다 (제품·타깃이 영어권이면 한/영 병기 가능; 한글 글리프 렌더 한계를 감안해 짧고 또렷한 라벨로). 단 **정확한 색/폰트 스펙의 권위 원본은 이미지가 아니라 `BRAND_KIT.md`/`brand-tokens.json`** — 보드는 그 시각화다.
+
+### overview.html 저작 (이미지 아님)
+
+`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-image.md`의 "HTML 오버뷰 레이아웃 스펙"을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(상대 경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만).
 
 ## 흐름 (디자이너 협업 루프)
 
-1. **킷 작성 (분위기 분기)** — 색·타이포 권위 원본은 여기에. §1–11은 보드 섹션과 1:1, §12 다음 결정 사항은 md 전용·보드 제외.
-   - **분위기 고정**: canonical `.design/BRAND_KIT.md` + `.design/brand-tokens.json` 1벌 작성.
-   - **분위기 열림**: `.design/generated/brand-kit/candidates/direction-{a,b,c}/`에 풀 `BRAND_KIT.md` + `brand-tokens.json` **3벌** 작성 — 셋 다 §1–12 완전히 채우고, 성격·팔레트·타이포·보이스·UI가 방향별로 다르다. Q4–6이 발산 폭을 앵커링하고 셋 다 Q6 회피 제약을 지킨다. (canonical은 아직 없음 — 고른 것이 곧 canonical.)
-
-   §8 타이포는 `../references/design/font-catalog.md`에서 실존 폰트를 골라 토큰에 실제 family+폴백을 박고, 승인 게이트(3)에서 specimen URL로 확인받는다. §11 아이코노그래피는 `../references/design/icon/icon-rules.md`(핵심 원칙·시스템 파라미터)를 읽고, `icon-style-catalog.md`에서 브랜드 성격·사용 환경에 맞는 스타일 하나를 확정하며, `icon-domain-examples.md`에서 프로젝트 도메인 섹션만 읽어 추상 메타포 모티프를 끌어와 §11 4필드(스타일·폼 규칙·모티프·상태 규칙)에 증류한다. **폼 규칙(조인/터미널·코너·굵기)은 icon-rules.md §2에서 round/square를 브랜드 성격에 맞춰 명시 확정한다 — 기본 round로 흘려보내지 않는다.** (선택) `icon-reference-vendors.md`로 스타일을 보정하되 벤더명은 §11·프롬프트에 쓰지 않는다. 발산 시 이 §8·§11 작업은 후보 킷마다 수행한다.
-2. brief 작성 — 분위기 고정이면 `.design/image-briefs/brand-briefs.md` 1벌(종합 오버뷰 보드·(선택) 추가 탐색). 분위기 열림이면 방향별 `candidates/direction-{a,b,c}/brief.md` 3벌(고른 것이 승격됨).
-3. **승인 게이트 (이미지 생성 전 필수)** — **승인 전에는 초안 한 장도 생성하지 않는다**(이미지는 OpenAI API 실비; 가장 싼 텍스트 단계에서 잡는다).
-   - **분위기 고정**: 세 문서(`BRAND_KIT.md`·`brand-tokens.json`·`brand-briefs.md`)를 제시하고 방향 확인 → 승인 → 단일 보드 렌더.
-   - **분위기 열림**: 후보 3 방향을 **각 몇 줄 요약**(성격·팔레트 시드·타이포 결·보이스 톤·UI 무드)으로 제시한다 — 풀 킷 전문을 강독하도록 강요하지 않는다. "이 세 방향 스프레드가 렌더해볼 만한가" 확인받고, 사용자는 렌더 전에 텍스트로 한 방향을 빼거나/교체/조정할 수 있다. 승인되면 3 보드 렌더(최종 방향 결정은 4a에서 보드를 보고 고르는 것).
-   - 수정 요청은 문서를 고쳐 다시 확인받고, 명시적으로 승인되면 다음으로.
-4. **종합 브랜드 오버뷰 보드(필수·메인)** — 발산 → (재시도) → 수렴으로 진행한다:
-   - **4a · 발산 (분위기 열림일 때만; 고정이면 건너뛰고 단일 보드 1장 생성 후 4b로)**: 후보 킷별로(direction-a/b/c) 각각 자기 BRAND_KIT 전문에서 구성한 프롬프트로 `--quality low` 초안 3장을 **개별 호출** 생성(`brand-overview-route-a/b/c.png`, route-X↔direction-X). 방향별 프롬프트 구성은 `references/brand-kit-image.md`의 "발산 3 루트"를 따른다. 키가 없으면 사람이 드롭. 3장을 나란히 보여주고 **어느 방향이 좋은지** 묻는다.
-   - **재시도(re-roll) 루프** — 3장 다 별로면 두 모드 중 사용자가 고른다:
-     - (a) **그대로 다시(가챠)**: 같은 후보 킷 프롬프트를 그대로 재호출, 파일명 버전업(`-route-a-v2.png` 등). 같은 방향 새 뽑기 — 같은 프롬프트라 결이 비슷하다고 미리 알린다.
-     - (b) **방향 조정**: 뭐가 별로였는지 받아 해당 **후보 킷(텍스트)을 교체·수정**한 뒤 그 방향만 재렌더(비주얼만 트는 게 아니라 킷 자체를 바꾼다).
-     - 마음에 드는 방향이 나올 때까지 반복(모두 `--quality low` 초안).
-   - **4b · 수렴**: 고른 방향 초안을 `--image`로 첨부해 `--quality high`로 편집 렌더 → `brand-overview.png`(고른 구도를 보존해 고품질화). **발산이었으면 고른 후보를 canonical로 승격**: `candidates/direction-X/`의 `BRAND_KIT.md`→`.design/BRAND_KIT.md`, `brand-tokens.json`→`.design/brand-tokens.json`, `brief.md`→`.design/image-briefs/brand-briefs.md`. 이후 피드백을 받아 **한 번에 한 섹션/한 가지만** — 직전 보드를 `--image`로 첨부한 증분 편집으로 — 고쳐 재생성(`-v2`·`-v3` …), lock까지 반복.
-   - **확정(복사)**: 방향이 lock되면 최종 편집본을 `<cwd>/.design/final/brand-kit/brand-overview.png`로 복사한다. 시안(`.design/generated/brand-kit/`의 안 고른 루트·이전 버전, 그리고 `candidates/`의 안 고른 후보 킷)은 지우지 않고 보존한다 — 다운스트림은 `.design/final/`을 우선 읽는다.
-5. **(선택) 추가 탐색 이미지** — **1개씩**: 1장 생성(키 없으면 드롭) → 보여주고 피드백 → 한 번에 한 가지만 — 직전 이미지를 `--image`로 첨부한 증분 편집으로 — 고쳐 재생성. 확정되면 그 시안을 `.design/final/brand-kit/`로 복사(버전 접미 뗀 이름)하고 다음으로. 시안은 `.design/generated/<폴더>/`에 그대로 둔다. (로고는 여기서 만들지 않는다 — 보드 §6에만 담고, 확정 로고는 design-logo가 보드 §6을 읽어 `final/logo/`에 만든다.)
-6. 메인 보드가 확정되면(필요 시 추가 탐색까지) 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-page-image`"** (로고를 확정하려면 `design-logo`가 보드 §6을 읽어 만든다).
-
-메인 보드는 분위기가 열렸을 때만 첫 단계에서 3장 발산하고 곧장 1개 루프로 수렴한다(분위기 고정이면 1장 직행). 그 외에는 한꺼번에 생성하지 않고 한 개 만들고, 고치고, 다음으로 넘어간다.
+1. **킷 작성 (분위기 분기)** — §1–11은 오버뷰 섹션과 1:1, §12는 md 전용. 분위기 고정→canonical 1벌 / 열림→`candidates/direction-{a,b,c}/` 3벌. §8 폰트는 `../references/design/font-catalog.md`에서, §11 아이코노그래피는 `../references/design/icon/icon-rules.md`로 확정(폼 규칙 명시).
+2. **brief 작성** — `brand-briefs.md`(자산·HTML 오버뷰·선택 추가탐색). 발산이면 방향별 `brief.md`.
+3. **승인 게이트 (생성 전 필수)** — 문서(킷·tokens·brief)를 제시하고 방향 확인. 승인 전 한 장도 생성하지 않는다. 발산이면 후보 3방향을 몇 줄 요약으로.
+4. **발산 (분위기 열림일 때만; 고정이면 건너뜀)** — 루트당 **key-visual 초안 1장(`--quality low`)** + 텍스트 요약으로 비교 → 한 방향 선택. 풀 자산 ×3 금지. 재시도(가챠/방향 조정) 루프는 key-visual 초안으로만. 고른 후보를 canonical로 승격.
+5. **자산 생산 (고른 방향)** — 스타일 앵커 → `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icons/*`를 각각 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집 → lock 시 `final/brand-kit/assets/`로 복사. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
+6. **overview.html 저작** — 락된 자산 + BRAND_KIT/tokens + 레이아웃 스펙으로 LLM이 작성 → `final/brand-kit/overview.html`. 보여주고 피드백: 데이터/레이아웃은 HTML 외과 편집(0콜), 시각은 해당 자산만 재롤 후 `<img>` 교체.
+7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
+8. 확정되면 산출물 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-page-image`"** (각자 `assets/`를 시드로 읽음).
