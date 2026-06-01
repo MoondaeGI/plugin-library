@@ -13,15 +13,15 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ## 전제
 
-- `design-brand-kit` 산출물(`.design/final/brand-kit/assets/logo-base.png`·`.design/BRAND_KIT.md`·`.design/brand-tokens.json`)이 있으면 그걸 쓴다. **없으면 흐름 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 만들기 / 로고용 최소 Q&A로 바로 진행).
+- `design-brand-kit` 산출물(`.design/final/brand-kit/assets/logo-base.png`·`.design/final/brand-kit/BRAND_KIT.md`·`.design/final/brand-kit/brand-tokens.json`)이 있으면 그걸 쓴다. **없으면 흐름 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 만들기 / 로고용 최소 Q&A로 바로 진행).
 - 이미지는 공유 `image-gen` 스킬로 생성한다 (`OPENAI_API_KEY` 필요; **키를 사전 점검하지 말고 바로 호출** — 부재 시 스크립트가 고치는 법을 안내하며 즉시 실패). 키가 없으면 사람이 직접 드롭하는 폴백.
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
 - `.design/final/brand-kit/assets/logo-base.png` — **확정 로고 마크 시드(투명).** 보드 재추출 없이 이 파일을 직접 시드로 쓴다.
 - `.design/final/brand-kit/assets/wordmark-base.png` — 확정 워드마크 시드(투명). 로고 시스템(Phase 3) 워드마크를 이걸로 시드.
-- `.design/BRAND_KIT.md` — §6 로고 방향(구성·의미·금지), §1 개요, 금지 패턴, §8 타이포(워드마크용).
-- `.design/brand-tokens.json` — 색 HEX·타이포.
+- `.design/final/brand-kit/BRAND_KIT.md` — §6 로고 방향(구성·의미·금지), §1 개요, 금지 패턴, §8 타이포(워드마크용).
+- `.design/final/brand-kit/brand-tokens.json` — 색 HEX·타이포.
 
 > `logo-base.png`가 **없으면** Phase 0의 로고 Q&A로 최소 정보를 모은다 — 시드 없이 첫 보드는 텍스트→이미지.
 
@@ -57,14 +57,14 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 ## 흐름 (디자이너 협업 루프)
 
 ### Phase 0 — brand kit 감지 (시작 시 필수)
-- `.design/BRAND_KIT.md`와 `.design/final/brand-kit/assets/logo-base.png` 존재를 확인한다.
+- `.design/final/brand-kit/BRAND_KIT.md`와 `.design/final/brand-kit/assets/logo-base.png` 존재를 확인한다.
 - **있으면** → Phase 1로(시드 직접 사용).
 - **없으면** → 두 길을 제시하고 고르게 한다:
   - **(1) 브랜드 킷 먼저** — "design-brand-kit으로 브랜드 킷부터 만들까요? (권장 — 색·타이포·보이스까지 갖춰 마크 근거가 탄탄)". 고르면 design-brand-kit을 안내하고 종료.
   - **(2) 로고용 최소 Q&A** — 여기서 바로 진행. 로고에 필요한 최소 정보를 **한 번에 하나씩** 묻는다: 제품명·한 줄 소개 / 분야 / 브랜드 성격·톤(페르소나 한 줄) / 핵심 메타포·심볼 방향 / 색(HEX 또는 방향) / 워드마크 타입 방향 / 피할 클리셰. 추측 금지 — 답으로 마크 방향·색을 정할 수 있을 때까지 파고든다. 수집분을 `logo-briefs.md`에 적는다(가짜 `BRAND_KIT.md`를 만들지 않음). **시드 추출(Phase 1)은 건너뛰고** Phase 2의 보드 생성을 **텍스트→이미지**(시드 미첨부, Q&A 마크 DNA를 프롬프트에 채움)로 한다. 끝에 "더 완전한 시스템(색·타이포·보이스)이 필요하면 design-brand-kit"을 안내.
 
 ### Phase 1 — 시드 + 승인 게이트 (brand kit가 있을 때)
-1. 입력 읽기(BRAND_KIT.md §6·tokens·assets/logo-base.png).
+1. 입력 읽기(`.design/final/brand-kit/BRAND_KIT.md` §6·tokens·assets/logo-base.png).
 2. **시드 = `assets/logo-base.png` 직접.** brand-kit이 이미 깨끗한 투명 로고 마크를 생산했으므로 **보드에서 재추출하지 않는다**(재추출이 드리프트의 원인이었다). 그대로 `generated/logo/seed.png`로 복사하거나 경로를 그대로 시드로 쓴다. 보여주고 "이 마크 맞아요?" 확인.
    - **로고 (I) 단일 커밋**: 사용자가 `logo-base`를 그대로 확정할 수 있다. 더 탐색하고 싶을 때만 40컨셉 보드로 간다(아래 **탐색 opt-in**).
 3. `logo-briefs.md` 작성(시드 출처·탐색 방향·컨셉 방법 분포·제약).

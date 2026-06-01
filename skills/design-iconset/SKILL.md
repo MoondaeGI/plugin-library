@@ -15,7 +15,7 @@ description: 확정된 brand kit를 바탕으로 아이콘 세트를 한눈에 �
 
 ## 전제
 
-- `design-brand-kit` 산출물(`.design/BRAND_KIT.md`·`.design/brand-tokens.json`·`.design/final/brand-kit/assets/icons/`)이 있으면 그걸 쓴다. **없으면 흐름 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 만들기 / 아이콘용 최소 Q&A로 바로 진행).
+- `design-brand-kit` 산출물(`.design/final/brand-kit/BRAND_KIT.md`·`.design/final/brand-kit/brand-tokens.json`·`.design/final/brand-kit/assets/icons/`)이 있으면 그걸 쓴다. **없으면 흐름 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 만들기 / 아이콘용 최소 Q&A로 바로 진행).
 - 이미지는 공유 `image-gen` 스킬로 생성한다 (`OPENAI_API_KEY` 필요; **키를 사전 점검하지 말고 바로 호출** — 부재 시 스크립트가 고치는 법을 안내하며 즉시 실패). 키가 없으면 사람이 직접 드롭하는 폴백.
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
@@ -23,8 +23,8 @@ description: 확정된 brand kit를 바탕으로 아이콘 세트를 한눈에 �
 Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다. 권위 원본은 md/tokens — 시드 이미지와 어긋나면 md/tokens가 정답이다(`icon-rules.md` §0).
 
 - `.design/final/brand-kit/assets/icons/` — **brand-kit이 만든 개별 투명 아이콘.** 이 가족을 **권위 기준(스타일 시드)**으로 삼아 풀 product 세트를 확장한다(보드 재추출 안 함).
-- `.design/BRAND_KIT.md` — §11 아이코노그래피(스타일·폼 규칙·모티프·상태 규칙)·§6·§1/에센스·§10·금지 패턴.
-- `.design/brand-tokens.json` — 색 HEX.
+- `.design/final/brand-kit/BRAND_KIT.md` — §11 아이코노그래피(스타일·폼 규칙·모티프·상태 규칙)·§6·§1/에센스·§10·금지 패턴.
+- `.design/final/brand-kit/brand-tokens.json` — 색 HEX.
 
 > `assets/icons/`가 **없으면** Phase 0의 아이콘 Q&A로 최소 정보를 모은다.
 
@@ -58,7 +58,7 @@ Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다.
 ## 흐름 (디자이너 협업 루프)
 
 ### Phase 0 — brand kit 감지 (시작 시 필수)
-- `.design/BRAND_KIT.md`와 `.design/final/brand-kit/assets/icons/` 존재를 확인한다.
+- `.design/final/brand-kit/BRAND_KIT.md`와 `.design/final/brand-kit/assets/icons/` 존재를 확인한다.
 - **있으면** → Phase 1로.
 - **없으면** → 두 길을 제시하고 고르게 한다:
   - **(1) 브랜드 킷 먼저** — "design-brand-kit으로 브랜드 킷부터 만들까요? (권장 — 색·아이콘 스타일·모티프까지 갖춰 근거가 탄탄)". 고르면 design-brand-kit을 안내하고 종료.

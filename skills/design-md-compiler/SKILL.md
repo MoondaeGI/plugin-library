@@ -13,8 +13,8 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 ## 입력 파일 (있는 것만 읽는다, cwd 기준)
 
-- `.design/BRAND_KIT.md`
-- `.design/brand-tokens.json`
+- `.design/final/brand-kit/BRAND_KIT.md`
+- `.design/final/brand-kit/brand-tokens.json`
 - `.design/image-briefs/brand-briefs.md`
 - `.design/image-briefs/page-briefs.md`
 - `.design/final/brand-kit/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)

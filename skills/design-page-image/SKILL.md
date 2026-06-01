@@ -13,8 +13,8 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
-- `.design/BRAND_KIT.md`
-- `.design/brand-tokens.json`
+- `.design/final/brand-kit/BRAND_KIT.md`
+- `.design/final/brand-kit/brand-tokens.json`
 - `.design/final/brand-kit/assets/ui-base.png` — UI 컴포넌트 룩 시드(있으면 섹션 목업 생성 시 `--image`로 첨부).
 - `.design/final/brand-kit/assets/key-visual.png` — 히어로/배경 자산(있으면 §1 등에서 활용·참조).
 - (있으면) `.design/final/brand-kit/overview.html` — 오버뷰 룩 참조.
