@@ -60,28 +60,23 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 ```
 .design/
-  brand-kit/                          # brand-kit 작업 루트 (generated/ 중첩 폐지)
-    routes/route-{a,b,c}/             # 발산: 각 route 자기완결(self-contained)
-      BRAND_KIT.md
-      brand-tokens.json
-      overview.html
-      brief.md
-      assets/  logo-base.png · wordmark-base.png · key-visual.png · ui-base.png · icons/<name>.png
-    BRAND_KIT.md                      # 확정 route 승격 (= 작업 SSOT)
+  brand-kit/
+    directions.json      # 분위기 열림일 때만 — 3방향 최소 데이터 (컨택트 시트 입력)
+    directions.html      # 분위기 열림일 때만 — 3열 컨택트 시트 (= 발산 게이트)
+    BRAND_KIT.md         # 고른 방향(또는 분위기 고정) 풀 킷 = 작업 SSOT
     brand-tokens.json
-    overview.html
+    overview.html        # data-only 렌더(이미지 슬롯 플레이스홀더) → 승인 후 슬롯 채움
     brief.md
-    assets/  (확정 세트 이미지, 동일 파일명)
+    assets/  logo-base.png · wordmark-base.png · key-visual.png · ui-base.png · icons/<name>.png
   final/
     brand-kit/  BRAND_KIT.md · brand-tokens.json · overview.html · assets/   # lock 세트
 ```
 
 **레이아웃 규칙**:
-- `overview.html`의 모든 `<img>`는 **형제 `assets/`**를 상대경로 참조(`assets/key-visual.png`, `assets/icons/x.png`) → route 폴더든 확정 top이든 final이든 같은 HTML이 그대로 동작.
-- **확정 = 순수 복사**: 고른 `routes/route-a/*`(md·tokens·html·brief·assets/) → `.design/brand-kit/`로 복사(경로 재작성 0). 안 고른 route는 `routes/`에 시안 보존.
+- `overview.html`의 모든 `<img>`는 **형제 `assets/`**를 상대경로 참조(`assets/key-visual.png`, `assets/icons/x.png`) → 작업 폴더든 final이든 같은 HTML이 그대로 동작.
 - **lock = 순수 복사**: `.design/brand-kit/{BRAND_KIT.md,brand-tokens.json,overview.html,brief.md,assets/}` → `.design/final/brand-kit/`.
-- `--auto-version`은 해당 `assets/` 안에서 누적(예: `routes/route-a/assets/logo-base.png` → `-v2`). 롤백은 git.
-- **분위기 고정** → routes/ 없이 `.design/brand-kit/` 바로 작업. **열림** → `routes/route-{a,b,c}/` 발산 후 고른 route 승격.
+- `--auto-version`은 해당 `assets/` 안에서 누적(예: `assets/logo-base.png` → `-v2`). 롤백은 git.
+- **분위기 고정** → `.design/brand-kit/`에서 바로 작업(컨택트 시트 없음). **분위기 열림** → `directions.json` → `directions.html` 컨택트 시트 게이트 → 고른 방향만 `.design/brand-kit/`에 풀 킷 전개.
 
 **로고/UI/아이콘은 base 자산으로 생산**하며, 풀 산출물(로고 시스템·풀 아이콘셋·페이지)은 다운스트림 몫이다.
 
@@ -202,7 +197,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 }
 ```
 
-> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 2~3개는 카탈로그의 specimen URL과 함께 사용자에게 제시해 승인 게이트(흐름 3)에서 확정받는다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다.
+> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다.
 
 ## brand-briefs.md 구조
 
@@ -211,7 +206,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 ## 공통 방향
 - 브랜드 키워드:
-- 발산 루트 사전 제약: (특정 루트/모드를 강제하거나 제외할 게 있으면 메모; 없으면 발산 3 루트 기본 매핑 사용. 루트별 모드는 references/brand-kit-image.md "발산 3 루트")
+- 발산 방향 사전 제약: (특정 방향/무드를 강제하거나 제외할 게 있으면 메모; 없으면 컨택트 시트 기본 아키타입 사용. 3방향 스프레드·아키타입은 references/brand-kit-contact-sheet.md)
 - 금지 패턴:
 
 ## HTML 오버뷰 (필수 · 메인)
@@ -219,11 +214,9 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 ### 섹션 구성 메모
 Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline Options · Logo Direction · Color System · Typography · Voice & Tone · Visual & UI Direction · Imagery/Iconography — 로고 외 최소 8개 이상의 섹션이 한눈에. **§12 다음 결정 사항(Next Decisions)은 HTML 오버뷰에 넣지 않는다 (md 전용).**
 ### 태그라인 (짧고 구체적으로)
-### 발산 3 루트 (자산 첫 생성용 · 분위기 열림일 때만)
-발산 시 각 루트는 자기 **route BRAND_KIT 전문**에서 인스턴스화한다 — 성격·팔레트·타이포·보이스·UI가 **모두** 방향별로 다르다(비주얼 모드 델타가 아니라 전략 전체 발산). 방향별 brief는 `routes/route-{a,b,c}/brief.md`에 둔다. 셋은 같은 제품 사실(§1·타깃·문제)과 Q6 회피 제약만 공유한다. 아래 3 아키타입은 **발산 스프레드의 출발점**이되 제품 무드(Q4–6)에 맞춰 또렷이 다른 세 방향으로 구체화한다. 모드/스프레드 매핑은 references/brand-kit-image.md "발산 3 루트". (분위기 고정이면 이 서브섹션을 건너뛰고 단일 방향 자산 brief만.)
-- 루트 A — 안전한 SaaS형 (출발점):
-- 루트 B — 프리미엄 에디토리얼형 (출발점):
-- 루트 C — 대담한 실험형 (출발점):
+### 발산 컨택트 시트 (분위기 열림일 때만)
+분위기 **열림**이면 발산은 `directions.json`(3방향 최소 데이터: 무드·팔레트·폰트 1쌍·태그라인)으로 표현하고, `scripts/build-contact-sheet.mjs`가 이를 입력으로 `directions.html`(3열 컨택트 시트)을 결정적으로 만든다 — 이 시트가 발산 게이트다. 상세 3방향 스프레드 가이드(아키타입·공유 제약)는 `references/brand-kit-contact-sheet.md` 참조. brief는 **고른 방향 1벌만** 작성한다(방향별 brief 3벌이 아님). (분위기 고정이면 이 서브섹션을 건너뛰고 단일 방향 자산 brief만.)
+- 아키타입(안전한 SaaS형·프리미엄 에디토리얼형·대담한 실험형)과 공유 제약은 `references/brand-kit-contact-sheet.md`에서 관리한다.
 ### Negative Prompt (공통)
 (정확한 색/폰트 스펙의 권위 원본은 BRAND_KIT.md/tokens — HTML 오버뷰는 그 실렌더)
 
@@ -239,7 +232,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 - 색상은 감성어가 아니라 실제 HEX 값으로 제안한다.
 - 보안 / B2B / SaaS 제품이라고 해서 무조건 파란색·보라색·네온을 쓰지 않는다.
 - 로고 방향은 "고급스럽게" 같은 말로 끝내지 않고 형태 언어를 설명한다.
-- 분위기가 열려 있으면 **전략이 다른 3개 브랜드 방향**(각 풀 BRAND_KIT — 성격·팔레트·타이포·보이스·UI 전체가 다름)을 제안해 각각 초안 보드로 렌더하고, 사용자가 보고 하나를 고른다(아래 "흐름" 참고). ① 안전한 SaaS형 ② 프리미엄 에디토리얼형 ③ 대담한 실험형은 **발산 스프레드의 출발점**이되 제품 무드(Q4–6)에 맞춰 또렷이 다른 세 방향으로 구체화한다 — 비주얼만 다른 "같은 브랜드의 세 해석"이 아니다. 분위기가 고정이면 1개 방향만 만든다. 디스커버리에서 명시적으로 거부된 방향만 다른 것으로 대체한다.
+- 분위기가 열려 있으면 **전략이 다른 3개 브랜드 방향**(성격·팔레트·타이포·보이스·UI가 방향별로 다름)을 `directions.html` 3열 컨택트 시트로 렌더하고, 사용자가 보고 한 열을 고른다(아래 "흐름" 참고). ① 안전한 SaaS형 ② 프리미엄 에디토리얼형 ③ 대담한 실험형은 **발산 스프레드의 출발점**이되 제품 무드(Q4–6)에 맞춰 또렷이 다른 세 방향으로 구체화한다 — 비주얼만 다른 "같은 브랜드의 세 해석"이 아니다. 분위기가 고정이면 1개 방향만 만든다. 디스커버리에서 명시적으로 거부된 방향만 다른 것으로 대체한다.
 
 ## 금지 사항
 
@@ -263,22 +256,22 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 - **품질/비용**: 초안 `--quality low`. **사진류(key-visual·ui)만 `--quality high` 락**, 로고·아이콘은 low(필요 시 medium). 아이콘은 오버뷰 표시 크기엔 low로 충분.
 - **버전 보존**: 모든 재생성 `--auto-version`(해당 `assets/` 안에서 `-v2`… 누적). 락된 자산만 `final/brand-kit/assets/`로 복사.
 - 프롬프트는 임시 파일에 써서 `--prompt-file`로. 자산 아트 디렉션·로고/아이콘 청크는 `references/brand-kit-image.md`·`../references/design/logo-art-direction.md`·`../references/design/icon/icon-rules.md`.
-- 호출 예(발산 route 투명 로고 마크):
-  ```bash
-  node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
-    --prompt-file <로고 프롬프트 파일> \
-    --image "<cwd>/.design/brand-kit/routes/route-a/assets/key-visual.png" \
-    --out "<cwd>/.design/brand-kit/routes/route-a/assets/logo-base.png" \
-    --auto-version --model gpt-image-1.5 --background transparent --quality low --autocrop
-  ```
-- 호출 예(발산 route 불투명 키비주얼):
+- 호출 예(불투명 키비주얼 — 스타일 앵커):
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <키비주얼 프롬프트 파일> \
-    --out "<cwd>/.design/brand-kit/routes/route-a/assets/key-visual.png" \
+    --out "<cwd>/.design/brand-kit/assets/key-visual.png" \
     --auto-version --model gpt-image-2 --size 1536x1024 --quality low
   ```
-- 호출 예(확정 후 자산 생산 — 확정 brand-kit/ top):
+- 호출 예(투명 로고 마크 — 앵커 첨부):
+  ```bash
+  node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
+    --prompt-file <로고 프롬프트 파일> \
+    --image "<cwd>/.design/brand-kit/assets/key-visual.png" \
+    --out "<cwd>/.design/brand-kit/assets/logo-base.png" \
+    --auto-version --model gpt-image-1.5 --background transparent --quality low --autocrop
+  ```
+- 호출 예(불투명 UI):
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <ui 프롬프트 파일> \
@@ -293,15 +286,11 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 ## 흐름 (디자이너 협업 루프)
 
-1. **킷 작성 (분위기 분기)** — §1–11은 오버뷰 섹션과 1:1, §12는 md 전용. 분위기 **고정** → `.design/brand-kit/`에 단일 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md` 직행. 분위기 **열림** → `routes/route-{a,b,c}/` 각각에 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md` 3벌(route 자기완결). §8 폰트는 `../references/design/font-catalog.md`에서, §11 아이코노그래피는 `../references/design/icon/icon-rules.md`로 확정(폼 규칙 명시).
-2. **brief 작성** — 발산이면 각 `routes/route-{a,b,c}/brief.md`. 고정이면 `.design/brand-kit/brief.md`. (자산·HTML 오버뷰·선택 추가탐색.)
-3. **승인 게이트 (생성 전 필수)** — 문서(킷·tokens·brief)를 제시하고 방향 확인. 승인 전 한 장도 생성하지 않는다. 발산이면 후보 3방향을 몇 줄 요약으로.
-4. **발산 (분위기 열림일 때만; 고정이면 건너뜀)** — route별 **풀 `overview.html`까지** 생산해 비교한다:
-   - 데이터 섹션(§2·3·4·5·7·8·9): 해당 route의 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜).
-   - route별 생성 이미지: `key-visual.png`(`--model gpt-image-2 --quality low`) + `logo-base.png`·`wordmark-base.png`(`--model gpt-image-1.5 --background transparent --quality low --autocrop`) → §1·§6 채움. 각 route `assets/`에 저장.
-   - `ui-base.png`·`icons/*`는 **고른 route만** 생산(확정 후). route HTML의 §10·§11은 "확정 후 생성" 플레이스홀더.
-   - 결과: route당 이미지 ≈ 3장(low) + 풀 데이터 HTML. 3개 `overview.html`을 나란히 제시 → 한 route 선택 → `routes/route-X/*`를 `.design/brand-kit/`로 **순수 복사 승격**(경로 재작성 0, 안 고른 route는 `routes/`에 보존).
-5. **자산 생산 (확정 route → `.design/brand-kit/assets/`)** — `ui-base`·`icons/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
-6. **overview.html 마무리** — §10·§11 플레이스홀더를 실 자산(`assets/ui-base.png`·`assets/icons/*.png`)으로 채워 **재저작 또는 외과 편집**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
+1. **킷 작성 (분위기 분기)** — §1–11은 오버뷰 섹션과 1:1, §12는 md 전용. 분위기 **고정** → `.design/brand-kit/`에 단일 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md` 직행. 분위기 **열림** → `directions.json`(3방향 최소 데이터)을 작성한다(풀 킷 3벌이 아님). §8 폰트는 `../references/design/font-catalog.md`에서, §11 아이코노그래피는 `../references/design/icon/icon-rules.md`로 확정(폼 규칙 명시).
+2. **brief 작성** — 고정이면 `.design/brand-kit/brief.md`. 열림이면 게이트에서 방향을 고른 뒤 그 1벌만 작성(Step 4). (자산·HTML 오버뷰·선택 추가탐색.)
+3. **승인 게이트 (생성 전 필수)** — 분위기 **열림** → `build-contact-sheet.mjs`로 `directions.html`(3열 컨택트 시트)을 생성해 제시 → 한 열 선택. 분위기 **고정** → data-only `overview.html`(이미지 슬롯 플레이스홀더)을 제시 → 승인. 어느 쪽이든 게이트까지 이미지 0콜이며, 승인/선택 전 한 장도 생성하지 않는다.
+4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 `.design/brand-kit/`에 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md`로 인스턴스화하고 data-only `overview.html`을 저작한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
+5. **자산 생산 (`.design/brand-kit/assets/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icons/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
+6. **overview.html 마무리** — data-only `overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`assets/key-visual.png`·`assets/ui-base.png`·`assets/icons/*.png` 등)으로 채워 **재저작 또는 외과 편집**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
 8. **lock** — `.design/brand-kit/{BRAND_KIT.md,brand-tokens.json,overview.html,brief.md,assets/}`를 `.design/final/brand-kit/`로 **순수 복사**. 확정되면 산출물 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-page-image`"** (각자 `.design/brand-kit/assets/`를 시드로 읽음).
