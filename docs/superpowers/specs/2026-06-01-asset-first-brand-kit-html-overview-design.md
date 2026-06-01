@@ -60,9 +60,8 @@ brand-kit이 생산하는 **오버뷰용 base 자산**. 풀 산출물(로고 시
 ## 6. 흐름
 
 - **A. 디스커버리 & 텍스트** (현행 유지) — Q&A → `BRAND_KIT.md` + `brand-tokens.json`. 분위기 열림 → 3방향 / 고정 → 1방향.
-- **B. 발산 (분위기 열림일 때만)** — 루트당 **key-visual 초안 1장(low)** + 루트별 텍스트 요약(성격·팔레트·타이포·보이스)으로 비교 → 사용자가 한 방향 선택. 풀 자산 세트를 3벌 만들지 않는다. (분위기 고정이면 건너뜀.)
-  - (옵션) 더 풍부한 비교가 필요하면 루트별 풀 HTML 오버뷰까지 — 데이터는 공짜지만 HTML 저작 토큰이 ×3이므로 기본은 "초안 + 요약".
-- **C. 자산 생산 (고른 루트만)** — 스타일 앵커 → `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icons/*` 생성. **초안 low → 사진류(key-visual·ui)만 high 락, 로고·워드마크·아이콘은 low/medium**. 자산별 `generated/` 누적 → 다듬기 루프 → `final/` 락.
+- **B. 발산 (분위기 열림일 때만)** — 루트별 **풀 `overview.html`까지** 만들어 비교(key image만으론 감이 안 잡힘). 데이터 섹션(§2·3·4·5·7·8·9)은 그 루트의 tokens/md에서 **공짜 HTML**, §1·§6은 루트별 `key-visual`(gpt-image-2 low)+`logo-base`·`wordmark-base`(gpt-image-1.5 transparent low)로 채움. `ui-base`·`icons/*`는 **고른 루트만**(§10·§11은 "확정 후 생성" 플레이스홀더). 3개 풀 오버뷰를 나란히 비교 → 한 방향 선택 → `.design/brand-kit/`로 순수 복사 승격. (분위기 고정이면 건너뛰고 `brand-kit/`에서 바로 작업.)
+- **C. 자산 생산 (고른 루트)** — 확정 route에서 나머지 `ui-base`·`icons/*` 생성(발산 때 만든 key-visual·logo·wordmark는 승격됨). **초안 low → 사진류(key-visual·ui)만 high 락, 로고·워드마크·아이콘은 low/medium**. 자산은 해당 `assets/`에 `--auto-version` 누적 → 다듬기 → lock 시 `final/brand-kit/`로 세트 복사.
 - **D. 오버뷰 저작 (HTML)** — LLM이 `overview.html`을 레이아웃 스펙 + `BRAND_KIT.md` + tokens + 자산 경로 + 폰트 CDN으로 작성. §1 워드마크는 `wordmark-base.png`를 `<img>`로, 시각 자산은 `<img>`, 데이터 섹션은 HTML 렌더, 아이콘은 개별 배치 + §11 CSS 그리드.
 - **E. 반복 (결정적)** — 데이터/레이아웃 수정 = HTML 외과 편집(**이미지 비용 0**) / 시각 수정 = 해당 자산만 재롤 후 `<img>` 교체. "한 칸 고치면 전체 흔들림" 소멸.
 - **F. 다운스트림** — `design-logo`/`iconset`/`page-image`가 보드 재추출 없이 `assets/`를 직접 시드.
@@ -93,7 +92,7 @@ brand-kit이 생산하는 **오버뷰용 base 자산**. 풀 산출물(로고 시
 
 | 단계 | 현재(합성 보드) | 신규(자산+HTML) |
 |---|---|---|
-| 발산 | 보드 low×3 ≈ $0.03 | key-visual low×3 ≈ $0.02 |
+| 발산 | 보드 low×3 ≈ $0.03 | 루트당 key-visual+logo+wordmark low ×3 ≈ $0.08 (풀 HTML은 공짜) |
 | 수렴(high 락) | 보드 high 편집 ≈ $0.5 | key-visual+ui high + 로고/아이콘 low ≈ $0.8 |
 | 반복 수정 | 보드 통째 high 재편집 ≈ $0.5×4 ≈ $2 | 데이터·레이아웃 HTML 편집 **$0** / 이미지만 재롤 ≈ $0.2 |
 | **합계(러프)** | **~$1.5–3.0** | **~$0.8–1.5** |
@@ -101,12 +100,14 @@ brand-kit이 생산하는 **오버뷰용 base 자산**. 풀 산출물(로고 시
 **route ×3은 "싼 초안 단계"만 ×3 하지 비싼 락을 ×3 하지 않는다**(풀 자산은 고른 1루트만). 신규가 더 비싸지 않고 오히려 비슷~약간 저렴 — 현재의 진짜 비용은 "수정마다 합성 보드 통째 high 재편집"인데, 신규는 보드 이미지가 없고 데이터·레이아웃 수정이 0원이기 때문.
 
 **비용 통제 기본값(스펙에 명시):**
-1. 발산 = 루트당 key-visual 초안 1장(low) + 텍스트 요약. 풀 자산 ×3 금지.
-2. 풀 자산은 고른 루트만. 초안 low → 사진류만 high 락, 로고·아이콘 low/medium.
+1. 발산 = 루트별 풀 overview.html + key-visual·logo·wordmark(low) ×3. `ui-base`·`icons/*`는 고른 루트만(풀 자산 ×3 금지).
+2. high 락은 고른 루트의 사진류만, 로고·워드마크·아이콘 low/medium.
 3. 아이콘은 오버뷰 용도 **low로 충분**(작게 표시). UI 킷 재사용분만 medium 락.
 4. 데이터·레이아웃 반복은 HTML 편집(0원).
 
 ## 10. 다운스트림 변경(인터페이스)
+
+다운스트림(logo·iconset·page-image·md-compiler·html-prototype)은 모두 **lock된 `.design/final/brand-kit/`**에서 읽는다 — `BRAND_KIT.md`·`brand-tokens.json`·`overview.html`·`assets/`(에셋 경로 `.design/final/brand-kit/assets/`는 v1과 동일).
 
 - **`design-logo`**: 입력을 `brand-overview.png` 재추출 → **`assets/logo-base.png` 직접 시드**. Phase 1 시드 추출 제거. 로고는 **(I) 단일 커밋** — `logo-base`를 그대로 확정 가능, **40컨셉 탐색은 opt-in**(더 보고 싶을 때만). Phase 3 시스템: `wordmark-base.png`를 시드로 워드마크 확정/다듬기, favicon·app-icon은 생성.
 - **`design-iconset`**: 입력을 `assets/icons/*` + 아이콘 스타일 직접. 풀 product 세트는 brand-kit 아이콘을 **가족 기준**으로 확장.
@@ -121,20 +122,24 @@ brand-kit이 생산하는 **오버뷰용 base 자산**. 풀 산출물(로고 시
 
 ```
 .design/
-  BRAND_KIT.md                         # SSOT(텍스트)
-  brand-tokens.json                    # SSOT(토큰)
-  image-briefs/brand-briefs.md
-  generated/brand-kit/                 # 시안(--auto-version 누적)
-    candidates/direction-{a,b,c}/      # 발산 후보 킷
-    assets/                            # 자산 시안
-  final/brand-kit/
-    assets/
-      logo-base.png
-      key-visual.png
-      ui-base.png
-      icons/<name>.png ...
-    overview.html                      # (+ overview.css 선택)
+  brand-kit/                           # 작업 루트 (generated/ 중첩 폐지)
+    routes/route-{a,b,c}/              # 발산: 각 route 자기완결(self-contained)
+      BRAND_KIT.md
+      brand-tokens.json
+      overview.html
+      brief.md
+      assets/  logo-base.png · wordmark-base.png · key-visual.png · ui-base.png · icons/<name>.png
+    BRAND_KIT.md                       # 확정 route 승격 (작업 SSOT)
+    brand-tokens.json
+    overview.html
+    brief.md
+    assets/                            # 확정 세트 이미지 (동일 파일명)
+  final/brand-kit/                     # lock 세트 — 다운스트림이 읽음
+    BRAND_KIT.md · brand-tokens.json · overview.html · assets/
 ```
+
+- **자기완결 route**: `overview.html`의 `<img>`는 항상 형제 `assets/`를 참조 → route/확정/final 어디서나 동일 HTML. **확정·lock = 경로 재작성 없는 순수 복사.**
+- 분위기 고정이면 `routes/` 없이 `brand-kit/`에서 바로 작업. 버전 이력은 각 `assets/`의 `--auto-version`, 전체 롤백은 git.
 
 ## 13. 영향 받는 레포 파일
 

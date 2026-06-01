@@ -10,6 +10,8 @@
 
 **Spec:** `docs/superpowers/specs/2026-06-01-asset-first-brand-kit-html-overview-design.md`
 
+> **⚠ 구조 개정 (v2, 실행 후):** 아래 태스크 본문의 폴더 경로는 초안(v1)이다. 실제 구현은 스펙 §12 **v2 레이아웃**을 따른다 — `.design/brand-kit/`(작업 루트) 아래 **self-contained `routes/route-{a,b,c}/`**(각자 BRAND_KIT.md·tokens·overview.html·brief·assets/), 확정 route는 `.design/brand-kit/`로 순수 복사 승격, lock 시 `.design/final/brand-kit/`로 세트 복사. 다운스트림은 `.design/final/brand-kit/`(md·tokens·overview.html·assets/)에서 읽는다. 발산도 **B**로 변경(루트별 풀 overview.html + key-visual·logo·wordmark; ui·icons는 고른 루트만). 따라서 본문의 `generated/brand-kit/…`·`candidates/direction-…`·루트 `.design/BRAND_KIT.md`는 스펙 §12 경로로 읽을 것.
+
 **참고 — 이 계획의 변경 유형:** Task 1만 실제 코드(엄격 TDD). 나머지는 스킬/레퍼런스 **마크다운**(프롬프트·지시문)이라 단위 테스트 대상이 아니다 — 검증은 `npm test`(스크립트 회귀), `npm run sync`(Codex 번들 재생성·검증 통과), `image-gen --help`/`--dry-run` 스모크, 일관성 grep으로 한다. 각 Task 끝에 커밋.
 
 **CLAUDE.md 준수:** 실행 단계에서 명령(`npm run sync`, `git commit`, 스크립트 실행 등) 전에 사용자 승인을 받는다. 코드/마크다운 변경 전 변경 이유·내용을 제시하고 승인 후 진행한다.
