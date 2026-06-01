@@ -18,6 +18,7 @@
 //   --n              변형 개수 1-10          (기본 1; >1이면 파일명에 -1,-2… 접미)
 //   --image          입력/레퍼런스 이미지     (반복 가능; 1개+면 /edits 로 분기 — 레퍼런스·편집 공용)
 //   --output-format  png | jpeg | webp       (기본 png)
+//   --background      transparent | opaque | auto   (미지정이면 필드 미전송; gpt-image-2는 transparent 미지원 → 1.5와 페어링)
 //   --force          기존 파일 덮어쓰기 허용
 //   --auto-version   기존 파일 충돌 시 다음 -vN 으로 자동 증분(시안 보존)
 //   --dry-run        API 호출 없이 페이로드·출력 경로만 출력 (키 불필요)
@@ -33,7 +34,7 @@ const TIMEOUT_MS = 300_000;
 
 const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존)
 
-  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--force] [--auto-version] [--dry-run]
+  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--background transparent] [--force] [--auto-version] [--dry-run]
 
 --image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트로).
 OPENAI_API_KEY 환경변수가 필요하다 (--dry-run 제외). --help로 이 도움말 출력.`;
@@ -68,6 +69,7 @@ function parseArgs(argv) {
       case '--model': opts.model = next(); break;
       case '--n': opts.n = parseInt(next(), 10); break;
       case '--output-format': opts.outputFormat = next(); break;
+      case '--background': opts.background = next(); break;
       case '--force': opts.force = true; break;
       // --auto-version: --out 충돌 시 die 대신 다음 -vN 으로 자동 증분(시안 보존).
       // 플래그를 주지 않으면 기존 동작(충돌 시 --force 없으면 die) 그대로 — 범용 호출자 영향 0.
@@ -127,6 +129,9 @@ async function main() {
   if (!prompt || !prompt.trim()) die('오류: --prompt 또는 --prompt-file 가 필요합니다.');
   if (!opts.out) die('오류: --out <경로> 가 필요합니다.');
   if (!Number.isInteger(opts.n) || opts.n < 1 || opts.n > 10) die('오류: --n 은 1-10 사이 정수여야 합니다.');
+  if (opts.background && !['transparent', 'opaque', 'auto'].includes(opts.background)) {
+    die('오류: --background 는 transparent | opaque | auto 중 하나여야 합니다.');
+  }
   for (const img of opts.images) {
     if (!existsSync(img)) die(`오류: --image 파일을 찾을 수 없습니다: ${img}`);
   }
@@ -158,6 +163,7 @@ async function main() {
     quality: opts.quality,
     output_format: opts.outputFormat,
   };
+  if (opts.background) fields.background = opts.background;
   // input_fidelity 는 gpt-image-2 가 지원하지 않는다(항상 high fidelity로 입력 이미지를 처리).
   // 따라서 페이로드에 넣지 않는다 — gpt-image-1/1.5 만 low/high 선택을 지원했던 옵션이라 제거함.
 
