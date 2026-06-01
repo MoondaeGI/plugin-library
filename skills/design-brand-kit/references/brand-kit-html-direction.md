@@ -1,11 +1,10 @@
 # HTML 오버뷰 작성 가이드 (overview.html)
 
-`design-brand-kit`이 `overview.html`을 저작할 때 읽는 가이드. **고정 템플릿이 아니다** — 아래 원칙을 지키되 레이아웃·비주얼은 브랜드별로 LLM이 저작한다(다양성). 아래 레퍼런스 스켈레톤은 "강제"가 아니라 **검증된 좋은 출발점**이다. (룰드 모듈 그리드까지 강제하면 그냥 템플릿이 된다 — 원칙만 지키고 레이아웃은 변주하라.)
+`design-brand-kit`이 `overview.html`을 저작할 때 읽는 허브. 이 파일은 **(1) 어떤 레이아웃 아키타입을 고를지**와 **(2) 모든 아키타입 공통의 출력·렌더 규칙·원칙**만 담는다. 개별 골격(구조·CSS 스켈레톤·불변·자유 존)은 `references/archetypes/<name>.md`에 있다.
 
 ## 산출물
-
-- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>` — `.design/brand-kit/`든 `.design/final/brand-kit/`든 동일 HTML이 동작.
-- 데이터(색·타이포·보이스·가치·카피 등)는 `BRAND_KIT.md`/`brand-tokens.json`에서 가져온다 — **지어내지 않는다**. 변주는 레이아웃에서만.
+- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>`.
+- 데이터(색·타이포·보이스·가치·카피)는 `BRAND_KIT.md`/`brand-tokens.json`에서 가져온다 — **지어내지 않는다**. 변주는 레이아웃에서만.
 
 ## 원칙 (반드시 지킬 것)
 
@@ -27,41 +26,21 @@
 - **§11** `icons/*.png` 행 + 스타일·폼 규칙 노트.
 - **§2·3·4·5·9** `BRAND_KIT.md` 데이터 텍스트(+ 필요 시 장식 아이콘 `icons/*`).
 
-## 레퍼런스 스켈레톤 (권장 출발점 · 강제 아님)
+## 레이아웃 아키타입 선택 (기본값 없음)
 
-검증된 한 구성: **상단 스트립 + 풀폭 히어로 + 룰드 모듈 그리드(헤어라인으로만 구획, 카드 박스 없음) + 하단 스트립.** 6열 그리드에 모듈을 span으로 배치한 예: `§2·§3·§4` / `§5(2)+§6(4 넓게)` / `§7색·§8타이포·§9보이스` 한 줄 / `§10·§11`. **이게 정답은 아니다** — 브랜드 성격에 맞춰 다른 포스터 레이아웃으로 변주하라(원칙 1~7만 지키면 된다).
+단일 모범답안이 아니라 **동등한 4개 메뉴**다. 브랜드 성격에 맞는 하나를 고르거나 블렌딩한다 — A로 흘려보내지 말 것.
 
-압축 CSS 스켈레톤(그대로 쓰거나 변주; 색·폰트·악센트·radius는 tokens에서):
+| 아키타입 | 성격 | 어울리는 브랜드 신호 | 파일 |
+|---|---|---|---|
+| A 룰드 모듈 그리드 | 시스템틱·정연 | 테크·SaaS·도구·정밀·중립 | `archetypes/a-ruled-grid.md` |
+| B 에디토리얼 스프레드 | 비대칭·여백·세리프 인용 | 럭셔리·문학·에디토리얼·따뜻함 | `archetypes/b-editorial.md` |
+| C 사이드바 + 캔버스 | 프로덕트 UI·강한 대비 | 프로덕트·도구·대시보드·앱 | `archetypes/c-sidebar.md` |
+| D 스택 밴드 | 풀폭 밴드·큰 타입·대담 | 마케팅·대담·실험·강한 퍼스낼리티 | `archetypes/d-stacked-bands.md` |
 
-```css
-body{ background:radial-gradient(1100px 700px at 50% -10%, #mat1, #mat2 70%); padding:44px 24px 70px; }
-.sheet{ max-width:1180px; margin:0 auto; background:var(--paper); box-shadow:0 2px 6px rgba(0,0,0,.10), 0 40px 90px rgba(0,0,0,.22); }   /* 한 장의 종이 */
-.strip{ display:flex; justify-content:space-between; padding:13px 30px; border-bottom:1px solid var(--line);
-        font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
-.hero{ position:relative; min-height:400px; display:flex; align-items:flex-end; overflow:hidden; }
-.hero img.bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-.hero .scrim{ position:absolute; inset:0; background:linear-gradient(92deg, var(--paper) 0%, rgba(255,255,255,.16) 62%, transparent 100%); }
-.hero .inner{ position:relative; padding:48px 50px; max-width:680px; }
-.hero .mark{ height:108px; width:auto; }                                  /* 워드마크 크게·고정 */
-/* 룰드 모듈 그리드 — gap 1px + 배경 line 색이 헤어라인으로 비침(카드 박스 없음) */
-.grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--line); }
-.mod{ background:var(--paper); padding:26px 28px; }
-.c2{grid-column:span 2} .c3{grid-column:span 3} .c4{grid-column:span 4} .full{grid-column:1/-1}
-/* §6 로고 — 고정 크기 시리즈 + 타이트 락업 */
-.lockup{ display:flex; align-items:center; gap:18px; min-height:104px; }
-.lockup img.sym{ height:74px; width:auto; }  .lockup img.wm{ height:46px; width:auto; }   /* 고정·캡높이 정렬 */
-.lvw.sym img{height:52px} .lvw.app img{height:46px; filter:brightness(0) invert(1)} .lvw.fav img{height:26px}
-/* §7 색 — 세로 컬러 레전드 */
-.sw{ display:flex; align-items:center; gap:11px; padding:5.5px 0; }
-.sw .chip{ width:16px; height:16px; border-radius:5px; flex:none; }
-/* 아이콘 — 비정사각 대비 */
-.ic img, .ess img, .pil img{ object-fit:contain; }
-/* accent 폰트 — brand-tokens.json typography.accent가 있을 때만 선언·사용 */
-/* --accent: <accent-font-stack>;  (없으면 이 변수 자체를 선언하지 않음) */
-.quote, .pull{ font-family:var(--accent); }   /* 인용/풀쿼트 — accent 있을 때만 */
-```
-
-> ⚠ 색·radius·폰트 스택은 위 `var(--…)`를 `brand-tokens.json` 값으로 채운다. `--mat1/--mat2`는 배경 매트(brand bg보다 약간 어둡게)·`--paper`는 시트(밝게).
+**선택 규칙:**
+- 브랜드 신호(미감·페르소나·무드)로 고른다. accent 세리프가 있고 따뜻/에디토리얼이면 B, 차분/미니멀이면 D는 피한다.
+- **고른 아키타입과 한 줄 근거를 `brief.md`의 "레이아웃 메모"에 먼저 적고**(HTML 저작 전), 그 아키타입 파일의 스켈레톤·불변·자유 존을 따라 저작한다. 블렌딩 허용(예: "C 골격 + B의 세리프 풀쿼트") — 근거에 명시.
+- **분위기 열림(3방향)**이면 방향마다 **다른 아키타입**을 배정해 구조까지 갈라지게 한다(안전한 SaaS형→A · 프리미엄 에디토리얼형→B · 대담한 실험형→D 등).
 
 ## 생성 효율
 
