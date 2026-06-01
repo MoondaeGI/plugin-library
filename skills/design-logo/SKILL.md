@@ -1,6 +1,6 @@
 ---
 name: design-logo
-description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 스킬. brand-overview 보드에서 로고만 깨끗이 추출해 시드로 쓰고, 40개 컨셉이 한 장에 담긴 정사각 Logo Exploration Board를 만든 뒤, 보드를 첨부하고 셀 번호로 가리켜 수정해 고른 컨셉을 단독 로고로 만들고 (선택) wordmark·favicon·app-icon까지 .design/final/logo/에 확정할 때 사용한다.
+description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 스킬. brand-kit이 만든 assets/logo-base.png(투명)를 직접 시드로 쓰고, 40개 컨셉이 한 장에 담긴 정사각 Logo Exploration Board를 만든 뒤, 보드를 첨부하고 셀 번호로 가리켜 수정해 고른 컨셉을 단독 로고로 만들고 (선택) wordmark·favicon·app-icon까지 .design/final/logo/에 확정할 때 사용한다.
 ---
 
 # Design Logo
@@ -27,7 +27,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ## 출력 파일 (대상 프로젝트 cwd 기준)
 
-- `.design/generated/logo/seed.png` — 추출한 로고 시드(클린 단색 배경).
+- `.design/generated/logo/seed.png` — 로고 시드(assets/logo-base.png 복사 또는 경로 참조 · 투명).
 - `.design/generated/logo/exploration-board.png` (+`-v2`…) — 40컨셉 정사각 탐색 보드.
 - `.design/generated/logo/logo-candidate.png` (+`-v2`…) — 고른 컨셉의 단독 로고 렌더.
 - `.design/final/logo/logo.png` — 확정 단일 로고.
@@ -64,7 +64,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
   - **(2) 로고용 최소 Q&A** — 여기서 바로 진행. 로고에 필요한 최소 정보를 **한 번에 하나씩** 묻는다: 제품명·한 줄 소개 / 분야 / 브랜드 성격·톤(페르소나 한 줄) / 핵심 메타포·심볼 방향 / 색(HEX 또는 방향) / 워드마크 타입 방향 / 피할 클리셰. 추측 금지 — 답으로 마크 방향·색을 정할 수 있을 때까지 파고든다. 수집분을 `logo-briefs.md`에 적는다(가짜 `BRAND_KIT.md`를 만들지 않음). **시드 추출(Phase 1)은 건너뛰고** Phase 2의 보드 생성을 **텍스트→이미지**(시드 미첨부, Q&A 마크 DNA를 프롬프트에 채움)로 한다. 끝에 "더 완전한 시스템(색·타이포·보이스)이 필요하면 design-brand-kit"을 안내.
 
 ### Phase 1 — 시드 + 승인 게이트 (brand kit가 있을 때)
-1. 입력 읽기(BRAND_KIT.md §6·tokens·확정 보드).
+1. 입력 읽기(BRAND_KIT.md §6·tokens·assets/logo-base.png).
 2. **시드 = `assets/logo-base.png` 직접.** brand-kit이 이미 깨끗한 투명 로고 마크를 생산했으므로 **보드에서 재추출하지 않는다**(재추출이 드리프트의 원인이었다). 그대로 `generated/logo/seed.png`로 복사하거나 경로를 그대로 시드로 쓴다. 보여주고 "이 마크 맞아요?" 확인.
    - **로고 (I) 단일 커밋**: 사용자가 `logo-base`를 그대로 확정할 수 있다. 더 탐색하고 싶을 때만 40컨셉 보드로 간다(아래 **탐색 opt-in**).
 3. `logo-briefs.md` 작성(시드 출처·탐색 방향·컨셉 방법 분포·제약).
@@ -72,7 +72,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ### Phase 2 — 탐색 보드 → 단독 로고 확정
 
-**탐색은 opt-in.** `logo-base`가 만족스러우면 Phase 2의 탐색 보드를 건너뛰고 바로 단독 로고 확정(7단계)→로고 시스템(Phase 3)으로 간다. "다른 방향도 보고 싶다"일 때만 40컨셉 탐색 보드를 만든다. 탐색·단독 로고 생성 시 컷아웃은 `--model gpt-image-1.5 --background transparent`(투명).
+**탐색은 opt-in.** `logo-base`가 만족스러우면 Phase 2의 탐색 보드를 건너뛰고 바로 단독 로고 확정(7단계)→로고 시스템(Phase 3)으로 간다. "다른 방향도 보고 싶다"일 때만 40컨셉 탐색 보드를 만든다. 40컨셉 탐색 보드는 그리드 합성이라 `gpt-image-2`로 생성하고, 단독 로고·워드마크·파비콘 같은 컷아웃은 `--model gpt-image-1.5 --background transparent`(투명)로 만든다.
 
 5. **보드 생성**: 보드 프롬프트(`--size 1024x1024`, `--quality low`) → `exploration-board.png`. 40개 번호 컨셉을 보여준다. brand kit 경로는 `--image seed.png`(모티브)를 첨부하고, **brand kit 없이 진행하는 경우(Phase 0의 (2))는 `--image` 없이** Q&A 마크 DNA를 보드 프롬프트(`Mark DNA`·`[BRAND NAME]`)에 채워 텍스트→이미지로 생성한다.
 6. **수정 루프**: 사용자가 "N번 기준 다시" / "N·M 모양 별로"라고 하면 — **직전 보드를 `--image`로 첨부** + 프롬프트엔 번호만: "이 보드 기준으로 다시 만들되 #N 방향을 살려 40칸을 다시 그리고, #M·#K 계열은 빼고 대체". gpt-image-2는 항상 high fidelity라 좋은 칸은 유지되고 지목 방향으로 옮겨간다. 더 과감한 새 보드를 원하면 보드 대신 **시드만 첨부**. `--auto-version`. 원하는 컨셉이 보일 때까지 반복.
