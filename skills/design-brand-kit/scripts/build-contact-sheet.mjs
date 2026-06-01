@@ -65,6 +65,9 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i += 2) {
     const key = argv[i];
     if (!key.startsWith("--")) throw new ContactSheetError(`알 수 없는 인자: ${key}`);
+    // F2: 값 없는 플래그(dangling flag) → 깔끔한 에러
+    if (i + 1 >= argv.length || argv[i + 1].startsWith("--"))
+      throw new ContactSheetError(`${key} 에 값이 없습니다.`);
     out[key.slice(2)] = argv[i + 1];
   }
   if (!out.in || !out.out) throw new ContactSheetError("사용: --in <directions.json> --out <directions.html>");
@@ -78,7 +81,11 @@ function loadDirections(inPath) {
   } catch (err) {
     throw new ContactSheetError(`directions.json 을 읽을 수 없습니다: ${inPath} (${err.message})`);
   }
-  const data = JSON.parse(raw);
+  // F1: JSON 파싱 실패 → ContactSheetError (종료코드 2)
+  let data;
+  try { data = JSON.parse(raw); }
+  catch (err) { throw new ContactSheetError(`directions.json JSON 파싱 실패: ${err.message}`); }
+  if (!data || typeof data !== "object") throw new ContactSheetError("directions.json 최상위가 객체가 아닙니다.");
   if (!Array.isArray(data.directions) || data.directions.length !== 3) {
     throw new ContactSheetError("directions 는 정확히 3개여야 합니다.");
   }
@@ -120,12 +127,17 @@ function buildFontLinks(directions) {
   return links.join("\n");
 }
 
+// F3: HTML 텍스트 콘텐츠 이스케이프 (CSS style="" 속성값에는 사용 안 함)
+function escHtml(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
 function buildSwatches(palette) {
   return PALETTE_ROLES
     .filter(([key]) => palette[key])
     .map(([key, label]) => {
       const hex = palette[key];
-      return `<div class="sw"><span class="chip" style="background:${hex}"></span><span class="hex">${hex}</span><span class="role">${label}</span></div>`;
+      return `<div class="sw"><span class="chip" style="background:${hex}"></span><span class="hex">${escHtml(hex)}</span><span class="role">${label}</span></div>`;
     })
     .join("\n");
 }
@@ -140,15 +152,15 @@ function buildColumn(d) {
     `--body:${d.typography.body.replace(/"/g, "'")}`,
   ].join(";");
   return `<div class="col" style="${style}">
-  <div class="id">방향 ${d.id.toUpperCase()} · ${d.label}</div>
-  <div class="wordmark">${d.wordmark}</div>
-  <div class="mood">${d.mood}</div>
-  <h2 class="headline">${d.headline}</h2>
-  <p class="body">${d.body}</p>
+  <div class="id">방향 ${escHtml(d.id.toUpperCase())} · ${escHtml(d.label)}</div>
+  <div class="wordmark">${escHtml(d.wordmark)}</div>
+  <div class="mood">${escHtml(d.mood)}</div>
+  <h2 class="headline">${escHtml(d.headline)}</h2>
+  <p class="body">${escHtml(d.body)}</p>
   <div class="divider"></div>
   <div class="palette">${buildSwatches(p)}</div>
   <div class="divider"></div>
-  <div class="tagline">"${d.tagline}"</div>
+  <div class="tagline">"${escHtml(d.tagline)}"</div>
   <div class="fontnote">${primaryFamily(d.typography.display)} · ${primaryFamily(d.typography.body)}</div>
 </div>`;
 }

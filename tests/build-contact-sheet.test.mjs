@@ -75,3 +75,36 @@ test('필수 필드 누락이면 종료코드 2 + stderr 에 필드명', () => {
   assert.equal(res.status, 2);
   assert.match(res.stderr, /palette/);
 });
+
+test('인자 없이 실행 → 종료코드 2 + usage', () => {
+  const res = spawnSync('node', [SCRIPT], { encoding: 'utf8' });
+  assert.equal(res.status, 2);
+  assert.match(res.stderr, /--in/);
+});
+
+test('값 없는 플래그(--in 만) → 종료코드 2', () => {
+  const res = spawnSync('node', [SCRIPT, '--in'], { encoding: 'utf8' });
+  assert.equal(res.status, 2);
+});
+
+test('잘못된 JSON → 종료코드 2', () => {
+  const d = mkdtempSync(path.join(tmpdir(), 'cs-'));
+  const inPath = path.join(d, 'directions.json');
+  const outPath = path.join(d, 'out.html');
+  writeFileSync(inPath, '{ not json', 'utf8');
+  const res = spawnSync('node', [SCRIPT, '--in', inPath, '--out', outPath], { encoding: 'utf8' });
+  assert.equal(res.status, 2);
+});
+
+test('HTML 특수문자가 텍스트 콘텐츠에서 이스케이프된다', () => {
+  const data = validData();
+  data.directions[0].headline = '보안 & <모니터링>';
+  const d = mkdtempSync(path.join(tmpdir(), 'cs-'));
+  const inPath = path.join(d, 'directions.json');
+  const outPath = path.join(d, 'out.html');
+  writeFileSync(inPath, JSON.stringify(data), 'utf8');
+  const res = spawnSync('node', [SCRIPT, '--in', inPath, '--out', outPath], { encoding: 'utf8' });
+  assert.equal(res.status, 0, res.stderr);
+  const html = readFileSync(outPath, 'utf8');
+  assert.match(html, /보안 &amp; &lt;모니터링&gt;/);
+});
