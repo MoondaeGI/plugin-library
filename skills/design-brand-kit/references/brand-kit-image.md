@@ -190,7 +190,11 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드는 `BRAND_KIT.md`의 §1–11을 렌더하며 1:1로 대응한다 — **§12 다음 결정 사항은 md 전용이라 보드에 렌더하지 않는다.**
 - **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다. 폰트 스펙의 실존 출처는 `../../references/design/font-catalog.md`이며, 토큰의 font-family는 거기서 고른 실존값이다.
-- **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀) — 종합 오버뷰 보드·(선택) 추가 탐색 → `<cwd>/.design/generated/brand-kit/`. 파일명 식별 가능 — 발산 초안 `brand-overview-route-a/b/c.png`(재시도 `-v2`), 확정본 `brand-overview.png`. 재생성 시 버전(`-v2`)으로 기존 확정본을 덮지 않는다(`--force` 없이는 덮지 않음).
+- **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀).
+  - **발산 초안**: 루트별 `key-visual` 초안을 `<cwd>/.design/generated/brand-kit/assets/`에 `--auto-version`으로 저장(예: `key-visual.png` → `key-visual-v2.png` 누적).
+  - **base 자산 시안**: 자산별(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icons/<name>.png`)로 `<cwd>/.design/generated/brand-kit/assets/`에 `--auto-version` 누적.
+  - **락**: 확정 자산은 `<cwd>/.design/final/brand-kit/assets/`로 복사(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icons/<name>.png`). `--force` 없이는 기존 final을 덮지 않는다.
+  - **오버뷰**: `overview.html`을 `<cwd>/.design/final/brand-kit/`에 LLM이 저작(이미지 생성 아님).
 - **협업 루프**: 메인 보드는 3 루트 발산(초안 3장) → 방향 선택(또는 재시도) → **고른 루트를 `--image`로 첨부해 high 편집** → **직전 보드를 `--image`로 첨부한 증분 편집으로 한 섹션씩** 고쳐 재생성 → 확정 → (선택) 추가 탐색 → 다음. **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 `--image` 편집**(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 추가 탐색은 한 장씩. (로고는 보드 §6 섹션으로만 들어가고, 독립 로고는 design-logo가 만든다.)
 
 ## 12. 프롬프트 템플릿 (내부 구조)
@@ -238,7 +242,7 @@ Avoid (logo): shield/lock/globe/gear clichés, meaningless gradient/3D bevel/spa
 
 > 위 마지막 3줄(`Logo Direction section:` ~ `Avoid (logo):`)은 `../../references/design/logo-art-direction.md` §7.1 압축 블록이다 — `[BRAND_KIT.md §6 구성·의미]`·`[grid / ...]` 브래킷을 이 브랜드의 실제 마크 컨셉·기하로 채워 넣는다. 비워두거나 generic 문구로 두지 않는다.
 
-**발산 3 루트**: 발산 시 각 루트 프롬프트는 **해당 후보 BRAND_KIT 전문**(direction-X)에서 채운다 — `Brand strategy`·`Palette`·`Typography`·`Voice`·`Visual mode`, 그리고 §1 커버 키 비주얼의 피사체/모티프·매체까지 **모두 방향별로 다르다**(한 킷에 비주얼 델타를 입히는 게 아니라 방향마다 다른 전략). `Sections`·`Language` 같은 포맷 규칙만 공통이고, 셋은 같은 제품 사실(§1·타깃·문제)과 디스커버리 Q6 회피 제약만 공유한다. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 `brand-overview-route-a/b/c.png`로 개별 호출(`--quality low` 초안). (분위기 고정이면 단일 방향 1장만.)
+**발산 3 루트**: 발산 시 각 루트 프롬프트는 **해당 후보 BRAND_KIT 전문**(direction-X)에서 채운다 — `Brand strategy`·`Palette`·`Typography`·`Voice`·`Visual mode`, 그리고 §1 커버 키 비주얼의 피사체/모티프·매체까지 **모두 방향별로 다르다**(한 킷에 비주얼 델타를 입히는 게 아니라 방향마다 다른 전략). `Sections`·`Language` 같은 포맷 규칙만 공통이고, 셋은 같은 제품 사실(§1·타깃·문제)과 디스커버리 Q6 회피 제약만 공유한다. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 루트별 `key-visual` 초안 경로(`generated/brand-kit/assets/`, `--auto-version`)로 개별 호출(`--quality low` 초안). (분위기 고정이면 단일 방향 1장만.)
 
 **증분 편집(수정·수렴)**: 첫 생성 이후의 모든 수정은 직전 이미지를 `--image`로 첨부해 보낸다(SKILL.md "이미지 생성" 참고; gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리). 이때 프롬프트는 위 풀 템플릿이 아니라 **바꿀 한 가지만** 기술한다 — 예: "9번 Voice & Tone 섹션의 O/X 예시 문구만 …로 교체, 나머지 섹션·색·레이아웃은 그대로 유지". 풀 템플릿을 다시 넣으면 편집이 아니라 재생성이 되어 나머지까지 바뀐다.
 
