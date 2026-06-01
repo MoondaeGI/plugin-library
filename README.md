@@ -64,11 +64,14 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 - **Codex**: 플러그인이 에이전트를 번들하지 못한다. `npm run sync`가 `agents/designer.md` → `codex-agents/designer.toml`을 생성하고, `npm run codex:reinstall`이 이를 `~/.codex/agents/`로 복사한다. (수동: `copy codex-agents\designer.toml %USERPROFILE%\.codex\agents\`.) 열려 있던 Codex 세션은 재시작해야 반영된다.
 - **`model`/`tools`는 Claude 전용** frontmatter라 Codex TOML로 옮기지 않는다(`opus`/`sonnet`은 Anthropic 슬러그). Codex는 세션 모델을 상속한다.
 
-### 예시: `design-brand-kit` 종합 브랜드 오버뷰 보드
+<details>
+<summary>🎨 <b>디자인 스킬 파이프라인 (designer)</b> — 펼쳐 보기</summary>
 
-`design-brand-kit`이 만들어 내는 종합 오버뷰 보드 예시다 (가상 제품 "LeafSignal" — §1~11 한 장).
+`design-brand-kit`(브랜드 정체성·base 자산·HTML 오버뷰) → `design-logo` / `design-iconset` → `design-page-image` → `design-md-compiler` → `design-html-prototype`. `designer`가 협업 루프로 운전하고, 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받는다.
 
-![design-brand-kit 종합 브랜드 오버뷰 보드 예시 — LeafSignal](assets/brand-kit-example.png)
+전체 흐름·`design-brand-kit` 심화·Nooknote 예시는 **[docs/design/README.md](docs/design/README.md)** 참고.
+
+</details>
 
 ## 레이아웃
 
