@@ -8,6 +8,8 @@
 
 **팩 사용 순서:** ① 이 문서로 핵심 원칙·시스템 파라미터를 고정 → ② `icon-style-catalog.md`에서 브랜드 성격에 맞는 스타일 하나를 고르고 → ③ `icon-domain-examples.md`에서 프로젝트 도메인 섹션만 읽어 메타포 모티프를 끌어오고 → ④ (선택) `icon-reference-vendors.md`로 눈을 보정하고(벤더명은 프롬프트에 쓰지 않음) → ⑤ 아래 §6 프롬프트 청크의 [브래킷]을 `BRAND_KIT.md §11`로 채워 떠넣는다.
 
+> **투명 배경 주의**: gpt-image-2는 투명 배경을 지원하지 않는다(API 에러). 투명 컷아웃(로고 마크·워드마크·아이콘)은 `--model gpt-image-1.5 --background transparent --output-format png`로 생성한다. 불투명 사진/목업은 gpt-image-2.
+
 ## 1. 핵심 원칙 (범용)
 
 - 하나의 아이콘 세트는 **하나의 시각 언어**에서 나와야 한다.
