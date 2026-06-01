@@ -21,12 +21,15 @@
 //   --background      transparent | opaque | auto   (미지정이면 필드 미전송; gpt-image-2는 transparent 미지원 → 1.5와 페어링)
 //   --force          기존 파일 덮어쓰기 허용
 //   --auto-version   기존 파일 충돌 시 다음 -vN 으로 자동 증분(시안 보존)
+//   --autocrop       저장 후 PNG의 투명/단색 여백을 잘라 마크가 캔버스를 꽉 채우게 (컷아웃 자산용)
+//   --autocrop-pad-pct  autocrop 둘레 여백 %(기본 6)
 //   --dry-run        API 호출 없이 페이로드·출력 경로만 출력 (키 불필요)
 //   --help
 
 import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { loadEnv } from '../../../scripts/lib/load-env.mjs';
+import { autocropBuffer } from './autocrop.mjs';
 
 const ENDPOINT = 'https://api.openai.com/v1/images/generations';
 const EDITS_ENDPOINT = 'https://api.openai.com/v1/images/edits';
@@ -34,7 +37,7 @@ const TIMEOUT_MS = 300_000;
 
 const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존)
 
-  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--background transparent] [--force] [--auto-version] [--dry-run]
+  node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--background transparent] [--force] [--auto-version] [--autocrop] [--dry-run]
 
 --image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트로).
 OPENAI_API_KEY 환경변수가 필요하다 (--dry-run 제외). --help로 이 도움말 출력.`;
@@ -54,6 +57,8 @@ function parseArgs(argv) {
     force: false,
     autoVersion: false,
     dryRun: false,
+    autocrop: false,
+    autocropPadPct: 6,
     images: [],
   };
   for (let i = 0; i < argv.length; i++) {
@@ -74,6 +79,8 @@ function parseArgs(argv) {
       // --auto-version: --out 충돌 시 die 대신 다음 -vN 으로 자동 증분(시안 보존).
       // 플래그를 주지 않으면 기존 동작(충돌 시 --force 없으면 die) 그대로 — 범용 호출자 영향 0.
       case '--auto-version': opts.autoVersion = true; break;
+      case '--autocrop': opts.autocrop = true; break;
+      case '--autocrop-pad-pct': opts.autocropPadPct = parseFloat(next()); break;
       case '--dry-run': opts.dryRun = true; break;
       case '--help': case '-h': opts.help = true; break;
       default: die(`오류: 알 수 없는 인자 "${a}" (--help 참고).`);
@@ -249,6 +256,18 @@ async function main() {
     mkdirSync(path.dirname(abs), { recursive: true });
     writeFileSync(abs, Buffer.from(b64, 'base64'));
     saved.push(abs);
+  }
+  // --autocrop: 저장된 PNG의 투명/단색 여백을 잘라 마크가 캔버스를 꽉 채우게 한다(컷아웃 자산용).
+  if (opts.autocrop) {
+    for (const abs of saved) {
+      if (!abs.toLowerCase().endsWith('.png')) continue;
+      try {
+        const res = autocropBuffer(readFileSync(abs), { padPct: opts.autocropPadPct });
+        if (res) writeFileSync(abs, res.buffer);
+      } catch (e) {
+        console.error(`경고: autocrop 실패 (${path.basename(abs)}): ${e.message}`);
+      }
+    }
   }
   saved.forEach((p) => console.log(p));
 }
