@@ -80,11 +80,16 @@ async function main() {
     console.log(JSON.stringify(opts));
     return;
   }
-  let FiveServer;
+  let mod;
   try {
-    ({ default: FiveServer } = await import("five-server"));
+    mod = await import("five-server");
   } catch (err) {
     throw new ServeDesignError(`five-server를 불러오지 못했습니다 — 'npm install' 했는지 확인하세요. (${err.message})`);
+  }
+  // CJS↔ESM interop: 빌드에 따라 생성자가 default·default.default·named 중 하나에 온다.
+  const FiveServer = [mod?.default?.default, mod?.default, mod?.FiveServer].find((c) => typeof c === "function");
+  if (!FiveServer) {
+    throw new ServeDesignError("five-server 모듈에서 FiveServer 생성자를 찾지 못했습니다.");
   }
   const server = new FiveServer();
   await server.start(opts);

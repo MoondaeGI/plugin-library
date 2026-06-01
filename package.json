@@ -13,5 +13,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "five-server": "^0.4.5"
   }
 }
