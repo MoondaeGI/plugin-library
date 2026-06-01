@@ -15,7 +15,9 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 - `.design/BRAND_KIT.md`
 - `.design/brand-tokens.json`
-- (있으면) `.design/generated/brand-kit/` 무드보드 이미지 참고
+- `.design/final/brand-kit/assets/ui-base.png` — UI 컴포넌트 룩 시드(있으면 섹션 목업 생성 시 `--image`로 첨부).
+- `.design/final/brand-kit/assets/key-visual.png` — 히어로/배경 자산(있으면 §1 등에서 활용·참조).
+- (있으면) `.design/final/brand-kit/overview.html` — 오버뷰 룩 참조.
 
 ## 출력 파일
 
@@ -101,6 +103,7 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 - **섹션당 1회 호출.** 한 번에 한 섹션만 만든다 (여러 장은 `--n`이 아니라 개별 호출).
 - 프롬프트는 섹션의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)에 `Use case: ui-mockup`·색/스타일(`brand-tokens.json` + 공통 디자인 방향)을 더해 구성하고, **임시 파일에 써서 `--prompt-file`로 넘긴다**. 보이는 텍스트는 한국어로 렌더.
+- **brand-kit 자산 활용**: UI 목업 섹션은 `assets/ui-base.png`를, 히어로/배경은 `assets/key-visual.png`를 `--image`로 첨부해 룩 일관성을 잡는다(있을 때). 투명 로고/아이콘을 섹션에 얹을 땐 `assets/`의 투명 PNG를 활용.
 - 호출 예:
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
