@@ -131,7 +131,7 @@ gpt-image는 **폰트 파일을 로드하지 않는다.** "Pretendard"라고 적
 | 편집·에세이 | **Black Han Sans** | **Nanum Myeongjo** Regular | 강한 헤드라인 + 전통 명조 본문 대비 |
 | 친근·라이프스타일 | **LINE Seed KR** Bold | **Gowun Dodum** Regular | 둥근 라인 통일, 소프트하고 따뜻한 톤 |
 | 브랜드·커머스 | **Gmarket Sans** Bold | **Gothic A1** Regular | 가독성 중심, 범용 친숙 |
-| 문학·인용 (Nooknote형) | **SUIT** / **Stylish** | **Spoqa Han Sans Neo** + *accent* **Gowun Batang**(인용) | 클린 sans + 명조 인용 액센트 |
+| 문학·노트·인용 | **SUIT** / **Stylish** | **Spoqa Han Sans Neo** + *accent* **Gowun Batang**(인용) | 클린 sans + 명조 인용 액센트 |
 | 럭셔리·에디토리얼 | **Diphylleia** / **Stylish** | **Gowun Batang** + *accent* **Diphylleia**(헤드라인) | 고대비 명조의 우아한 격조 |
 
 > **accent(인용/포인트) 역할**: 기본 display+body 외에 **선택적**으로 인용·풀쿼트·에디토리얼용 폰트 하나를 더 둘 수 있다(문학·럭셔리·에디토리얼 브랜드). 보통 **명조**(Diphylleia·Gowun Batang·Nanum Myeongjo), 캐주얼 톤이면 손글씨. 과용 금지 — 소량 포인트로만.
