@@ -48,6 +48,10 @@ gpt-image는 **폰트 파일을 로드하지 않는다.** "Pretendard"라고 적
 
 - **Nanum Gothic** — body · 획 끝 약간의 붓 기운, 한국 화면 기본 sans, 폭넓은 지원 · 한글 Y · OFL · https://fonts.google.com/specimen/Nanum+Gothic · `"Nanum Gothic", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
 
+- **Sunflower** — body/UI · 가벼운 기하 sans, Light/Medium/Bold 3웨이트, 산뜻하고 깨끗한 톤 · 한글 Y · OFL · https://fonts.google.com/specimen/Sunflower · `"Sunflower", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+
+- **Stylish** — heading/display · 얇고 멋부린 단일 웨이트 sans, 패션·에디토리얼 헤드라인용 · 한글 Y · OFL · https://fonts.google.com/specimen/Stylish · `"Stylish", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+
 ---
 
 ## Display (heading / 임팩트)
@@ -64,6 +68,10 @@ gpt-image는 **폰트 파일을 로드하지 않는다.** "Pretendard"라고 적
 
 - **Gmarket Sans** — display · 가변 웨이트 3종, 획 말단이 약간 직선으로 마감된 친근 고딕 · 한글 Y · OFL · https://corp.gmarket.com/fonts/ · `"Gmarket Sans", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
 
+- **Bagel Fat One** — display · 둥글고 통통한 초굵은 단일 웨이트, 친근·팝 임팩트 · 한글 Y · OFL · https://fonts.google.com/specimen/Bagel+Fat+One · `"Bagel Fat One", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+
+- **Gugi** — display · 붓 기운의 캘리그래픽 디스플레이, 단일 웨이트, 손맛 있는 강한 인상 · 한글 Y · OFL · https://fonts.google.com/specimen/Gugi · `"Gugi", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+
 ---
 
 ## Serif / 명조 (editorial)
@@ -78,11 +86,29 @@ gpt-image는 **폰트 파일을 로드하지 않는다.** "Pretendard"라고 적
 
 - **Song Myung** — serif/display · 고전 송조체 스타일, 획 말단이 뾰족하게 각지고 묵직한 수직 줄기 · 한글 Y · OFL · https://fonts.google.com/specimen/Song+Myung · `"Song Myung", "Apple SD Gothic Neo", Georgia, serif`
 
+- **Diphylleia** — serif/display · 고대비 모던 명조, 가는 가로획·굵은 세로획의 우아한 에디토리얼, 인용·헤드라인 액센트용 · 한글 Y · OFL · https://fonts.google.com/specimen/Diphylleia · `"Diphylleia", "Apple SD Gothic Neo", Georgia, serif`
+
 ---
 
 ## Mono / 데이터
 
 - **Nanum Gothic Coding** — mono · 한글 지원 고정폭, 코드 편집기·터미널 가독성 최적화, 균일 셀 폭 · 한글 Y · OFL · https://fonts.google.com/specimen/Nanum+Gothic+Coding · `"Nanum Gothic Coding", "D2Coding", "Courier New", monospace`
+
+- **IBM Plex Mono** — mono · 라틴 고정폭, 인크트랩 있는 테크 분위기(숫자·코드용), 한글은 폴백 · 한글 N · OFL · https://fonts.google.com/specimen/IBM+Plex+Mono · `"IBM Plex Mono", "Nanum Gothic Coding", "Courier New", monospace`
+
+- **JetBrains Mono** — mono · 라틴 고정폭, 넓은 글자폭·높은 가독성의 코딩 폰트, 한글은 폴백 · 한글 N · OFL · https://fonts.google.com/specimen/JetBrains+Mono · `"JetBrains Mono", "Nanum Gothic Coding", "Courier New", monospace`
+
+---
+
+## Script / 손글씨 (accent · 포인트용)
+
+> 인용·서명·포인트 등 **소량 액센트**로만. 본문·장문엔 부적합(가독성). **"고급/문학" 느낌은 명조(Diphylleia·Gowun Batang·Nanum Myeongjo)가 더 안전** — 손글씨는 캐주얼·따뜻한 톤일 때만 선택.
+
+- **Nanum Pen Script** — accent · 가는 펜글씨, 정갈하고 단정한 손글씨, 가장 무난 · 한글 Y · OFL · https://fonts.google.com/specimen/Nanum+Pen+Script · `"Nanum Pen Script", cursive`
+- **Nanum Brush Script** — accent · 붓글씨 캘리그래피, 두께 변화 큰 획, 감성·서명용 · 한글 Y · OFL · https://fonts.google.com/specimen/Nanum+Brush+Script · `"Nanum Brush Script", cursive`
+- **Gaegu** — accent · 또박또박 연필 손글씨, 친근하고 소박한 톤 · 한글 Y · OFL · https://fonts.google.com/specimen/Gaegu · `"Gaegu", cursive`
+- **Hi Melody** — accent · 가늘고 동글한 손글씨, 가볍고 귀여운 포인트 · 한글 Y · OFL · https://fonts.google.com/specimen/Hi+Melody · `"Hi Melody", cursive`
+- **Gamja Flower** — accent · 둥근 손글씨체, 말랑한 캐주얼 톤 · 한글 Y · OFL · https://fonts.google.com/specimen/Gamja+Flower · `"Gamja Flower", cursive`
 
 ---
 
@@ -105,3 +131,7 @@ gpt-image는 **폰트 파일을 로드하지 않는다.** "Pretendard"라고 적
 | 편집·에세이 | **Black Han Sans** | **Nanum Myeongjo** Regular | 강한 헤드라인 + 전통 명조 본문 대비 |
 | 친근·라이프스타일 | **LINE Seed KR** Bold | **Gowun Dodum** Regular | 둥근 라인 통일, 소프트하고 따뜻한 톤 |
 | 브랜드·커머스 | **Gmarket Sans** Bold | **Gothic A1** Regular | 가독성 중심, 범용 친숙 |
+| 문학·인용 (Nooknote형) | **SUIT** / **Stylish** | **Spoqa Han Sans Neo** + *accent* **Gowun Batang**(인용) | 클린 sans + 명조 인용 액센트 |
+| 럭셔리·에디토리얼 | **Diphylleia** / **Stylish** | **Gowun Batang** + *accent* **Diphylleia**(헤드라인) | 고대비 명조의 우아한 격조 |
+
+> **accent(인용/포인트) 역할**: 기본 display+body 외에 **선택적**으로 인용·풀쿼트·에디토리얼용 폰트 하나를 더 둘 수 있다(문학·럭셔리·에디토리얼 브랜드). 보통 **명조**(Diphylleia·Gowun Batang·Nanum Myeongjo), 캐주얼 톤이면 손글씨. 과용 금지 — 소량 포인트로만.

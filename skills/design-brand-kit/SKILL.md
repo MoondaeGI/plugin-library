@@ -145,6 +145,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - 본문용 폰트 방향:
 - 캡션/라벨용 방향:
 - 숫자/데이터(mono)용 방향:
+- 인용/액센트용 폰트 방향(선택): (에디토리얼·인용·풀쿼트·히어로 액센트용 — 보통 명조/세리프, 문학·럭셔리 브랜드만. 과용 금지. `font-catalog.md`의 Serif/Script에서 고름. 안 쓰면 비움.)
 - 타입 스케일 (예: Display 48/60, H1 32/40, H2 24/32, Body 16/24):
 - 한글 사용 시 주의점:
 
@@ -194,14 +195,14 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
     "surfaceAlt": "", "text": "", "textMuted": "", "border": "",
     "success": "", "warning": "", "danger": ""
   },
-  "typography": { "display": "", "heading": "", "body": "", "mono": "" },
+  "typography": { "display": "", "heading": "", "body": "", "mono": "", "accent": "" },
   "radius": { "sm": "6px", "md": "10px", "lg": "16px", "xl": "24px" },
   "shadow": { "sm": "", "md": "", "lg": "" },
   "spacing": { "sectionY": "", "containerX": "", "cardPadding": "" }
 }
 ```
 
-> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 2~3개는 카탈로그의 specimen URL과 함께 사용자에게 제시해 승인 게이트(흐름 3)에서 확정받는다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다.
+> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 2~3개는 카탈로그의 specimen URL과 함께 사용자에게 제시해 승인 게이트(흐름 3)에서 확정받는다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다.
 
 ## brand-briefs.md 구조
 

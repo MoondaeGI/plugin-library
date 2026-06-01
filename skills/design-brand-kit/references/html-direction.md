@@ -13,7 +13,7 @@
 2. **밀집하되 숨 쉬게** — 한눈에 들어오되 답답하지 않게. 핵심 이미지(워드마크·로고·UI 목업)는 **충분히 크게**. 너무 작아 안 보이면 실패.
 3. **고정 로고 시리즈** — §6의 로고/락업/심볼/앱아이콘/파비콘은 **px 고정 크기**. 락업(심볼+워드마크)은 **타이트·실사용** — 캡높이 정렬, 절제된 gap, 실제 쓸 수 있는 형태. 로고가 가로 폭을 받으면 락업+변형을 나란히 둔다.
 4. **autocrop 전제** — 컷아웃 자산(logo·wordmark·icons)은 `--autocrop`으로 투명 여백이 잘려 **마크가 캔버스를 꽉 채운 상태**로 들어온다. 그래서 `height:Npx`가 곧 마크 크기가 된다. (autocrop 안 하면 gpt-image가 남긴 큰 여백 때문에 마크가 콩알만 해진다 — 컷아웃 생성에 반드시 `--autocrop`.) 비정사각 아이콘은 `object-fit:contain`.
-5. **실폰트** — `../../references/design/font-catalog.md`의 실존 family를 CDN `<link>`로 로드. §8 타이포는 살아있는 스펙시먼.
+5. **실폰트** — `../../references/design/font-catalog.md`의 실존 family를 CDN `<link>`로 로드. §8 타이포는 살아있는 스펙시먼. 브랜드에 `accent`(인용/에디토리얼) 폰트가 있으면 풀쿼트·인용·히어로 태그라인 등 **소량 포인트**에 쓴다(본문 아님).
 6. **색은 시스템으로** — 스와치 + HEX + 용도(세로 컬러 레전드·컬러 바 등). 진짜 CSS 색(`brand-tokens.json` 권위값).
 7. **섹션 인벤토리** — §1 히어로 · §2 에센스 · §3 타깃 · §4 가치 · §5 태그라인 · §6 로고 · §7 색 · §8 타이포 · §9 보이스 · §10 UI · §11 이미지/아이콘. 로고 외 8개 이상 한눈에. §12(다음 결정)는 렌더 안 함.
 
@@ -22,7 +22,7 @@
 - **§1** `key-visual.png` 배경 `<img>` + `wordmark-base.png` `<img>`(크게) + 한 줄 설명·포지셔닝(텍스트) + CSS 스크림으로 가독성.
 - **§6** `logo-base.png`(심볼)·`wordmark-base.png`(락업) + 변형(심볼 단독 · 앱아이콘[브랜드색 라운드 타일, `filter:brightness(0) invert(1)`로 흰 마크] · 파비콘) 고정 크기 + 구성·의미 텍스트.
 - **§7** tokens 색 → 스와치 + HEX + 용도.
-- **§8** font-catalog 폰트 → Display/H1/H2/Body/Caption/Mono 스펙시먼.
+- **§8** font-catalog 폰트 → Display/H1/H2/Body/Caption/Mono 스펙시먼. accent 폰트가 있으면 그 스펙시먼도 한 줄 보여준다.
 - **§10** `ui-base.png` 크게(목업이 주인공) + UI 방향 노트.
 - **§11** `icons/*.png` 행 + 스타일·폼 규칙 노트.
 - **§2·3·4·5·9** `BRAND_KIT.md` 데이터 텍스트(+ 필요 시 장식 아이콘 `icons/*`).
@@ -56,6 +56,9 @@ body{ background:radial-gradient(1100px 700px at 50% -10%, #mat1, #mat2 70%); pa
 .sw .chip{ width:16px; height:16px; border-radius:5px; flex:none; }
 /* 아이콘 — 비정사각 대비 */
 .ic img, .ess img, .pil img{ object-fit:contain; }
+/* accent 폰트 — brand-tokens.json typography.accent가 있을 때만 선언·사용 */
+/* --accent: <accent-font-stack>;  (없으면 이 변수 자체를 선언하지 않음) */
+.quote, .pull{ font-family:var(--accent); }   /* 인용/풀쿼트 — accent 있을 때만 */
 ```
 
 > ⚠ 색·radius·폰트 스택은 위 `var(--…)`를 `brand-tokens.json` 값으로 채운다. `--mat1/--mat2`는 배경 매트(brand bg보다 약간 어둡게)·`--paper`는 시트(밝게).

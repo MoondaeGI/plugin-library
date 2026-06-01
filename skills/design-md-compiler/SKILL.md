@@ -87,6 +87,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 - 감성적인 설명만 쓰지 말고 구현 가능한 규칙으로 바꾼다.
 - 색상은 HEX 값으로 작성한다.
+- `brand-tokens.json`의 `typography` 토큰(`display`/`heading`/`body`/`mono`)을 그대로 기록한다. `typography.accent`(선택)는 인용/에디토리얼용 폰트로, 값이 있으면 함께 기록하고 풀쿼트·히어로 태그라인 등 소량 포인트 용도임을 명시한다.
 - spacing·radius·shadow는 실제 CSS 값으로 작성한다.
 - 컴포넌트 규칙은 class나 variant로 옮길 수 있게 쓴다.
 - **이미지 레퍼런스의 살릴 점과 구현 시 버릴 점을 구분한다.**

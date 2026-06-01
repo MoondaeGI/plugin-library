@@ -60,6 +60,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
   --font-display: ;
   --font-body: ;
   --font-mono: ;
+  /* --accent: ;   brand-tokens.json typography.accent가 있을 때만 선언 — 인용/풀쿼트용 */
   --radius-md: ;
   --shadow-md: ;
 }
@@ -71,7 +72,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 .section {}
 ```
 
-- **폰트**: `--font-*`는 `.design/final/brand-kit/brand-tokens.json`의 `typography`(카탈로그에서 고른 실존 family+폴백)로 채운다. 그 폰트가 카탈로그(`../references/design/font-catalog.md`)의 웹폰트면 출처에서 로드한다 — Google Fonts는 `<head>`에 `<link>`, Pretendard·SUIT 등은 jsDelivr/CDN `<link>`/`@import`. 그래야 고른 폰트가 프로토타입에서 실제로 렌더된다. 상용·system 폰트(Apple SD Gothic Neo 등)는 폴백 스택에 의존한다.
+- **폰트**: `--font-*`는 `.design/final/brand-kit/brand-tokens.json`의 `typography`(카탈로그에서 고른 실존 family+폴백)로 채운다. 그 폰트가 카탈로그(`../references/design/font-catalog.md`)의 웹폰트면 출처에서 로드한다 — Google Fonts는 `<head>`에 `<link>`, Pretendard·SUIT 등은 jsDelivr/CDN `<link>`/`@import`. 그래야 고른 폰트가 프로토타입에서 실제로 렌더된다. 상용·system 폰트(Apple SD Gothic Neo 등)는 폴백 스택에 의존한다. `typography.accent`(있으면)는 `--accent` CSS 변수로 노출하고 인용·풀쿼트·히어로 태그라인 등 소량 포인트에 적용한다(`font-family:var(--accent)`).
 
 ## 품질 기준
 
