@@ -4,16 +4,22 @@
 
 생성은 공유 `image-gen` 스킬의 스크립트(`../image-gen/scripts/image-gen.mjs`, OpenAI Images API 직접 호출, Codex 비의존)로 한다 — 키가 없으면 사람이 외부 도구로 만들어 드롭한다. 이 가이드는 도구 중립으로, 어느 경로든 결과물이 도달해야 할 품질·구성 기준을 정의한다.
 
-## 산출물
+## 산출물 (v2 레이아웃)
 
-1. **base 시각 자산 (필수)** — 오버뷰가 끼워넣고 다운스트림이 시드로 쓰는 안정적 PNG 파일들. → `.design/generated/brand-kit/assets/`(시안) → `.design/final/brand-kit/assets/`(락).
+1. **base 시각 자산 (필수)** — 오버뷰가 끼워넣고 다운스트림이 시드로 쓰는 안정적 PNG 파일들.
+   - 발산 route 자산: `routes/route-{a,b,c}/assets/`(route별 자기완결).
+   - 확정 작업 자산: `.design/brand-kit/assets/`(확정 route 승격 후 SSOT).
+   - lock 자산: `.design/final/brand-kit/assets/`(최종 확정 복사본).
    - `logo-base.png` — 로고 마크/심볼. **투명**(gpt-image-1.5 + `--background transparent`).
    - `wordmark-base.png` — 워드마크(브랜드명 로고타입). **투명**(gpt-image-1.5 + `--background transparent`). 짧고 또렷하게(한글 글리프 뭉갬 주의).
    - `key-visual.png` — 브랜드 히어로 이미지(단일). 불투명(gpt-image-2).
-   - `ui-base.png` — UI 컴포넌트 룩(카드·배지·컨트롤). 불투명(gpt-image-2).
-   - `icons/<name>.png` — 오버뷰가 쓰는 개별 아이콘. **투명**(gpt-image-1.5 + `--background transparent`). §2·§4·§9 장식 + §11 쇼케이스 + design-iconset 가족 기준.
-2. **종합 브랜드 오버뷰 (필수 · 메인)** — 위 자산을 끼워넣고 데이터 섹션을 토큰에서 렌더한 **HTML 페이지** `overview.html`. AI 래스터 보드가 아니다. → `.design/final/brand-kit/overview.html`.
-3. **(선택) 추가 탐색 이미지** — 대안 무드·히어로 변형 등. → `.design/generated/brand-kit/`.
+   - `ui-base.png` — UI 컴포넌트 룩(카드·배지·컨트롤). 불투명(gpt-image-2). **고른 route 확정 후에만 생산.**
+   - `icons/<name>.png` — 오버뷰가 쓰는 개별 아이콘. **투명**(gpt-image-1.5 + `--background transparent`). §2·§4·§9 장식 + §11 쇼케이스 + design-iconset 가족 기준. **고른 route 확정 후에만 생산.**
+2. **종합 브랜드 오버뷰 (필수 · 메인)** — 위 자산을 끼워넣고 데이터 섹션을 토큰에서 렌더한 **HTML 페이지** `overview.html`. AI 래스터 보드가 아니다.
+   - 발산 중: 각 `routes/route-{a,b,c}/overview.html`(route별 비교용 풀 HTML).
+   - 확정 후: `.design/brand-kit/overview.html`(승격된 SSOT, §10·§11 채워 마무리).
+   - lock: `.design/final/brand-kit/overview.html`.
+3. **(선택) 추가 탐색 이미지** — 대안 무드·히어로 변형 등. → `.design/brand-kit/assets/`(확정 작업 영역).
 
 **워드마크도 이미지 자산이다**(`wordmark-base.png`, 투명) — 타입페이스/커스텀 레터링을 조건 없이 일관 처리. §1에선 `key-visual` 위에 `<img>`로 얹는다. 컷아웃은 `logo-base`·`wordmark-base`·아이콘.
 
@@ -116,11 +122,17 @@
 - **레이아웃 아키타입 (변주 유도, 택1)**: ① 포스터형(세로 1컬럼, 큰 히어로) ② 시스템 그리드(다컬럼 카드) ③ 에디토리얼(비대칭, 큰 여백). 브랜드 성격(Q4–6·비주얼 모드)에 맞춰 고른다.
 - **반복 규율**: 작은 값(HEX·카피)은 기존 HTML 외과 편집(레이아웃 보존), "디자인 다르게"는 재저작.
 
-### 발산 3 루트 (메인 보드 첫 생성)
+### 발산 3 루트 (route별 풀 overview.html 비교)
 
-메인 보드의 첫 생성은 **분위기가 열렸을 때만** 3개 초안 시안으로 발산한다(SKILL.md "흐름" 4a; 분위기 고정이면 단일 방향 1장). 발산 시 셋은 각각 **자기 후보 BRAND_KIT 전문**으로 인스턴스화한다 — 성격·팔레트·타이포·보이스·UI가 **모두** 방향별로 다르다(비주얼 모드 델타가 아니라 전략 전체 발산). 아래 3 아키타입은 **발산 스프레드의 출발점**이다:
+메인 보드의 첫 생성은 **분위기가 열렸을 때만** 3개 route로 발산한다(SKILL.md "흐름" 4; 분위기 고정이면 단일 방향 1장). 발산 시 셋은 각각 **자기 route의 BRAND_KIT 전문**으로 인스턴스화한다 — 성격·팔레트·타이포·보이스·UI가 **모두** 방향별로 다르다(비주얼 모드 델타가 아니라 전략 전체 발산). 아래 3 아키타입은 **발산 스프레드의 출발점**이다:
 
-**비용 통제**: 발산은 루트당 **key-visual 초안 1장(`--quality low`)** + 루트별 텍스트 요약으로 비교한다 — 풀 자산 세트(로고·UI·아이콘)를 ×3 만들지 않는다. 풀 자산은 고른 루트에서만 생산한다(흐름 C).
+**발산 B — route별 풀 overview.html 생성**:
+- 데이터 섹션(§2·3·4·5·7·8·9): 해당 route의 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜).
+- route별 생성 이미지: `key-visual.png`(`--model gpt-image-2 --quality low`) + `logo-base.png`·`wordmark-base.png`(`--model gpt-image-1.5 --background transparent --quality low`) → §1·§6 채움. 저장: `routes/route-{a,b,c}/assets/`에 `--auto-version`.
+- `ui-base.png`·`icons/*`는 **고른 route만** 생산(확정 후 자산 생산 단계). route HTML의 §10·§11은 "확정 후 생성" 플레이스홀더.
+- 결과: route당 이미지 ≈ 3장(low) + 풀 데이터 HTML. 3개 `routes/route-{a,b,c}/overview.html`을 나란히 제시해 비교 → 한 route 선택 → `.design/brand-kit/`로 순수 복사 승격.
+
+**비용 통제**: 발산은 route당 **이미지 3장(key-visual·logo·wordmark, 전부 low) + 공짜 데이터 HTML**이 전부 — 풀 자산 세트(ui·아이콘)를 ×3 만들지 않는다. 풀 자산은 고른 route에서만 생산한다(흐름 5).
 
 - **루트 A — 안전한 SaaS형**: §4의 "라이트 클린/SaaS" 모드. warm white/mist 배경, 채도 있는 single 액센트, soft rounded 카드, 절제된 그리드. 무드: 신뢰·명료·접근 가능.
 - **루트 B — 프리미엄 에디토리얼형**: §4의 "라이트 에디토리얼/컴플라이언스" 또는 "럭셔리/뷰티/패션" 모드. ivory/stone, 세리프 워드마크, 종이 그레인, 절제된 액센트, 큰 네거티브 스페이스. 무드: 성숙·고급·취향.
@@ -191,10 +203,10 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드는 `BRAND_KIT.md`의 §1–11을 렌더하며 1:1로 대응한다 — **§12 다음 결정 사항은 md 전용이라 보드에 렌더하지 않는다.**
 - **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다. 폰트 스펙의 실존 출처는 `../../references/design/font-catalog.md`이며, 토큰의 font-family는 거기서 고른 실존값이다.
 - **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀).
-  - **발산 초안**: 루트별 `key-visual` 초안을 `<cwd>/.design/generated/brand-kit/assets/`에 `--auto-version`으로 저장(예: `key-visual.png` → `key-visual-v2.png` 누적).
-  - **base 자산 시안**: 자산별(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icons/<name>.png`)로 `<cwd>/.design/generated/brand-kit/assets/`에 `--auto-version` 누적.
+  - **발산 route 자산**: route별 이미지를 `<cwd>/.design/brand-kit/routes/route-{a,b,c}/assets/`에 `--auto-version`으로 저장(예: `logo-base.png` → `logo-base-v2.png` 누적). route당 생산: `key-visual.png`·`logo-base.png`·`wordmark-base.png`(각 3장, low).
+  - **확정 승격**: 고른 `routes/route-X/*`(md·tokens·html·brief·assets/) → `<cwd>/.design/brand-kit/`로 순수 복사. 이후 `ui-base`·`icons/*`를 `<cwd>/.design/brand-kit/assets/`에 `--auto-version` 누적.
   - **락**: 확정 자산은 `<cwd>/.design/final/brand-kit/assets/`로 복사(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icons/<name>.png`). `--force` 없이는 기존 final을 덮지 않는다.
-  - **오버뷰**: `overview.html`을 `<cwd>/.design/final/brand-kit/`에 LLM이 저작(이미지 생성 아님).
+  - **오버뷰**: `overview.html`을 각 `routes/route-X/`(발산용, §10·§11 플레이스홀더)와 `.design/brand-kit/`(확정 마무리)·`.design/final/brand-kit/`(lock)에 LLM이 저작(이미지 생성 아님).
 - **협업 루프**: 메인 보드는 3 루트 발산(초안 3장) → 방향 선택(또는 재시도) → **고른 루트를 `--image`로 첨부해 high 편집** → **직전 보드를 `--image`로 첨부한 증분 편집으로 한 섹션씩** 고쳐 재생성 → 확정 → (선택) 추가 탐색 → 다음. **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 `--image` 편집**(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 추가 탐색은 한 장씩. (로고는 보드 §6 섹션으로만 들어가고, 독립 로고는 design-logo가 만든다.)
 
 ## 12. 프롬프트 템플릿 (내부 구조)
@@ -242,7 +254,7 @@ Avoid (logo): shield/lock/globe/gear clichés, meaningless gradient/3D bevel/spa
 
 > 위 마지막 3줄(`Logo Direction section:` ~ `Avoid (logo):`)은 `../../references/design/logo-art-direction.md` §7.1 압축 블록이다 — `[BRAND_KIT.md §6 구성·의미]`·`[grid / ...]` 브래킷을 이 브랜드의 실제 마크 컨셉·기하로 채워 넣는다. 비워두거나 generic 문구로 두지 않는다.
 
-**발산 3 루트**: 발산 시 각 루트 프롬프트는 **해당 후보 BRAND_KIT 전문**(direction-X)에서 채운다 — `Brand strategy`·`Palette`·`Typography`·`Voice`·`Visual mode`, 그리고 §1 커버 키 비주얼의 피사체/모티프·매체까지 **모두 방향별로 다르다**(한 킷에 비주얼 델타를 입히는 게 아니라 방향마다 다른 전략). `Sections`·`Language` 같은 포맷 규칙만 공통이고, 셋은 같은 제품 사실(§1·타깃·문제)과 디스커버리 Q6 회피 제약만 공유한다. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 루트별 `key-visual` 초안 경로(`generated/brand-kit/assets/`, `--auto-version`)로 개별 호출(`--quality low` 초안). (분위기 고정이면 단일 방향 1장만.)
+**발산 3 루트**: 발산 시 각 route 프롬프트는 **해당 route의 BRAND_KIT 전문**(route-X)에서 채운다 — `Brand strategy`·`Palette`·`Typography`·`Voice`·`Visual mode`, 그리고 §1 커버 키 비주얼의 피사체/모티프·매체까지 **모두 방향별로 다르다**(한 킷에 비주얼 델타를 입히는 게 아니라 방향마다 다른 전략). `Sections`·`Language` 같은 포맷 규칙만 공통이고, 셋은 같은 제품 사실(§1·타깃·문제)과 디스커버리 Q6 회피 제약만 공유한다. 각 프롬프트를 별도 임시 파일에 써서 `--out`을 route별 자산 경로(`brand-kit/routes/route-{a,b,c}/assets/`, `--auto-version`)로 개별 호출(`--quality low`). route당 생산: `key-visual.png`(`gpt-image-2`) + `logo-base.png`·`wordmark-base.png`(`gpt-image-1.5 --background transparent`). (분위기 고정이면 단일 방향 1장만.)
 
 **증분 편집(수정·수렴)**: 첫 생성 이후의 모든 수정은 직전 이미지를 `--image`로 첨부해 보낸다(SKILL.md "이미지 생성" 참고; gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리). 이때 프롬프트는 위 풀 템플릿이 아니라 **바꿀 한 가지만** 기술한다 — 예: "9번 Voice & Tone 섹션의 O/X 예시 문구만 …로 교체, 나머지 섹션·색·레이아웃은 그대로 유지". 풀 템플릿을 다시 넣으면 편집이 아니라 재생성이 되어 나머지까지 바뀐다.
 
