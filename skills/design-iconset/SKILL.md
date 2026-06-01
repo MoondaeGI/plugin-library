@@ -41,7 +41,7 @@ Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다.
 
 스크립트 경로(형제 스킬): `../image-gen/scripts/image-gen.mjs`.
 
-- **모델·배경**: **아이콘은 `gpt-image-1.5` + `--background transparent`(투명 PNG)**로 생성한다. gpt-image-2는 투명 배경을 지원하지 않으므로 불투명 폴백이 꼭 필요한 경우에만 사용한다.
+- **모델·배경**: **아이콘은 `gpt-image-1.5` + `--background transparent --autocrop`(투명 PNG, 여백 제거)**로 생성한다. gpt-image-2는 투명 배경을 지원하지 않으므로 불투명 폴백이 꼭 필요한 경우에만 사용한다. **개별 아이콘은 --autocrop 으로 여백을 잘라 마크가 그리드 셀을 꽉 채우게 한다.**
 - **충실도(고정)**: gpt-image-2는 `--image`를 **항상 high fidelity**로 처리한다(`--input-fidelity` 미지원). "룩 따르되 새 아이콘"은 프롬프트 문구로 표현한다.
 - **셀 참조 = 시트 첨부 + 번호**: 사용자가 "N번"으로 가리키면 **해당 시트를 `--image`로 첨부**하고 프롬프트엔 번호만 쓴다. 형태를 말로 번역하지 않는다.
 - **버전 보존**: 모든 재생성은 `--auto-version`으로 `-v2`·`-v3`… 누적, 기존 시안을 덮지 않는다.
@@ -52,7 +52,7 @@ Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다.
     --prompt-file <시트 프롬프트 파일> \
     --image "<cwd>/.design/generated/iconset/style-seed.png" \
     --out "<cwd>/.design/generated/iconset/iconset-board.png" \
-    --auto-version --size 1024x1024 --quality low --model gpt-image-1.5 --background transparent
+    --auto-version --size 1024x1024 --quality low --model gpt-image-1.5 --background transparent --autocrop
   ```
 
 ## 흐름 (디자이너 협업 루프)
@@ -66,7 +66,7 @@ Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다.
 
 ### Phase 1 — md+이미지 흡수 → 시드 → 목록 → 승인 게이트 (brand kit가 있을 때)
 1. **md/tokens 최대 흡수**: BRAND_KIT §11 4필드(스타일·폼 규칙·모티프·상태 규칙)·§6·§1/에센스·§10 피할요소·금지패턴·tokens 색 HEX를 읽어 스타일 파라미터(스타일·굵기·join/cap·코너·라인색·액센트·메타포 모티프·상태 규칙)를 확정한다(추측 없음). **§11 폼 규칙에 박힌 조인/터미널(round/square)·코너·굵기를 그대로 따른다 — 기본 round로 흘려보내지 않는다.** `../references/design/icon/icon-rules.md`·`icon-style-catalog.md`·`icon-domain-examples.md`로 보정.
-2. **스타일 시드 = `assets/icons/*` 직접.** brand-kit이 만든 개별 투명 아이콘을 가족 앵커로 쓴다(보드 재추출 안 함). 추가 아이콘은 이 앵커를 `--image`로 첨부 + 동일 스타일 파라미터로 생성해 한 가족 유지. 투명 컷아웃은 `--model gpt-image-1.5 --background transparent`.
+2. **스타일 시드 = `assets/icons/*` 직접.** brand-kit이 만든 개별 투명 아이콘을 가족 앵커로 쓴다(보드 재추출 안 함). 추가 아이콘은 이 앵커를 `--image`로 첨부 + 동일 스타일 파라미터로 생성해 한 가족 유지. 투명 컷아웃은 `--model gpt-image-1.5 --background transparent --autocrop`.
 3. **아이콘 목록 초안 제안**: §1/에센스/도메인(`icon-domain-examples.md` 해당 도메인 섹션) 근거로 기능 아이콘 목록(영어 kebab-case 라벨)을 제안 → 사용자가 추가/제거/직접요청으로 편집한다.
 4. `iconset-briefs.md` 작성(시드 출처·읽은 md 근거 요약·확정 목록·스타일 파라미터·상태 아이콘·색·제약).
 5. **승인 게이트 (시트 생성 전 필수)**: 시드 + 확정 목록 + 스타일 파라미터를 텍스트로 제시하고 확정. 이미지는 실비가 들고 목록/스타일이 어긋나면 시트를 통째로 날리므로 텍스트 단계에서 잡는다. 승인 전엔 시트를 생성하지 않는다.
@@ -88,5 +88,5 @@ Phase 1에서 **이미지뿐 아니라 작성된 md도 최대한 흡수**한다.
 - **로고보다 과하게 튀지 않게** (BRAND_KIT §6 참고).
 - 시트엔 **라벨·헤더만** — 가짜 본문 텍스트·번호 누락/중복·한 칸에 여러 아이콘 금지.
 - `icon-rules.md` §4 Avoid 전부: clip-art·일반 스톡 아이콘·세트 내 굵기 불일치·디테일 과밀·클리셰(방패/눈/자물쇠/지구본/톱니)·불필요한 3D/bevel·gradient·drop shadow·섞인 스타일(line/fill/duotone 혼용)·작아지면 안 읽히는 디테일·사진처럼 사실적인 렌더.
-- 아이콘 배경은 투명(gpt-image-1.5 `--background transparent`) — gpt-image-2는 투명 미지원이라 불투명 폴백 시에만 사용.
+- 아이콘 배경은 투명(gpt-image-1.5 `--background transparent --autocrop`) — gpt-image-2는 투명 미지원이라 불투명 폴백 시에만 사용.
 - 권위 원본은 md/tokens — 시드 이미지와 어긋나면 md/tokens가 정답.

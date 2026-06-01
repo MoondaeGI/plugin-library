@@ -40,7 +40,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 스크립트 경로(형제 스킬): `../image-gen/scripts/image-gen.mjs`.
 
-- **모델·배경**: 로고 마크·워드마크·파비콘은 `gpt-image-1.5` + `--background transparent`(투명 PNG)로 생성한다. 앱 아이콘은 컬러 타일이므로 `gpt-image-2` 불투명(배경을 프롬프트로 "plain near-white/near-black background, no scenery" 지시). gpt-image-2는 투명 배경을 지원하지 않으므로, 불투명이 필요한 경우에만 gpt-image-2를 쓴다.
+- **모델·배경**: 로고 마크·워드마크·파비콘은 `gpt-image-1.5` + `--background transparent --autocrop`(투명 PNG, 여백 제거)로 생성한다. 앱 아이콘은 컬러 타일이므로 `gpt-image-2` 불투명(배경을 프롬프트로 "plain near-white/near-black background, no scenery" 지시). gpt-image-2는 투명 배경을 지원하지 않으므로, 불투명이 필요한 경우에만 gpt-image-2를 쓴다. **투명 컷아웃(로고·워드마크·파비콘)은 --autocrop 을 붙여 마크가 캔버스를 꽉 채우게 한다.**
 - **충실도(고정)**: gpt-image-2는 `--image`를 **항상 high fidelity**로 처리한다(`--input-fidelity` 미지원 — 스크립트에서 제거됨). "편집(보존)이냐 참고(새로)냐"는 **프롬프트 문구**로 표현한다 — 추출·번호 수정·다듬기·로고시스템은 "보존", 더 새로운 보드를 원하면 시드만 첨부.
 - **셀 참조 = 보드 첨부 + 번호**: 사용자가 "N번"으로 가리키면 **해당 보드를 `--image`로 첨부**하고 프롬프트엔 번호만 쓴다. 형태를 말로 번역하지 않는다 — 모델이 번호 셀을 직접 본다.
 - **버전 보존**: 모든 재생성은 `--auto-version`으로 `-v2`·`-v3`… 누적, 기존 시안을 덮지 않는다.
@@ -92,6 +92,6 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 - 보드는 한 장에 40개 번호 컨셉이 또렷이 읽혀야 한다 — `references/logo-exploration-board.md` 따름.
 - 단독 로고는 `../references/design/logo-art-direction.md` §8 품질 테스트(실루엣·작은 크기·무텍스트·단색·시스템·의미)를 통과해야 한다.
-- 로고 마크·워드마크·파비콘 배경은 투명(gpt-image-1.5). 앱 아이콘은 gpt-image-2 불투명 컬러 타일.
+- 로고 마크·워드마크·파비콘 배경은 투명(gpt-image-1.5 `--background transparent --autocrop`). 앱 아이콘은 gpt-image-2 불투명 컬러 타일.
 - 금지: 방패·자물쇠·지구본·기어·말풍선 클리셰, 의미 없는 그라데이션·3D 베벨·드롭섀도·sparkle, 글자만 있는 로고, 보드 셀마다 다른 스타일 난립, 유명 마크 모방 (§6·§9).
 - 한글 워드마크는 짧고 단순하게, 정확한 문구의 권위 원본은 `BRAND_KIT.md`.

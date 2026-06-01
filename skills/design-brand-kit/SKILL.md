@@ -255,8 +255,9 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 - **자산별 개별 호출** (한 프롬프트의 변형이 아님 — `--n` 금지).
 - **투명 라우팅 (중요)**: 컷아웃 자산은 투명 PNG가 필요하다.
-  - `logo-base.png`·`wordmark-base.png`·`icons/<name>.png` → `--model gpt-image-1.5 --background transparent --output-format png`.
+  - `logo-base.png`·`wordmark-base.png`·`icons/<name>.png` → `--model gpt-image-1.5 --background transparent --output-format png --autocrop`.
   - `key-visual.png`·`ui-base.png` → `--model gpt-image-2`(불투명). (gpt-image-2는 `transparent` 미지원.)
+  - **컷아웃은 생성 직후 여백이 잘리도록 --autocrop 을 붙인다(없으면 마크가 콩알만 해짐).**
 - **자산 간 일관성**: 먼저 **스타일 앵커**(또는 `key-visual`)를 만들고, 이후 각 자산을 그 앵커를 `--image`로 첨부 + 공통 스타일 프리앰블(BRAND_KIT/tokens)로 생성해 한 가족이 되게 한다. 아이콘은 가족 앵커(또는 첫 아이콘)를 `--image`로 시드.
 - **품질/비용**: 초안 `--quality low`. **사진류(key-visual·ui)만 `--quality high` 락**, 로고·아이콘은 low(필요 시 medium). 아이콘은 오버뷰 표시 크기엔 low로 충분.
 - **버전 보존**: 모든 재생성 `--auto-version`(해당 `assets/` 안에서 `-v2`… 누적). 락된 자산만 `final/brand-kit/assets/`로 복사.
@@ -267,7 +268,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
     --prompt-file <로고 프롬프트 파일> \
     --image "<cwd>/.design/brand-kit/routes/route-a/assets/key-visual.png" \
     --out "<cwd>/.design/brand-kit/routes/route-a/assets/logo-base.png" \
-    --auto-version --model gpt-image-1.5 --background transparent --quality low
+    --auto-version --model gpt-image-1.5 --background transparent --quality low --autocrop
   ```
 - 호출 예(발산 route 불투명 키비주얼):
   ```bash
@@ -287,7 +288,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 ### overview.html 저작 (이미지 아님)
 
-`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-image.md`의 "HTML 오버뷰 레이아웃 스펙"을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(상대 경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만).
+`overview.html`은 생성기로 만들지 않는다 — `references/html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(상대 경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만).
 
 ## 흐름 (디자이너 협업 루프)
 
@@ -296,7 +297,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 3. **승인 게이트 (생성 전 필수)** — 문서(킷·tokens·brief)를 제시하고 방향 확인. 승인 전 한 장도 생성하지 않는다. 발산이면 후보 3방향을 몇 줄 요약으로.
 4. **발산 (분위기 열림일 때만; 고정이면 건너뜀)** — route별 **풀 `overview.html`까지** 생산해 비교한다:
    - 데이터 섹션(§2·3·4·5·7·8·9): 해당 route의 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜).
-   - route별 생성 이미지: `key-visual.png`(`--model gpt-image-2 --quality low`) + `logo-base.png`·`wordmark-base.png`(`--model gpt-image-1.5 --background transparent --quality low`) → §1·§6 채움. 각 route `assets/`에 저장.
+   - route별 생성 이미지: `key-visual.png`(`--model gpt-image-2 --quality low`) + `logo-base.png`·`wordmark-base.png`(`--model gpt-image-1.5 --background transparent --quality low --autocrop`) → §1·§6 채움. 각 route `assets/`에 저장.
    - `ui-base.png`·`icons/*`는 **고른 route만** 생산(확정 후). route HTML의 §10·§11은 "확정 후 생성" 플레이스홀더.
    - 결과: route당 이미지 ≈ 3장(low) + 풀 데이터 HTML. 3개 `overview.html`을 나란히 제시 → 한 route 선택 → `routes/route-X/*`를 `.design/brand-kit/`로 **순수 복사 승격**(경로 재작성 0, 안 고른 route는 `routes/`에 보존).
 5. **자산 생산 (확정 route → `.design/brand-kit/assets/`)** — `ui-base`·`icons/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
