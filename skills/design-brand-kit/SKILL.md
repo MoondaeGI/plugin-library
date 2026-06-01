@@ -284,6 +284,17 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 `overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(상대 경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만).
 
+### 라이브 프리뷰 (자동 새로고침)
+
+`overview.html`을 **처음 피드백용으로 제시할 때** 공유 런처로 로컬 라이브 서버를 **한 번 백그라운드로** 띄운다 — 이후 자산 재생성·HTML 외과 편집 때마다 브라우저가 자동 새로고침된다(수동 새로고침 불필요). watch·reload·브라우저 오픈은 `five-server`에 위임한다(우리는 구현하지 않음).
+
+```
+node ../../scripts/serve-design.mjs <cwd>/.design/brand-kit
+```
+
+- 명령 실행이므로 **최초 1회만 사용자 확인** 후 백그라운드 기동(이후 같은 서버 유지).
+- lock 후 또는 세션 종료 시 서버를 종료한다(`Ctrl+C`/백그라운드 종료 — 포트 점유 방지).
+
 ## 흐름 (디자이너 협업 루프)
 
 1. **킷 작성 (분위기 분기)** — §1–11은 오버뷰 섹션과 1:1, §12는 md 전용. 분위기 **고정** → `.design/brand-kit/`에 단일 풀 `BRAND_KIT.md`·`brand-tokens.json`·`brief.md` 직행. 분위기 **열림** → `directions.json`(3방향 최소 데이터)을 작성한다(풀 킷 3벌이 아님). §8 폰트는 `../references/design/font-catalog.md`에서, §11 아이코노그래피는 `../references/design/icon/icon-rules.md`로 확정(폼 규칙 명시).
@@ -293,4 +304,4 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 5. **자산 생산 (`.design/brand-kit/assets/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icons/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
 6. **overview.html 마무리** — data-only `overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`assets/key-visual.png`·`assets/ui-base.png`·`assets/icons/*.png` 등)으로 채워 **재저작 또는 외과 편집**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
-8. **lock** — `.design/brand-kit/{BRAND_KIT.md,brand-tokens.json,overview.html,brief.md,assets/}`를 `.design/final/brand-kit/`로 **순수 복사**. 확정되면 산출물 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-page-image`"** (각자 `.design/brand-kit/assets/`를 시드로 읽음).
+8. **lock** — `.design/brand-kit/{BRAND_KIT.md,brand-tokens.json,overview.html,brief.md,assets/}`를 `.design/final/brand-kit/`로 **순수 복사**. 확정되면 산출물 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-page-image`"** (각자 `.design/brand-kit/assets/`를 시드로 읽음). 라이브 프리뷰 서버가 떠 있으면 종료한다(포트 점유 방지).
