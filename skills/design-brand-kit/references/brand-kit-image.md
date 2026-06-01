@@ -171,7 +171,7 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
   - **작업 자산**: 이미지를 `<cwd>/.design/brand-kit/assets/`에 `--auto-version`으로 저장(예: `logo-base.png` → `logo-base-v2.png` 누적).
   - **락**: 확정 자산은 `<cwd>/.design/final/brand-kit/assets/`로 복사(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icons/<name>.png`). `--force` 없이는 기존 final을 덮지 않는다.
   - **오버뷰**: `overview.html`을 `.design/brand-kit/`(작업 마무리)·`.design/final/brand-kit/`(lock)에 LLM이 저작(이미지 생성 아님).
-- **협업 루프**: 메인 보드는 3 루트 발산(초안 3장) → 방향 선택(또는 재시도) → **고른 루트를 `--image`로 첨부해 high 편집** → **직전 보드를 `--image`로 첨부한 증분 편집으로 한 섹션씩** 고쳐 재생성 → 확정 → (선택) 추가 탐색 → 다음. **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 `--image` 편집**(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 추가 탐색은 한 장씩. (로고는 보드 §6 섹션으로만 들어가고, 독립 로고는 design-logo가 만든다.)
+- **협업 루프**: 방향 확정(발산·방향 선택은 SKILL.md 흐름 + `references/brand-kit-contact-sheet.md`) 후, 확정 방향의 자산을 한 장씩 생산한다 — **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 직전 이미지를 `--image`로 첨부한 증분 편집으로 한 가지씩** 고쳐 재생성(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 추가 탐색은 한 장씩. (로고는 보드 §6 섹션으로만 들어가고, 독립 로고는 design-logo가 만든다.)
 
 ## 12. 프롬프트 템플릿 (내부 구조)
 
