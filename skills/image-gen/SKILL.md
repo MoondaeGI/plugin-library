@@ -33,6 +33,7 @@ node "<image-gen 스킬 디렉터리>/scripts/image-gen.mjs" \
 - **모델/크기/품질**: 기본 `gpt-image-2`(키 접근권 없으면 `--model gpt-image-1`). `--size auto` 또는 `WIDTHxHEIGHT`(gpt-image-2: 변 16의 배수, 최대 3840, 비율 ≤3:1). 초안 `--quality low`, 확정본 `--quality high`.
 - **변형**: 한 프롬프트의 변형은 `--n`(파일명에 `-1`,`-2` 접미). 서로 다른 산출물은 `--n`이 아니라 개별 호출.
 - **버전 보존**: `--auto-version`을 주면 `--out`이 이미 있을 때 에러 대신 다음 `-vN`(`-v2`,`-v3`…)으로 자동 증분해 저장한다(기존 시안을 잃지 않음). 미지정 시 기존 동작(충돌 시 `--force` 없으면 에러). `--force`는 지정 경로를 그대로 덮어쓰며 `--auto-version`보다 우선.
+- **투명 배경**: `--background transparent|opaque|auto`. 미지정이면 페이로드에 `background`를 넣지 않는다(현행 동작). **`gpt-image-2`는 `transparent`를 지원하지 않는다(요청 시 API 에러)** — 투명이 필요하면 `--model gpt-image-1.5 --background transparent`로 호출한다(`--output-format png`/`webp`). 불투명 사진/목업은 `gpt-image-2` 그대로.
 - **이미지 입력(레퍼런스/편집)**: `--image <경로>`(반복 가능)로 입력/레퍼런스 이미지를 넘기면 `/v1/images/edits`로 보낸다. **`edits`라는 이름과 무관하게 레퍼런스 기반 새 생성·편집·합성을 모두 담당한다.** "편집이냐 레퍼런스냐"는 이 스크립트가 구분하지 않는다 — 호출자의 **프롬프트 문구**로 표현한다(예: "원본을 보존해 …만 바꿔라" vs "…를 참고해 새로 그려라"). gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리한다(`input_fidelity` 파라미터 미지원). 이미지 없이 호출하면 기존 `/generations`(텍스트→이미지) 그대로.
 - **미리보기**: `--dry-run`은 키 없이 페이로드·출력 경로만 출력. 전체 옵션은 `--help`.
 
