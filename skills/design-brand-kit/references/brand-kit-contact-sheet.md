@@ -173,7 +173,7 @@ node "<이 스킬 디렉터리>/scripts/build-contact-sheet.mjs" \
 1. `directions.json`을 작성하고 위 명령으로 `directions.html` 생성.
 2. `directions.html`을 사용자에게 제시 (브라우저로 열거나 파일 경로 안내).
 3. 사용자가 열 하나(방향 A / B / C)를 선택.
-4. 선택된 방향만 풀 킷으로 전개 (SKILL.md 흐름 4 참조 — route별 BRAND_KIT 작성 → overview.html 저작 → 이미지 자산 생성).
-5. 나머지 두 방향은 폐기하거나 `routes/` 아래 보관.
+4. 선택된 방향만 `.design/brand-kit/`에 풀 킷으로 전개 (SKILL.md 흐름 4 참조 — BRAND_KIT 작성 → overview.html 저작 → 이미지 자산 생성).
+5. 안 고른 두 방향은 `directions.json`·`directions.html`에 기록으로 남는다(별도 보관 폴더 없음).
 
 **분위기 고정 시 건너뜀**: 디스커버리에서 분위기가 명시적으로 확정된 경우(Q4–6에서 단일 방향으로 수렴된 경우), 컨택트 시트 단계 자체를 건너뛴다. `directions.json`·`directions.html`은 생성하지 않으며 곧바로 단일 방향 풀 킷 작성으로 진행한다.

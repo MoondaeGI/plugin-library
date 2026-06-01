@@ -4,7 +4,7 @@
 
 ## 산출물
 
-- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>` — route 폴더든 확정 top이든 final이든 동일 HTML이 동작.
+- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>` — `.design/brand-kit/`든 `.design/final/brand-kit/`든 동일 HTML이 동작.
 - 데이터(색·타이포·보이스·가치·카피 등)는 `BRAND_KIT.md`/`brand-tokens.json`에서 가져온다 — **지어내지 않는다**. 변주는 레이아웃에서만.
 
 ## 원칙 (반드시 지킬 것)
@@ -65,5 +65,5 @@ body{ background:radial-gradient(1100px 700px at 50% -10%, #mat1, #mat2 70%); pa
 
 ## 생성 효율
 
-- **독립 자산은 병렬 생성** — 서로 다른 자산(또는 발산 route별 자산)은 `image-gen`을 **동시(백그라운드) 호출**해 병렬로 만든다(이미지 여러 장은 순차로 하면 오래 걸린다). 다듬기 루프는 순차.
+- **독립 자산은 병렬 생성** — 서로 다른 자산은 `image-gen`을 **동시(백그라운드) 호출**해 병렬로 만든다(이미지 여러 장은 순차로 하면 오래 걸린다). 다듬기 루프는 순차.
 - 컷아웃은 `--model gpt-image-1.5 --background transparent --autocrop`, 사진·UI 목업은 `--model gpt-image-2`(autocrop 안 함).
