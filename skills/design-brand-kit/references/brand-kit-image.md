@@ -103,9 +103,9 @@
 
 콘텐츠가 적거나 무드보드성 결과를 원하면 더 미니멀·시네마틱한 레이아웃도 가능: `3×3` 풀 아이덴티티 / `2×3` 시네마틱 덱 개요 / `2×2` 컴팩트 컨셉 보드 / `1×3` 가로 브랜드 스트립. 단 **기본값은 위 종합 11섹션(§1–11) 보드**이며, 사용자가 명시적으로 요청할 때만 변형으로 간다.
 
-### HTML 오버뷰 레이아웃 스펙 → `references/html-direction.md`
+### HTML 오버뷰 레이아웃 스펙 → `references/brand-kit-html-direction.md`
 
-`overview.html` 저작 규칙(포스터 원칙·섹션 매핑·고정 로고·autocrop 전제·CSS 스켈레톤)은 **`html-direction.md`**로 분리했다. 오버뷰를 만들 땐 그 파일을 읽는다. (이 가이드는 이미지 자산의 아트 디렉션을 담당.)
+`overview.html` 저작 규칙(포스터 원칙·섹션 매핑·고정 로고·autocrop 전제·CSS 스켈레톤)은 **`brand-kit-html-direction.md`**로 분리했다. 오버뷰를 만들 땐 그 파일을 읽는다. (이 가이드는 이미지 자산의 아트 디렉션을 담당.)
 
 ### 발산 3 루트 (route별 풀 overview.html 비교)
 
