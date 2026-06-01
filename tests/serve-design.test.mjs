@@ -74,3 +74,13 @@ test('--port 값이 숫자가 아니면 종료코드 2', () => {
   const d = tmpDirWithHtml();
   assert.equal(run([d, '--port', 'abc', '--print-options']).status, 2);
 });
+
+test('--port 값 없이 마지막 인자 → 종료코드 2', () => {
+  const d = tmpDirWithHtml();
+  assert.equal(run([d, '--port']).status, 2);
+});
+
+test('--port 가 65535 초과면 종료코드 2', () => {
+  const d = tmpDirWithHtml();
+  assert.equal(run([d, '--port', '65536', '--print-options']).status, 2);
+});

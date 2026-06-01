@@ -32,9 +32,11 @@ function parseArgs(argv) {
     } else if (a === "--print-options") {
       out.printOptions = true;
     } else if (a === "--port") {
-      const v = argv[++i];
+      const v = argv[i + 1];
+      if (v === undefined || v.startsWith("--")) throw new ServeDesignError("--port 에 값이 없습니다.");
+      i++;
       const n = Number(v);
-      if (!Number.isInteger(n) || n <= 0) throw new ServeDesignError(`--port 값이 올바르지 않습니다: ${v}`);
+      if (!Number.isInteger(n) || n <= 0 || n > 65535) throw new ServeDesignError(`--port 값이 올바르지 않습니다: ${v}`);
       out.port = n;
     } else if (a.startsWith("--")) {
       throw new ServeDesignError(`알 수 없는 인자: ${a}`);
@@ -60,7 +62,7 @@ function resolveTarget(target, openFlag) {
     throw new ServeDesignError(`경로를 찾을 수 없습니다: ${abs}`);
   }
   if (stat.isDirectory()) {
-    return { root: abs, open: openFlag ? true : false };
+    return { root: abs, open: openFlag };
   }
   return { root: dirname(abs), open: openFlag ? basename(abs) : false };
 }
