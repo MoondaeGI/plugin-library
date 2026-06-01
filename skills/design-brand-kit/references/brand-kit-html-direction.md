@@ -3,7 +3,7 @@
 `design-brand-kit`이 `overview.html`을 저작할 때 읽는 허브. 이 파일은 **(1) 어떤 레이아웃 아키타입을 고를지**와 **(2) 모든 아키타입 공통의 출력·렌더 규칙·원칙**만 담는다. 개별 골격(구조·CSS 스켈레톤·불변·자유 존)은 `references/archetypes/<name>.md`에 있다.
 
 ## 산출물
-- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>`.
+- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>` — `.design/brand-kit/`든 `.design/final/brand-kit/`든 동일 HTML이 동작.
 - 데이터(색·타이포·보이스·가치·카피)는 `BRAND_KIT.md`/`brand-tokens.json`에서 가져온다 — **지어내지 않는다**. 변주는 레이아웃에서만.
 
 ## 원칙 (반드시 지킬 것)
