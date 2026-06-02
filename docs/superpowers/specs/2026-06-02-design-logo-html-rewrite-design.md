@@ -18,7 +18,7 @@
 4. 기존의 **"#N 선택 → 수렴 → 재생성"** 루프를 유지하되, 발산/수렴 두 종류 라운드가 같은 시트를 **교체**하며 돈다.
 5. 고른 PNG는 이미 깨끗한 컷아웃이므로 **보드 셀 재추출 단계를 제거**한다.
 
-비목표: Phase 3 로고 시스템(wordmark·favicon·app-icon)·`logo-art-direction.md`(§1–9 형태 언어·품질 테스트)·brand-kit 업스트림 산출물 구조는 바꾸지 않는다.
+비목표: 로고 시스템(wordmark·favicon·app-icon)은 만들지 않는다(현재 불필요 — 확정 단일 로고만). `logo-art-direction.md`(§1–9 형태 언어·품질 테스트)·brand-kit 업스트림 산출물 구조는 바꾸지 않는다.
 
 ## 핵심 결정
 
@@ -75,7 +75,7 @@ Phase 0 — 입력 감지
  ├─ brand-kit(BRAND_KIT.md + logo-base.png) 없음
  │    → "design-brand-kit으로 브랜드 킷부터 만들까요? (권장)"
  │       ├─ 예    → design-brand-kit 안내 후 종료
- │       └─ 아니오 → 로고용 최소 Q&A(제품명·분야·성격·메타포·색·워드마크·금지)
+ │       └─ 아니오 → 로고용 최소 Q&A(제품명·분야·성격·메타포·색·금지)
  │                   → 시드 없이 텍스트→이미지 = 발산 모드 B 고정
  │                   → logo-briefs.md에 Q&A 기록, 끝에 brand-kit 안내
  ├─ 사용자 첨부 이미지 있음 → seed-user.png로 저장 + 역할 질문
@@ -96,11 +96,10 @@ Phase 2 — 발산/수렴 루프
  - "#N 좋다" → 질문:
      (a) 수렴 라운드 → #N 앵커로 3~4 변주(시트 교체, 반복 가능)
      (b) 바로 단독 확정
- - 단독 로고 다듬기 루프(한 번에 한 가지 증분 편집) → lock
+ - 단독 로고 다듬기 루프(한 번에 한 가지 증분 편집) → lock(.design/final/logo/assets/logo.png)
+ - 끝에 "다음 단계: design-iconset" 안내.
 
-Phase 3 — (선택) 로고 시스템  [기존 유지]
- - wordmark · favicon · app-icon, 확정 logo.png를 --image로 첨부해 하나씩.
- - 끝에 "다음 단계: design-page-image" 안내.
+(로고 시스템 wordmark·favicon·app-icon은 만들지 않는다 — 현재 불필요. 확정 단일 로고만 산출.)
 ```
 
 ## 파일 구조 (대상 프로젝트 cwd 기준)
@@ -116,7 +115,7 @@ Phase 3 — (선택) 로고 시스템  [기존 유지]
       concepts/round-N/01..04.png    # 라운드별 개별 투명 PNG (--auto-version)
       logo-candidate.png (+v2…)      # 고른 #N 단독 다듬기
   final/logo/
-    assets/  logo.png · wordmark.png · favicon.png · app-icon.png   # lock 세트
+    assets/  logo.png   # lock (확정 단일 로고)
 ```
 
 - `logos.html`의 모든 `<img>`는 형제 `assets/` 상대경로(`assets/concepts/round-N/01.png`·`assets/seed.png`) → `.design/logo/`든 복사본이든 동일 동작. brand-kit(`.design/brand-kit/` + `assets/`)과 동형.
@@ -157,6 +156,6 @@ Phase 3 — (선택) 로고 시스템  [기존 유지]
 
 - 시트의 3~4개는 **또렷이 구별되는 큰 방향**이어야 한다 — 미세 변주 반복 금지.
 - 단독 로고는 `logo-art-direction.md` §8 품질 테스트(실루엣·작은 크기·무텍스트·단색·시스템·의미) 통과.
-- 컷아웃 배경 투명(`gpt-image-1.5 --background transparent --autocrop`). 앱 아이콘만 `gpt-image-2` 불투명 컬러 타일.
+- 컷아웃 배경 투명(`gpt-image-1.5 --background transparent --autocrop`).
 - 금지: 방패·자물쇠·지구본·기어·말풍선 클리셰, 의미 없는 그라데이션·3D 베벨·드롭섀도·sparkle, 글자만 로고, 카드마다 스타일 난립, 유명 마크 모방. 시트에 가짜 본문 텍스트·읽히지 않는 미세 디테일 금지.
 ```

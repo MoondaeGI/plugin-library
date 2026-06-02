@@ -29,6 +29,8 @@
 
 > **레이아웃 후속 변경 (실행 후):** 아래 Task 1·2 본문에 박힌 경로 스냅샷은 `.design/generated/logo/`(작업)·`.design/final/logo/`(flat lock)을 쓰지만, 사용자 결정으로 **brand-kit 동형 레이아웃**으로 옮겼다 — 작업은 `.design/logo/`(시트·brief는 루트, 모든 PNG는 `assets/`), lock은 `.design/final/logo/assets/`, `logos.html`의 `<img>`는 `assets/...` 상대참조, 라이브 서버는 `.design/logo`. **정본은 커밋된 `skills/design-logo/SKILL.md`·`references/logo-sheet-html-direction.md`와 스펙의 "파일 구조" 절**이며, 아래 스냅샷은 그보다 앞선 상태다.
 
+> **Phase 3 제거 (실행 후):** 아래 Task 2 본문에 있는 "Phase 3 — (선택) 로고 시스템"(wordmark·favicon·app-icon)과 "다음 단계: design-page-image" 안내는 사용자 결정으로 **삭제**했다 — 현재 로고 시스템은 불필요하므로 확정 **단일 로고만** 산출하고, 끝나면 **`design-iconset`**으로 안내한다. 정본은 커밋된 `skills/design-logo/SKILL.md`.
+
 ---
 
 ### Task 0: image-gen `--input-fidelity` 복원 (선행)
