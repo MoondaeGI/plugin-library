@@ -8,8 +8,8 @@
 
 ```
 design-brand-kit
-   ├─ (선택) design-logo      ← assets/logo-base.png 시드
-   ├─ (선택) design-iconset   ← BRAND_KIT.md §11 + assets/icons 시드
+   ├─ (선택) design-logo      ← assets/brand-kit/logo-base.png 시드
+   ├─ (선택) design-iconset   ← BRAND_KIT.md §11 + brand-tokens.json 근거
    └─ design-page-image
           └─ design-md-compiler
                  └─ design-html-prototype
@@ -17,14 +17,14 @@ design-brand-kit
 
 | 스킬 | 역할 | 입력 | 주요 산출물 |
 |---|---|---|---|
-| **design-brand-kit** | 브랜드 정체성·톤·색·타이포·로고 방향·UI 분위기를 정리하고, 정체성 base 자산(투명 PNG)과 한눈에 보는 HTML 오버뷰를 협업으로 만든다 | 제품 설명 (+ 디스커버리 Q&A) | `.design/brand-kit/` (`BRAND_KIT.md`·`brand-tokens.json`·`overview.html`·`assets/`), lock 시 `.design/final/brand-kit/` |
-| **(선택) design-logo** | 40개 컨셉 탐색 보드 → 셀 번호로 좁혀 단독 로고 확정 (+ wordmark·favicon·app-icon) | `assets/logo-base.png` | `.design/final/logo/` |
-| **(선택) design-iconset** | 한 가족으로 읽히는 아이콘 세트를 라벨 그리드 시트로 확정 | `BRAND_KIT.md` §11 · `assets/icons/*` | `.design/final/iconset/` |
+| **design-brand-kit** | 브랜드 정체성·톤·색·타이포·로고 방향·UI 분위기를 정리하고, 정체성 base 자산(투명 PNG)과 한눈에 보는 HTML 오버뷰를 협업으로 만든다 | 제품 설명 (+ 디스커버리 Q&A) | `.design/{BRAND_KIT.md·brand-tokens.json}`(루트) · `view/overview.html` · `assets/brand-kit/` |
+| **(선택) design-logo** | 라운드 3~4개 탐색 시트 → 단독 로고 확정 | `assets/brand-kit/logo-base.png` | `.design/assets/logo/` |
+| **(선택) design-iconset** | 한 가족으로 읽히는 아이콘 세트를 라벨 그리드 시트로 확정 | `BRAND_KIT.md` §11 · `brand-tokens.json` 근거 | `.design/assets/icon/` |
 | **design-page-image** | 랜딩·대시보드·앱 화면을 섹션별 이미지 브리프/이미지로 기획 | 브랜드 킷 | 섹션별 이미지 브리프·이미지 |
-| **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리 | 브랜드 킷 + 페이지 이미지 | `.design/DESIGN.md` |
+| **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리 | 브랜드 킷 + 페이지 이미지 | `DESIGN.md` (cwd 루트) |
 | **design-html-prototype** | 빠르게 확인 가능한 단일 HTML/CSS 프로토타입 | `DESIGN.md` + 토큰 | 단일 HTML 프로토타입 |
 
-다운스트림(`design-logo`·`design-iconset`·`design-page-image`)은 보드를 다시 분석하지 않고 `design-brand-kit`이 만든 `.design/brand-kit/assets/`를 **직접 시드로 읽는다**.
+다운스트림(`design-logo`·`design-iconset`·`design-page-image`)은 보드를 다시 분석하지 않고 `design-brand-kit`이 만든 `.design/assets/brand-kit/`를 **직접 시드로 읽는다**.
 
 이미지 생성은 공유 [`image-gen`](../../skills/image-gen) 스킬(OpenAI Images API)이 담당하며 `OPENAI_API_KEY`(`.env`)가 필요하다. 키가 없으면 이미지 단계만 사람이 직접 드롭하도록 안내하고 나머지는 진행한다.
 
@@ -52,22 +52,19 @@ Q&A가 끝나면 미감이 **고정**됐는지 **열림**인지 판정한다. �
 2. **승인 게이트 (이미지 0콜)** — 미감 고정이면 data-only `overview.html`(이미지 슬롯은 플레이스홀더)을 제시해 승인받고, 열림이면 컨택트 시트에서 한 방향을 고른다. 승인/선택 전에는 이미지를 **한 장도** 생성하지 않는다.
 3. **자산 생산** — `key-visual` → `logo-base` → `wordmark-base` → `ui-base` → `icons/*`를 **한 번에 하나씩** 만들어 보여주고, 피드백은 한 번에 한 가지만 반영해 다시 만든다. (컷아웃은 투명 PNG + autocrop, 사진류만 고품질.)
 4. **overview.html 마무리** — 플레이스홀더를 실제 자산으로 채워 마감.
-5. **lock** — `.design/brand-kit/`를 `.design/final/brand-kit/`로 순수 복사하고, 다음 단계(`design-logo` → `design-iconset` → `design-page-image`)를 안내한다.
+5. **lock** — 산출물은 캐노니컬 홈(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`)에 제자리 저작되며 lock은 "승인" 의미. 다음 단계(`design-logo` → `design-iconset` → `design-page-image`)를 안내한다.
 
 ### 산출물 레이아웃
 
 ```
 .design/
-  brand-kit/
-    BRAND_KIT.md          # 작업 SSOT (§1–11은 오버뷰와 1:1, §12는 md 전용)
-    brand-tokens.json     # 색·타이포·radius·shadow·spacing 토큰
-    overview.html         # 자산은 <img>(상대경로), 데이터는 토큰에서 실렌더
-    assets/               # logo-base · wordmark-base · key-visual · ui-base · icons/<name>.png
-  final/
-    brand-kit/            # lock 세트 (위를 순수 복사)
+  BRAND_KIT.md  brand-tokens.json     # 루트 스펙/토큰
+  view/    overview.html · logos.html · iconset-sheet.html · directions.html
+  assets/  brand-kit/(base 자산·컨셉 아이콘) · logo/ · icon/ · page/   # 확정 deliverable
+  candidate/  brand-kit/ · logo/ · icon/ · page/                      # 탐색 데이터
 ```
 
-`overview.html`의 모든 `<img>`는 형제 `assets/`를 상대경로로 참조하므로, 작업 폴더든 `final`이든 같은 HTML이 그대로 동작한다.
+`overview.html`은 `view/`에서 `../assets/brand-kit/`를 상대경로로 참조한다.
 
 ### 예시 — Nooknote
 
