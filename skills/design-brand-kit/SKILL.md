@@ -69,7 +69,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
   assets/
     brand-kit/  logo-base.png · wordmark-base.png · key-visual.png · ui-base.png · icon/<name>.png
   candidate/
-    brand-kit/  brief.md · directions.json · brand-briefs.md   # 탐색 데이터
+    brand-kit/  brief.md(레이아웃 메모) · directions.json · brand-briefs.md(이미지 브리프)   # 탐색 데이터
 ```
 
 **레이아웃 규칙**:
