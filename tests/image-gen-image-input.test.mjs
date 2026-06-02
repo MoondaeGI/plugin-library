@@ -57,6 +57,13 @@ test('--input-fidelity high + --image + gpt-image-1.5 면 payload 에 input_fide
   assert.match(res.stdout, /"input_fidelity": "high"/);
 });
 
+test('--input-fidelity low 도 payload 에 그대로 전달된다', () => {
+  const img = makeImage();
+  const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--input-fidelity', 'low', '--model', 'gpt-image-1.5', '--dry-run']);
+  assert.equal(res.status, 0, res.stderr);
+  assert.match(res.stdout, /"input_fidelity": "low"/);
+});
+
 test('gpt-image-2 에는 --input-fidelity 를 줘도 payload 에서 빠진다', () => {
   const img = makeImage();
   const res = run(['--prompt', 'x', '--out', outPath(), '--image', img, '--input-fidelity', 'high', '--model', 'gpt-image-2', '--dry-run']);

@@ -183,6 +183,8 @@ async function main() {
       fields.input_fidelity = opts.inputFidelity;
     } else if (opts.model.startsWith('gpt-image-2')) {
       console.error('알림: gpt-image-2 는 input_fidelity 를 지원하지 않아 무시합니다(항상 high).');
+    } else {
+      console.error('알림: input_fidelity 는 --image(edits) + gpt-image-1.x 에서만 적용됩니다 — 무시합니다.');
     }
   }
 
