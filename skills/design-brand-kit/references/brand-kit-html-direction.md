@@ -3,7 +3,7 @@
 `design-brand-kit`이 `overview.html`을 저작할 때 읽는 허브. 이 파일은 **(1) 어떤 레이아웃 아키타입을 고를지**와 **(2) 모든 아키타입 공통의 출력·렌더 규칙·원칙**만 담는다. 개별 골격(구조·CSS 스켈레톤·불변·자유 존)은 `references/archetypes/<name>.md`에 있다.
 
 ## 산출물
-- 단일 self-contained `overview.html`(CSS 인라인). 자산은 **형제 `assets/...` 상대경로** `<img>` — `.design/brand-kit/`든 `.design/final/brand-kit/`든 동일 HTML이 동작.
+- 단일 self-contained `overview.html`(CSS 인라인). 자산은 `../assets/brand-kit/...` `<img>`(view/에서 제자리 저작).
 - 데이터(색·타이포·보이스·가치·카피)는 `BRAND_KIT.md`/`brand-tokens.json`에서 가져온다 — **지어내지 않는다**. 변주는 레이아웃에서만.
 
 ## 원칙 (반드시 지킬 것)
@@ -18,13 +18,13 @@
 
 ## 섹션 → 자산/데이터 매핑
 
-- **§1** `key-visual.png` 배경 `<img>` + `wordmark-base.png` `<img>`(크게) + 한 줄 설명·포지셔닝(텍스트) + CSS 스크림으로 가독성.
-- **§6** `logo-base.png`(심볼)·`wordmark-base.png`(락업) + 변형(심볼 단독 · 앱아이콘[브랜드색 라운드 타일, `filter:brightness(0) invert(1)`로 흰 마크] · 파비콘) 고정 크기 + 구성·의미 텍스트.
+- **§1** `../assets/brand-kit/key-visual.png` 배경 `<img>` + `../assets/brand-kit/wordmark-base.png` `<img>`(크게) + 한 줄 설명·포지셔닝(텍스트) + CSS 스크림으로 가독성.
+- **§6** `../assets/brand-kit/logo-base.png`(심볼)·`../assets/brand-kit/wordmark-base.png`(락업) + 변형(심볼 단독 · 앱아이콘[브랜드색 라운드 타일, `filter:brightness(0) invert(1)`로 흰 마크] · 파비콘) 고정 크기 + 구성·의미 텍스트. 이 §6 안에 `<!-- design-logo:slot -->…<!-- /design-logo:slot -->` 마커 슬롯을 넣어 design-logo가 확정 로고를 주입할 자리를 만든다.
 - **§7** tokens 색 → 스와치 + HEX + 용도.
 - **§8** font-catalog 폰트 → Display/H1/H2/Body/Caption/Mono 스펙시먼. accent 폰트가 있으면 그 스펙시먼도 한 줄 보여준다.
-- **§10** `ui-base.png` 크게(목업이 주인공) + UI 방향 노트.
-- **§11** `icons/*.png` 행 + 스타일·폼 규칙 노트.
-- **§2·3·4·5·9** `BRAND_KIT.md` 데이터 텍스트(+ 필요 시 장식 아이콘 `icons/*`).
+- **§10** `../assets/brand-kit/ui-base.png` 크게(목업이 주인공) + UI 방향 노트.
+- **§11** `../assets/brand-kit/icon/*.png` 행 + 스타일·폼 규칙 노트. 컨셉 아이콘 다음에 `<!-- design-iconset:slot -->…<!-- /design-iconset:slot -->` 마커 슬롯을 넣어 design-iconset이 확정 SVG 세트를 주입할 자리를 만든다.
+- **§2·3·4·5·9** `BRAND_KIT.md` 데이터 텍스트(+ 필요 시 장식 아이콘 `../assets/brand-kit/icon/*`).
 
 ## 레이아웃 아키타입 선택 (기본값 없음)
 
