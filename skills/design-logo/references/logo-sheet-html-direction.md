@@ -32,7 +32,7 @@
 | B 제로베이스 완전 발산 | 없음 | 미첨부 | `BRAND_KIT.md` §6·메타포·색·금지·성격을 프롬프트에. 다양성 최대 |
 | C 첨부 이미지 기준 | 사용자 첨부 이미지(`seed-user.png`) | 첨부 | 사용자 레퍼런스를 앵커로 |
 
-- **근거**: `gpt-image`는 `--image`를 **항상 high fidelity**로 처리한다(`--input-fidelity` 미지원). 시드를 붙이면 그 마크에 강하게 끌려가므로, "메타포까지 완전 발산"을 원하면 시드를 붙이지 않는 B가 맞다. 모드 A에서 변주 폭이 좁아지는 건 **의도된 트레이드오프**.
+- **근거**: 컷아웃은 `gpt-image-1.5`로 만든다. `image-gen`이 `input_fidelity`를 안 보내면 입력 이미지를 **기본 low로 느슨하게** 참조하므로, 모드 A·C(앵커 첨부)는 `--input-fidelity high`를 함께 줘야 마크에 단단히 묶인다. "메타포까지 완전 발산"을 원하면 시드를 붙이지 않는 B가 맞다. 모드 A에서 변주 폭이 좁아지는 건 **의도된 트레이드오프**.
 
 ## 4. 컨셉 분포 (3~4개를 다르게)
 
@@ -42,13 +42,13 @@
 
 ## 5. 수렴 (고른 #N → 좁히기)
 
-- 사용자가 #N을 고르면 그 **PNG를 `--image`로 첨부** + "이 방향을 유지하며 서로 조금씩 다른 3~4 변주". high fidelity가 방향을 단단히 묶는다.
+- 사용자가 #N을 고르면 그 **PNG를 `--image --input-fidelity high`로 첨부** + "이 방향을 유지하며 서로 조금씩 다른 3~4 변주". high fidelity가 방향을 단단히 묶는다.
 - 새 라운드는 시트를 **교체**한다. 이전 PNG는 `concepts/round-N/`에 `--auto-version`으로 남는다.
 
 ## 6. 단독 로고 만들기 (고른 #N → 단독 로고)
 
 - 고른 PNG는 이미 깨끗한 투명 단독 컷아웃이므로 **보드 셀 재추출이 없다**. 만족스러우면 그 PNG를 `logo-candidate.png`로 승격해 다듬는다.
-- 더 다듬고 싶으면 그 PNG를 `--image`로 첨부 + "중앙 정렬, plain 단색/투명 배경, 형태·기하 유지, 단일 마크만". 품질 프레이밍·Avoid는 `../../references/design/logo-art-direction.md` §3·§6·§7, 판정은 §8.
+- 더 다듬고 싶으면 그 PNG를 `--image --input-fidelity high`로 첨부 + "중앙 정렬, plain 단색/투명 배경, 형태·기하 유지, 단일 마크만". 품질 프레이밍·Avoid는 `../../references/design/logo-art-direction.md` §3·§6·§7, 판정은 §8.
 
 ## 7. 금지 사항
 
@@ -65,7 +65,7 @@ Concept: [this card's method/type — e.g. negative-space symbol of (core metaph
 Brand DNA: [core metaphor / construction from BRAND_KIT §6], [personality adjectives].
 Avoid: shield/lock/globe/gear/speech-bubble cliches, meaningless gradient/3D bevel/drop shadow/sparkle, copying famous marks, text-only logo.
 ```
-- 모드 A·C: 위 청크 + `logo-base.png`(A) 또는 `seed-user.png`(C)를 `--image`로 첨부, "이 마크를 모티브로 한 새 해석" 문구 추가.
-- 수렴: 고른 #N PNG를 `--image`로 첨부 + "이 방향을 유지하며 서로 조금씩 다른 변주, 단일 마크, 투명 배경".
+- 모드 A·C: 위 청크 + `logo-base.png`(A) 또는 `seed-user.png`(C)를 `--image`로 첨부, "이 마크를 모티브로 한 새 해석" 문구 추가. 호출에 `--input-fidelity high` 를 더한다.
+- 수렴: 고른 #N PNG를 `--image --input-fidelity high`로 첨부 + "이 방향을 유지하며 서로 조금씩 다른 변주, 단일 마크, 투명 배경".
 
-위 [브래킷]은 `BRAND_KIT.md`/tokens/Q&A에서 채운다. 한 라운드 3~4콜은 **병렬 백그라운드**로 호출하고, `--model gpt-image-1.5 --background transparent --autocrop --auto-version`.
+위 [브래킷]은 `BRAND_KIT.md`/tokens/Q&A에서 채운다. 한 라운드 3~4콜은 **병렬 백그라운드**로 호출하고, `--model gpt-image-1.5 --background transparent --autocrop --auto-version`. 앵커(A·C·수렴)는 여기에 `--input-fidelity high` 추가.
