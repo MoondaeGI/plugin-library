@@ -3,8 +3,8 @@
 //
 // 책임: 인자/경로를 검증해 five-server 옵션으로 변환하고 five-server를 기동한다.
 //   파일 watch·자동 새로고침·브라우저 오픈·OS 분기는 전부 five-server에 위임한다 —
-//   이 스크립트는 그 로직을 구현하지 않는다. (overview.html은 형제 assets/ 상대경로라
-//   서빙 루트만 맞으면 그대로 동작.)
+//   이 스크립트는 그 로직을 구현하지 않는다. (.design/ 을 루트로 서빙하면 view/*.html이
+//   ../assets/·../candidate/ 상대경로로 동작하고, 루트 index.html이 /view/overview.html로 리다이렉트.)
 //
 // 사용: node scripts/lib/serve-design.mjs <dir|html경로> [--port N] [--no-open]
 //       node scripts/lib/serve-design.mjs <...> --print-options   # 옵션만 출력, 서버 미기동(테스트용)
