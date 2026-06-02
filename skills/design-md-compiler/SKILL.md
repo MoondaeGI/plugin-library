@@ -13,15 +13,15 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 ## 입력 파일 (있는 것만 읽는다, cwd 기준)
 
-- `.design/final/brand-kit/BRAND_KIT.md`
-- `.design/final/brand-kit/brand-tokens.json`
-- `.design/image-briefs/brand-briefs.md`
-- `.design/image-briefs/page-briefs.md`
-- `.design/final/brand-kit/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)
-- `.design/final/brand-kit/assets/*.png`, `.design/final/brand-kit/assets/icons/*.png` (확정 base 자산 — 로고·키비주얼·UI·아이콘)
-- `.design/final/**/*.{png,jpg,jpeg,webp}` (확정본 — **있으면 이것을 우선** 사용)
-- `.design/generated/**/*.{png,jpg,jpeg,webp}` (final이 없을 때의 폴백; 시안 누적본 — 수동 드롭 시 PNG 외 형식도 포함)
-- `.design/manifest.json` 또는 `.design/generated/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타로 사용, 없으면 파일명 glob)
+- `.design/BRAND_KIT.md`
+- `.design/brand-tokens.json`
+- `.design/candidate/brand-kit/brand-briefs.md`
+- `.design/candidate/page/page-briefs.md`
+- `.design/view/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)
+- `.design/assets/brand-kit/*.png`, `.design/assets/brand-kit/icon/*.png` (확정 base 자산 — 로고·키비주얼·UI·컨셉 아이콘)
+- `.design/assets/logo/*.png`, `.design/assets/icon/*.svg`, `.design/assets/page/*.{png,jpg,jpeg,webp}` (확정 deliverable)
+- `.design/candidate/page/*.{png,jpg,jpeg,webp}` (확정 전 시안 폴백)
+- `.design/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타, 없으면 파일명 glob)
 
 ## 출력 파일
 
@@ -93,7 +93,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - **이미지 레퍼런스의 살릴 점과 구현 시 버릴 점을 구분한다.**
 - 최종 문구는 이미지가 아니라 코드에 있어야 한다고 명시한다.
 - 모든 필드를 비워두지 않는다 — 입력 파일에서 추론 가능한 값을 채우고, 추측한 값은 표시한다.
-- 이미지는 경로의 서브디렉터리 이름으로 종류를 구분한다: `brand-kit/assets/`(로고·키비주얼·UI·아이콘 — 1급 재사용 자산) vs `page/`(페이지 섹션). `overview.html`은 브랜드 오버뷰 룩의 참조다.
+- 이미지는 `assets/` 하위 폴더로 종류를 구분한다: `assets/brand-kit/`(키비주얼·UI·컨셉 아이콘 — 브랜드 base) · `assets/logo/`(확정 로고) · `assets/icon/`(프로덕션 SVG 아이콘셋) · `assets/page/`(페이지 섹션). `view/overview.html`은 브랜드 오버뷰 룩의 참조다.
 
 ## 금지 사항
 
