@@ -19,6 +19,7 @@
 //   --image          입력/레퍼런스 이미지     (반복 가능; 1개+면 /edits 로 분기 — 레퍼런스·편집 공용)
 //   --output-format  png | jpeg | webp       (기본 png)
 //   --background      transparent | opaque | auto   (미지정이면 필드 미전송; gpt-image-2는 transparent 미지원 → 1.5와 페어링)
+//   --input-fidelity high | low           (gpt-image-1.x + --image 에서만; gpt-image-2는 무시)
 //   --force          기존 파일 덮어쓰기 허용
 //   --auto-version   기존 파일 충돌 시 다음 -vN 으로 자동 증분(시안 보존)
 //   --autocrop       저장 후 PNG의 투명/단색 여백을 잘라 마크가 캔버스를 꽉 채우게 (컷아웃 자산용)
@@ -68,6 +69,7 @@ function parseArgs(argv) {
       case '--prompt': opts.prompt = next(); break;
       case '--prompt-file': opts.promptFile = next(); break;
       case '--image': opts.images.push(next()); break;
+      case '--input-fidelity': opts.inputFidelity = next(); break;
       case '--out': opts.out = next(); break;
       case '--size': opts.size = next(); break;
       case '--quality': opts.quality = next(); break;
@@ -142,6 +144,9 @@ async function main() {
   for (const img of opts.images) {
     if (!existsSync(img)) die(`오류: --image 파일을 찾을 수 없습니다: ${img}`);
   }
+  if (opts.inputFidelity && !['high', 'low'].includes(opts.inputFidelity)) {
+    die('오류: --input-fidelity 는 high 또는 low 여야 합니다.');
+  }
 
   const ext = '.' + (opts.outputFormat === 'jpeg' ? 'jpg' : opts.outputFormat);
   let targets = outPaths(opts.out, opts.n, ext);
@@ -171,8 +176,15 @@ async function main() {
     output_format: opts.outputFormat,
   };
   if (opts.background) fields.background = opts.background;
-  // input_fidelity 는 gpt-image-2 가 지원하지 않는다(항상 high fidelity로 입력 이미지를 처리).
-  // 따라서 페이로드에 넣지 않는다 — gpt-image-1/1.5 만 low/high 선택을 지원했던 옵션이라 제거함.
+  // input_fidelity: gpt-image-1.x + edits(--image) 에서만 의미가 있다.
+  // gpt-image-2 는 미지원(항상 high)이라 보내지 않는다 — 플래그가 와도 조용히 드롭하고 통지만.
+  if (opts.inputFidelity) {
+    if (useEdits && opts.model.startsWith('gpt-image-1')) {
+      fields.input_fidelity = opts.inputFidelity;
+    } else if (opts.model.startsWith('gpt-image-2')) {
+      console.error('알림: gpt-image-2 는 input_fidelity 를 지원하지 않아 무시합니다(항상 high).');
+    }
+  }
 
   if (opts.dryRun) {
     const preview = prompt.trim().slice(0, 80) + (prompt.trim().length > 80 ? '…' : '');
