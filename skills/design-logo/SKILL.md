@@ -1,6 +1,6 @@
 ---
 name: design-logo
-description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 스킬. brand-kit이 만든 assets/logo-base.png(투명)를 시드로, 한 라운드에 3~4개의 큰 방향(메타포까지 발산)을 개별 투명 PNG로 만들어 저작한 logos.html 탐색 시트(번호·라벨·실색·실폰트)로 보여주고, #N을 골라 수렴 라운드 또는 단독 확정으로 좁혀 확정 단일 로고를 assets/logo/에 확정할 때 사용한다.
+description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 스킬. brand-kit이 만든 assets/brand-kit/logo-base.png(투명)를 시드로, 한 라운드에 3~4개의 큰 방향(메타포까지 발산)을 개별 투명 PNG로 만들어 저작한 logos.html 탐색 시트(번호·라벨·실색·실폰트)로 보여주고, #N을 골라 수렴 라운드 또는 단독 확정으로 좁혀 확정 단일 로고를 assets/logo/에 확정할 때 사용한다.
 ---
 
 # Design Logo
