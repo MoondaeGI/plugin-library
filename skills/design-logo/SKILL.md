@@ -120,7 +120,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
 
 ### Phase 3 — (선택) 로고 시스템
 
-11. logo.png lock 후 "워드마크 / 파비콘 / 앱 아이콘도 만들까요?"라고 제안한다. 원하는 것만, **확정 logo.png를 `--image`로 첨부**해 한 개씩 생성→보여줌→다듬기→lock:
+11. logo.png lock 후 "워드마크 / 파비콘 / 앱 아이콘도 만들까요?"라고 제안한다. 원하는 것만, **확정 logo.png를 `--image`로 첨부**(wordmark·favicon는 gpt-image-1.5라 `--input-fidelity high`로 마크에 묶음; app-icon은 gpt-image-2라 미사용)해 한 개씩 생성→보여줌→다듬기→lock:
     - **wordmark**: "<제품명>을 BRAND_KIT §8 타입 방향으로 워드마크화, 심볼+워드마크 락업 또는 워드마크 단독, plain 단색 배경" → `wordmark.png`.
     - **favicon**: "이 마크를 16/24/32px에서 읽히게 단순화, 단색, 정사각, plain 단색 배경" → `favicon.png`.
     - **app-icon**: "이 마크를 라운드 사각 앱 아이콘 타일에 배치, 브랜드 컬러 배경, iOS/Android 앱 아이콘 스타일, 넉넉한 패딩" → `app-icon.png`(gpt-image-2 불투명).
