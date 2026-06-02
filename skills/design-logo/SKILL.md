@@ -88,9 +88,9 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
 
 ### Phase 0 — 입력 감지 (시작 시 필수)
 
-- `.design/final/brand-kit/BRAND_KIT.md`와 `assets/logo-base.png` 존재, 그리고 **사용자 첨부 이미지** 유무를 확인한다.
+- `.design/final/brand-kit/BRAND_KIT.md`와 `.design/final/brand-kit/assets/logo-base.png` 존재, 그리고 **사용자 첨부 이미지** 유무를 확인한다.
 - **사용자 첨부 이미지가 있으면** → `generated/logo/seed-user.png`로 저장하고 **역할을 묻는다**:
-  - **"이 방향으로 발산"** → Phase 2 발산 모드 C(그 이미지를 앵커로).
+  - **"이 방향으로 발산"** → Phase 2 발산 모드 C(그 이미지를 앵커로; brand-kit이 있으면 tokens·BRAND_KIT.md도 함께 읽어 시트 실색·실폰트·베이스라인에 쓴다).
   - **"이걸 다듬자/확정"** → Phase 2 단독 다듬기 루프로 직행(그 이미지를 시드로).
 - **brand-kit이 있으면** → Phase 1.
 - **brand-kit이 없으면** → 묻는다: "design-brand-kit으로 브랜드 킷부터 만들까요? (권장 — 색·타이포·보이스까지 갖춰 마크 근거가 탄탄)".
@@ -107,7 +107,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
 
 ### Phase 2 — 탐색 시트 → 단독 로고 확정
 
-**탐색은 opt-in.** `logo-base`가 만족스러우면 탐색을 건너뛰고 바로 단독 확정(7)→로고 시스템(Phase 3)으로 간다. "다른 방향도 보고 싶다"일 때만 탐색을 시작한다.
+**탐색은 opt-in.** `logo-base`가 만족스러우면 탐색을 건너뛰고 바로 단독 확정(8)→로고 시스템(Phase 3)으로 간다. "다른 방향도 보고 싶다"일 때만 탐색을 시작한다.
 
 5. **발산 모드 선택**: A(기준·logo-base 앵커) / B(제로베이스 완전 발산·미첨부) / C(첨부 이미지 앵커). 라운드마다 다시 고를 수 있다. (Phase 0 최소 Q&A 경로는 B 고정.)
 6. **발산 라운드 생성**: 컨셉 3~4개를 `references/logo-sheet-html-direction.md` §8 청크로 **병렬 백그라운드** 생성(`gpt-image-1.5 --background transparent --autocrop --quality low`) → `concepts/round-N/01..04.png`. `logos.html`을 저작해 번호·방향 라벨·베이스라인 타일(#0)로 보여준다. 처음 제시 시 라이브 서버 1회 기동.
