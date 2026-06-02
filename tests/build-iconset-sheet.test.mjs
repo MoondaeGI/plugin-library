@@ -116,3 +116,22 @@ test('HTML 특수문자 라벨 이스케이프', () => {
   const { outPath } = setup({ 'a&b.svg': SVG() });
   assert.match(readFileSync(outPath, 'utf8'), /a&amp;b/);
 });
+
+test('잘못된 --tokens JSON → 종료코드 2', () => {
+  const d = mkdtempSync(path.join(tmpdir(), 'is-'));
+  const iconDir = path.join(d, 'icon');
+  mkdirSync(iconDir);
+  writeFileSync(path.join(iconDir, 'a.svg'), SVG(), 'utf8');
+  const tp = path.join(d, 'brand-tokens.json');
+  writeFileSync(tp, '{ not json', 'utf8');
+  const outPath = path.join(d, 'out.html');
+  const res = spawnSync('node', [SCRIPT, '--in', iconDir, '--out', outPath, '--tokens', tp], { encoding: 'utf8' });
+  assert.equal(res.status, 2);
+});
+
+test("루트 <svg> 의 single-quote width/height 도 제거", () => {
+  const { outPath } = setup({ 'q.svg': `<svg width='888' height='888' viewBox="0 0 24 24"><path d="M4 4h16"/></svg>` });
+  const html = readFileSync(outPath, 'utf8');
+  assert.doesNotMatch(html, /888/);
+  assert.match(html, /viewBox="0 0 24 24"/);
+});

@@ -37,7 +37,7 @@ function parseArgs(argv) {
 function normalizeSvg(raw) {
   const m = raw.match(/<svg[^>]*>/i);
   if (!m) return raw.trim();
-  const cleaned = m[0].replace(/\s(width|height)="[^"]*"/gi, "");
+  const cleaned = m[0].replace(/\s(width|height)=["'][^"']*["']/gi, "");
   return raw.replace(m[0], cleaned).trim();
 }
 
