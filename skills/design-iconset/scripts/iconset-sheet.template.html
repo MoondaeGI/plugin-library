@@ -1,0 +1,44 @@
+<!doctype html>
+<!--
+  design-iconset 시트 템플릿 (iconset-sheet.html 생성용 스켈레톤)
+  - 책임: 레이아웃·CSS 골격만. 자유 저작 금지 — build-iconset-sheet.mjs 가 토큰을 치환한다.
+  - 치환 토큰: TITLE, BRAND, COUNT, CANVAS, INK, ACCENT, CELLS, STRIP
+  - 아이콘은 인라인 SVG(currentColor) — .grid 는 ink 색, .striprow 는 accent 색으로 recolor 시연.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+  :root{ --canvas:{{CANVAS}}; --ink:{{INK}}; --accent:{{ACCENT}}; --line:rgba(127,127,127,.18); }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--canvas); color:var(--ink);
+    font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; padding:40px 28px 64px; }
+  .wrap{ max-width:1100px; margin:0 auto; }
+  .topbar{ display:flex; justify-content:space-between; align-items:baseline;
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.5; margin-bottom:8px; }
+  h1{ font-size:22px; margin:0 0 22px; letter-spacing:-.01em; }
+  .grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .cell{ background:var(--canvas); margin:0; padding:18px 10px 12px;
+    display:flex; flex-direction:column; align-items:center; gap:10px; position:relative; min-height:104px; }
+  .cell .idx{ position:absolute; top:6px; left:8px; font-size:10px; opacity:.4; font-variant-numeric:tabular-nums; }
+  .glyph{ color:var(--ink); display:flex; align-items:center; justify-content:center; height:34px; }
+  .glyph svg{ width:32px; height:32px; display:block; }
+  .label{ font-size:11px; opacity:.7; text-align:center; word-break:break-word; }
+  .striprow{ margin-top:26px; padding:16px 18px; border:1px dashed var(--line); border-radius:12px;
+    display:flex; flex-wrap:wrap; gap:14px; align-items:center; color:var(--accent); }
+  .striprow .cap{ font-size:11px; letter-spacing:.12em; text-transform:uppercase; opacity:.6; color:var(--ink); margin-right:6px; }
+  .mini svg{ width:16px; height:16px; display:block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar"><span>{{BRAND}} · ICON SET</span><span>{{COUNT}} icons</span></div>
+  <h1>{{BRAND}} 아이콘 세트</h1>
+  <div class="grid">{{CELLS}}</div>
+  <div class="striprow"><span class="cap">16px · accent</span>{{STRIP}}</div>
+</div>
+</body>
+</html>
