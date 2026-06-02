@@ -1,6 +1,6 @@
 ---
 name: design-iconset
-description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 아이콘 세트를 SVG 코드로 직접 저작하는 스킬. BRAND_KIT.md §11(아이콘 스타일·폼 규칙·메타포·상태 규칙)·brand-tokens.json을 권위 근거로(brand-kit의 PNG 아이콘은 안 읽음 — 그건 브랜드 컨셉용), 아이콘 목록을 코어/도메인/상태 3분류로 제안·확정하고(게이트1), 각 아이콘의 concept→metaphor를 승인받은 뒤(게이트2), viewBox 0 0 24 24·currentColor 개별 .svg를 .design/icon/에 저작한다. 폴더를 HTML 그리드로 결정적 렌더해 번호·라벨로 검수·외과 편집하고, 확정 세트를 .design/final/icon/으로 lock한다. image-gen·OPENAI_API_KEY 불필요.
+description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 아이콘 세트를 SVG 코드로 직접 저작하는 스킬. BRAND_KIT.md §11(아이콘 스타일·폼 규칙·메타포·상태 규칙)·brand-tokens.json을 권위 근거로(brand-kit의 PNG 아이콘은 안 읽음 — 그건 브랜드 컨셉용), 아이콘 목록을 코어/도메인/상태 3분류로 제안·확정하고(게이트1), 각 아이콘의 concept→metaphor를 승인받은 뒤(게이트2), viewBox 0 0 24 24·currentColor 개별 .svg를 candidate/icon/에 저작한다. 폴더를 HTML 그리드로 결정적 렌더해 번호·라벨로 검수·외과 편집하고, 확정 세트를 .design/assets/icon/으로 lock한다. image-gen·OPENAI_API_KEY 불필요.
 ---
 
 # Design Iconset
@@ -11,49 +11,50 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
 
 `design-brand-kit`(과 보통 `design-logo`)이 확정된 뒤 사용한다. brand kit의 §11 아이코노그래피는 스타일·폼 규칙·메타포·상태 규칙을 한 줄씩 박아둔 결정이므로, 여기서 그 결정을 따라 **제품에서 실제로 쓸 아이콘 세트를 개별 SVG 파일로 직접 저작**한다. 각 SVG는 `viewBox="0 0 24 24"`·`currentColor`로 recolor·무한 scale 된다. 품질 기준은 "랜덤 AI 아이콘"이 아니라 **하나의 가족(one family)으로 읽히는 제품 아이콘 세트**다 — cross-icon 일관성이 전부다.
 
-**역할 분리:** brand-kit의 `assets/icons/*.png`는 **브랜드 컨셉/정체성 전시용**(overview에만)이라 제품에 안 나간다. iconset은 그것을 시드로도 읽지 않는다 — 스타일 근거는 **§11 규칙 + tokens만**이며, 제품용 SVG 가족을 처음부터 직접 저작한다.
+**역할 분리:** brand-kit의 `assets/brand-kit/icon/*.png`는 **브랜드 컨셉/정체성 전시용**(overview에만)이라 제품에 안 나간다. iconset은 그것을 시드로도 읽지 않는다 — 스타일 근거는 **§11 규칙 + tokens만**이며, 제품용 SVG 가족을 처음부터 직접 저작한다.
 
 **로고와 다르다:** 로고는 기억되는 한 개의 마크(발산 탐색), 아이콘은 같은 규칙으로 묶인 여러 신호(수렴 일관성)다. 아이콘은 로고보다 튀면 안 된다.
 
 ## 전제
 
-- `design-brand-kit` 산출물 중 `.design/final/brand-kit/BRAND_KIT.md`·`.design/final/brand-kit/brand-tokens.json`이 있으면 그걸 쓴다. **없으면 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 / 아이콘용 최소 Q&A로 진행).
+- `design-brand-kit` 산출물 중 `.design/BRAND_KIT.md`·`.design/brand-tokens.json`이 있으면 그걸 쓴다. **없으면 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 / 아이콘용 최소 Q&A로 진행).
 - **이미지 생성·`OPENAI_API_KEY` 불필요** — 아이콘은 LLM이 SVG 코드를 직접 저작한다. 검수 시트만 결정적 스크립트로 HTML 렌더한다.
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
 권위 원본은 md/tokens다.
 
-- `.design/final/brand-kit/BRAND_KIT.md` — §11 아이코노그래피(스타일·폼 규칙·메타포·상태 규칙)·§6·§1/에센스·§3·§4·§10·금지 패턴.
-- `.design/final/brand-kit/brand-tokens.json` — 색 HEX(라인색·액센트·상태색·캔버스).
-- **brand-kit `assets/icons/*`는 읽지 않는다**(컨셉용). 없으면 Phase 0 폴백.
+- `.design/BRAND_KIT.md` — §11 아이코노그래피(스타일·폼 규칙·메타포·상태 규칙)·§6·§1/에센스·§3·§4·§10·금지 패턴.
+- `.design/brand-tokens.json` — 색 HEX(라인색·액센트·상태색·캔버스).
+- **brand-kit `assets/brand-kit/icon/*`는 읽지 않는다**(컨셉용). 없으면 Phase 0 폴백.
 
 ## 출력 파일 (대상 프로젝트 cwd 기준)
 
 ```
 .design/
-  icon/                       # 작업본 (저작·편집 루프)
-    <name>.svg                # 제품 deliverable (currentColor, viewBox 0 0 24 24)
-    iconset-sheet.html        # 검수 시트(폴더에서 결정적 렌더, 항상 일치)
+  candidate/icon/             # 작업본 (저작·편집 루프)
+    <name>.svg                # 제품 deliverable 초안 (currentColor, viewBox 0 0 24 24)
     iconset-briefs.md         # 읽은 md 근거·확정 목록·메타포 매핑·가족 계약·제약
-  final/icon/                 # lock — 순수 복사, 다운스트림이 읽음
+  view/
+    iconset-sheet.html        # 검수 시트(candidate/icon에서 결정적 렌더, SVG 인라인 임베드)
+  assets/icon/                # 확정 — 순수 복사, 다운스트림이 읽음
     <name>.svg
-    iconset-sheet.html
 ```
 
-- 작업본 `.design/icon/` → lock `.design/final/icon/` **순수 복사**(brand-kit의 `final/brand-kit/` 패턴과 일관). 버전 이력은 git.
+- 작업본 `candidate/icon/` → 확정 `assets/icon/` **순수 복사**. 버전 이력은 git.
+- 시트는 SVG를 인라인 임베드하므로 `view/`에 둬도 상대경로 의존이 없다.
 - `generated/`는 두지 않는다(SVG는 텍스트라 초안 누적 불필요).
 
 ## SVG 저작 방식
 
 - **LLM이 §11 폼 규칙 + tokens를 따라 각 아이콘을 깨끗한 SVG로 직접 작성**한다. 가족 계약(스타일·viewBox·stroke/fill·join/cap·코너·색)은 `references/iconset-sheet.md §1`, 형태·일관성·메타포·회피의 권위는 `../references/design/icon/`(`icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`)다. **`icon-rules.md §6` 이미지 청크는 쓰지 않는다.**
-- **검수 시트는 결정적 스크립트**: `scripts/build-iconset-sheet.mjs`가 `.design/icon/*.svg`를 글롭→번호+kebab 라벨 HTML 그리드 렌더. `references/iconset-sheet.md §3`.
-- **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design/icon` (five-server watch·자동 새로고침). 처음 제시할 때 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
+- **검수 시트는 결정적 스크립트**: `scripts/build-iconset-sheet.mjs`가 `candidate/icon/*.svg`를 글롭→번호+kebab 라벨 HTML 그리드 렌더. `references/iconset-sheet.md §3`.
+- **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`. 처음 제시할 때 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
 
 ## 흐름 (디자이너 협업 루프)
 
 ### Phase 0 — brand kit 감지 (시작 시 필수)
-- `.design/final/brand-kit/BRAND_KIT.md`·`brand-tokens.json` 존재 확인.
+- `.design/BRAND_KIT.md`·`.design/brand-tokens.json` 존재 확인.
 - **있으면** → Phase 1.
 - **없으면** → 두 길 제시:
   - **(1) 브랜드 킷 먼저**(권장) — design-brand-kit 안내 후 종료.
@@ -71,11 +72,11 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
 4. `iconset-briefs.md` 작성(읽은 md 근거·확정 목록·메타포 매핑·가족 계약·색·제약).
 
 ### Phase 2 — SVG 저작 → 시트 검수 → 편집 → lock
-5. **SVG 저작**: 확정 목록을 가족 계약에 따라 개별 `.svg`로 작성(`.design/icon/<name>.svg`). 모든 SVG가 공통 불변 + 스타일별 분기(`references/iconset-sheet.md §1`)를 따른다. 모호하면 `icon-rules.md §1–§5`로 해소.
-6. **시트 렌더**: `build-iconset-sheet.mjs`로 `.design/icon/iconset-sheet.html` 생성 → `serve-design.mjs` 라이브 프리뷰로 검수.
+5. **SVG 저작**: 확정 목록을 가족 계약에 따라 개별 `.svg`로 작성(`.design/candidate/icon/<name>.svg`). 모든 SVG가 공통 불변 + 스타일별 분기(`references/iconset-sheet.md §1`)를 따른다. 모호하면 `icon-rules.md §1–§5`로 해소.
+6. **시트 렌더**: `build-iconset-sheet.mjs`로 `.design/view/iconset-sheet.html` 생성 → `serve-design.mjs` 라이브 프리뷰로 검수.
 7. **편집 루프**: 번호/이름 지목 → **해당 `.svg`만 외과 편집**(`references/iconset-sheet.md §4`) → 자동 새로고침. 목록 변경이면 파일 추가/삭제 후 재렌더.
 8. **일관성 검사**: 구조 린트(viewBox·스타일 앵커 균일) + 시각 자가 검수(One-Color/Small UI/cross-icon, `icon-rules.md §5`).
-9. **lock**: 확정 `*.svg` + `iconset-sheet.html`을 `.design/final/icon/`로 순수 복사(brand-kit의 `final/brand-kit/` lock 패턴과 일관). `iconset-briefs.md`는 작업 참조용이라 복사하지 않는다 — 작업본 `.design/icon/`에만 두고 git으로 추적한다. 다운스트림(`design-page-image`·`design-md-compiler`)은 `.design/final/icon/`를 읽는다. 산출 경로 제시 후 안내: **"다음 단계: `design-page-image` 또는 `design-md-compiler`"**. 라이브 프리뷰 서버가 떠 있으면 종료.
+9. **lock (승격 + overview 주입)**: 확정 `*.svg`를 `.design/assets/icon/`로 순수 복사. `iconset-briefs.md`는 작업 참조용이라 복사하지 않는다(`candidate/icon/`에만 두고 git 추적). 이어 `view/overview.html`의 `<!-- design-iconset:slot -->…<!-- /design-iconset:slot -->` 사이를 `assets/icon/*.svg`를 인라인한 그리드(`<div>`에 각 SVG를 currentColor로, 토큰색 배경)로 **외과 치환**한다(멱등 — 재실행 안전; 마커 없으면 §11 끝에 삽입). 라이브 서버가 떠 있으면 자동 새로고침. 다운스트림(`design-page-image`·`design-md-compiler`)은 `.design/assets/icon/`를 읽는다. 산출 경로 제시 후 안내: **"다음 단계: `design-page-image` 또는 `design-md-compiler`"**. 라이브 프리뷰 서버가 떠 있으면 종료.
 
 ## 품질 기준 / 금지 사항
 

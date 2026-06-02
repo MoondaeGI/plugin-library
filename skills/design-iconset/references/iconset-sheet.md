@@ -38,22 +38,22 @@
 
 ## 3. 그리드 렌더 (build-iconset-sheet.mjs)
 
-- 검수 시트는 `scripts/build-iconset-sheet.mjs`가 `.design/icon/`의 `*.svg`를 **파일명 정렬**로 글롭해 결정적으로 렌더한다 — 항상 폴더와 일치(별도 생성 이미지 없음).
+- 검수 시트는 `scripts/build-iconset-sheet.mjs`가 `candidate/icon/`의 `*.svg`를 **파일명 정렬**로 글롭해 결정적으로 렌더한다 — 항상 폴더와 일치(별도 생성 이미지 없음).
 - 각 셀: 좌상단 인덱스 번호(`01`–) + 인라인 SVG + 하단 영어 kebab-case 라벨(= 파일명). 하단에 16px accent strip(Small UI Test + recolor 시연).
 - 호출:
   ```bash
   node "<스킬 디렉터리>/scripts/build-iconset-sheet.mjs" \
-    --in "<cwd>/.design/icon" \
-    --out "<cwd>/.design/icon/iconset-sheet.html" \
-    --tokens "<cwd>/.design/final/brand-kit/brand-tokens.json" \
+    --in "<cwd>/.design/candidate/icon" \
+    --out "<cwd>/.design/view/iconset-sheet.html" \
+    --tokens "<cwd>/.design/brand-tokens.json" \
     --brand "<브랜드명>"
   ```
-- 라이브 프리뷰: `node ../../scripts/lib/serve-design.mjs <cwd>/.design/icon` (five-server가 watch·자동 새로고침).
+- 라이브 프리뷰: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server가 watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`.
 
 ## 4. 셀 참조 = 번호/이름 → 해당 .svg 외과 편집
 
-- 사용자가 "7번" 또는 "search 아이콘"으로 지목하면 **해당 `.svg` 파일만** 외과 편집한다. 다른 파일은 건드리지 않는다(SVG는 파일 단위라 다른 칸 무손상이 보장된다 — 래스터 시트와 달리 통째 재생성이 아니다).
-- 목록 자체를 바꾸면(추가/삭제) 파일을 추가/삭제한 뒤 시트를 다시 렌더한다.
+- 사용자가 "7번" 또는 "search 아이콘"으로 지목하면 `candidate/icon/`의 **해당 `.svg` 파일만** 외과 편집한다. 다른 파일은 건드리지 않는다(SVG는 파일 단위라 다른 칸 무손상이 보장된다 — 래스터 시트와 달리 통째 재생성이 아니다).
+- 목록 자체를 바꾸면(추가/삭제) `candidate/icon/`에서 파일을 추가/삭제한 뒤 시트를 다시 렌더한다.
 
 ## 5. 구조 린트 + 시각 자가 검수
 

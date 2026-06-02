@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// design-iconset 시트 생성기 (.design/icon/*.svg → iconset-sheet.html)
+// design-iconset 시트 생성기 (.design/candidate/icon/*.svg → .design/view/iconset-sheet.html)
 //
 // 책임: 아이콘 폴더의 *.svg 를 파일명 정렬로 모아 번호+kebab 라벨 그리드 HTML 을 결정적으로 렌더한다.
 //   SVG 는 인라인 임베드(currentColor/CSS 작동), 루트 <svg> 의 width/height 는 제거해 CSS 로 크기 제어.
