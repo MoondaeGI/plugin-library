@@ -14,8 +14,8 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
 - `DESIGN.md`
-- `.design/final/brand-kit/brand-tokens.json`
-- `.design/final/**/*.{png,jpg,jpeg,webp}` (확정본 — 있으면 우선) → 없으면 `.design/generated/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)
+- `.design/brand-tokens.json`
+- `.design/assets/**/*.{png,jpg,jpeg,webp}` (확정본) → 없으면 `.design/candidate/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)
 
 ## 출력 파일
 
@@ -49,7 +49,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 
 ## CSS 구조
 
-변수 값은 자리표시자다 — `.design/final/brand-kit/brand-tokens.json`의 실제 값으로 채운다.
+변수 값은 자리표시자다 — `.design/brand-tokens.json`의 실제 값으로 채운다.
 
 ```css
 :root {
@@ -72,7 +72,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 .section {}
 ```
 
-- **폰트**: `--font-*`는 `.design/final/brand-kit/brand-tokens.json`의 `typography`(카탈로그에서 고른 실존 family+폴백)로 채운다. 그 폰트가 카탈로그(`../references/design/font-catalog.md`)의 웹폰트면 출처에서 로드한다 — Google Fonts는 `<head>`에 `<link>`, Pretendard·SUIT 등은 jsDelivr/CDN `<link>`/`@import`. 그래야 고른 폰트가 프로토타입에서 실제로 렌더된다. 상용·system 폰트(Apple SD Gothic Neo 등)는 폴백 스택에 의존한다. `typography.accent`(있으면)는 `--accent` CSS 변수로 노출하고 인용·풀쿼트·히어로 태그라인 등 소량 포인트에 적용한다(`font-family:var(--accent)`).
+- **폰트**: `--font-*`는 `.design/brand-tokens.json`의 `typography`(카탈로그에서 고른 실존 family+폴백)로 채운다. 그 폰트가 카탈로그(`../references/design/font-catalog.md`)의 웹폰트면 출처에서 로드한다 — Google Fonts는 `<head>`에 `<link>`, Pretendard·SUIT 등은 jsDelivr/CDN `<link>`/`@import`. 그래야 고른 폰트가 프로토타입에서 실제로 렌더된다. 상용·system 폰트(Apple SD Gothic Neo 등)는 폴백 스택에 의존한다. `typography.accent`(있으면)는 `--accent` CSS 변수로 노출하고 인용·풀쿼트·히어로 태그라인 등 소량 포인트에 적용한다(`font-family:var(--accent)`).
 
 ## 품질 기준
 
@@ -94,7 +94,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 
 ## 흐름 (리뷰 게이트)
 
-1. `DESIGN.md`·`.design/final/brand-kit/brand-tokens.json`·생성 이미지를 읽고 `prototype/index.html`을 작성한다.
+1. `DESIGN.md`·`.design/brand-tokens.json`·생성 이미지를 읽고 `prototype/index.html`을 작성한다.
 2. 사람이 브라우저로 확인한다.
 3. 마음에 안 들면 프로토타입(1단계)을 고쳐 다시 확인한다(2단계).
 4. 더 손볼 게 있으면 `DESIGN.md`나 토큰을 고쳐 `design-md-compiler`·`design-html-prototype`을 다시 돌리거나, 만족하면 **실제 구현으로 진행**하도록 안내한다. (이 스킬이 파이프라인의 마지막 단계다.)
