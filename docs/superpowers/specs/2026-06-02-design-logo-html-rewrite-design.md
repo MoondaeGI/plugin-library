@@ -31,7 +31,7 @@
 ### 2. 라운드 = 교체 (누적 아님)
 
 - `logos.html`은 **항상 현재 라운드 3~4개만** 보여준다.
-- 이전 라운드 PNG는 `generated/logo/concepts/round-N/`에 `--auto-version`으로 남는다(롤백은 git). 시트 자체는 매 라운드 재저작(또는 외과 편집)되어 현재 라운드를 가리킨다.
+- 이전 라운드 PNG는 `.design/logo/assets/concepts/round-N/`에 `--auto-version`으로 남는다(롤백은 git). 시트 자체는 매 라운드 재저작(또는 외과 편집)되어 현재 라운드를 가리킨다.
 
 ### 3. 발산 폭 = 메타포까지 완전 발산
 
@@ -66,7 +66,7 @@
 
 ### 6. 보드 셀 재추출 제거
 
-- 고른 `#N`은 이미 깨끗한 투명 단독 컷아웃이므로, 만족스러우면 **재추출 없이** 그 PNG를 `logo-candidate.png`로 승격 → 다듬기 → `final/logo/logo.png`로 lock.
+- 고른 `#N`은 이미 깨끗한 투명 단독 컷아웃이므로, 만족스러우면 **재추출 없이** 그 PNG를 `assets/logo-candidate.png`로 승격 → 다듬기 → `final/logo/assets/logo.png`로 lock.
 
 ## 흐름 (디자이너 협업 루프)
 
@@ -107,19 +107,20 @@ Phase 3 — (선택) 로고 시스템  [기존 유지]
 
 ```
 .design/
-  generated/logo/
-    seed.png                     # logo-base 복사/참조 (모드 A·C 앵커)
-    seed-user.png                # (선택) 사용자 첨부 이미지
-    concepts/round-N/01..04.png  # 라운드별 개별 투명 PNG (--auto-version)
-    logos.html                   # 현재 라운드 시트 (교체, 상대경로 <img>)
-    logo-candidate.png (+v2…)    # 고른 #N 단독 다듬기
+  logo/
+    logos.html                       # 현재 라운드 시트 (교체, assets/ 상대경로 <img>)
+    logo-briefs.md                   # 시드 출처·발산 모드·라운드 로그·확정 컨셉·시스템 스펙
+    assets/
+      seed.png                       # logo-base 복사/참조 (모드 A·C 앵커)
+      seed-user.png                  # (선택) 사용자 첨부 이미지
+      concepts/round-N/01..04.png    # 라운드별 개별 투명 PNG (--auto-version)
+      logo-candidate.png (+v2…)      # 고른 #N 단독 다듬기
   final/logo/
-    logo.png · wordmark.png · favicon.png · app-icon.png   # lock 세트
-  image-briefs/logo-briefs.md    # 시드 출처·발산 모드·라운드 로그·확정 컨셉·시스템 스펙
+    assets/  logo.png · wordmark.png · favicon.png · app-icon.png   # lock 세트
 ```
 
-- `logos.html`의 모든 `<img>`는 형제 상대경로(`concepts/round-N/01.png`·`seed.png`) → generated/든 final이든 동일 동작.
-- 탐색 시트(`logos.html`)는 **작업 산출물** — final로 잠그지 않는다. `final/logo`는 확정 단일 로고 + (선택) 시스템.
+- `logos.html`의 모든 `<img>`는 형제 `assets/` 상대경로(`assets/concepts/round-N/01.png`·`assets/seed.png`) → `.design/logo/`든 복사본이든 동일 동작. brand-kit(`.design/brand-kit/` + `assets/`)과 동형.
+- 탐색 시트(`logos.html`)는 **작업 산출물** — final로 잠그지 않는다. `final/logo/assets/`는 확정 단일 로고 + (선택) 시스템.
 - `--auto-version`은 해당 폴더 안에서 누적. 롤백은 git.
 
 ## `logos.html` 레이아웃 (저작 가드레일)
@@ -135,7 +136,7 @@ Phase 3 — (선택) 로고 시스템  [기존 유지]
 
 - `logos.html`을 **처음 제시할 때** 공유 런처로 로컬 라이브 서버를 **1회 백그라운드** 기동(이후 PNG 재생성·HTML 편집 시 자동 새로고침). brand-kit과 동일.
   ```
-  node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
+  node ../../scripts/lib/serve-design.mjs <cwd>/.design/logo
   ```
 - 명령 실행이므로 최초 1회 사용자 확인. lock 후/세션 종료 시 서버 종료.
 

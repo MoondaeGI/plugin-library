@@ -9,7 +9,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ## 목적
 
-`design-brand-kit`이 확정된 뒤 사용한다. 보드의 "로고 방향"은 한 칸짜리 제시일 뿐이라, 여기서 **브랜딩 스튜디오의 로고 탐색**처럼 한 라운드에 **3~4개의 큰 방향**(메타포까지 갈라진 발산)을 개별 투명 PNG로 만들어 저작한 **`logos.html` 탐색 시트**(번호·방향 라벨·실색·실폰트)로 보여준다. 사용자가 `#N`을 고르면 그 방향으로 **수렴 라운드**(3~4 변주)를 더 돌거나 **바로 단독 확정**한다. 고른 PNG는 이미 깨끗한 컷아웃이라 보드 셀 재추출이 없다. 확정 로고와 (선택) 로고 시스템(wordmark·favicon·app-icon)을 `.design/final/logo/`에 확정한다. 품질 기준은 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 마크**다. 형태 언어·컨셉 방법·품질 테스트는 `../references/design/logo-art-direction.md`, 시트 저작은 `references/logo-sheet-html-direction.md`를 따른다.
+`design-brand-kit`이 확정된 뒤 사용한다. 보드의 "로고 방향"은 한 칸짜리 제시일 뿐이라, 여기서 **브랜딩 스튜디오의 로고 탐색**처럼 한 라운드에 **3~4개의 큰 방향**(메타포까지 갈라진 발산)을 개별 투명 PNG로 만들어 저작한 **`logos.html` 탐색 시트**(번호·방향 라벨·실색·실폰트)로 보여준다. 사용자가 `#N`을 고르면 그 방향으로 **수렴 라운드**(3~4 변주)를 더 돌거나 **바로 단독 확정**한다. 고른 PNG는 이미 깨끗한 컷아웃이라 보드 셀 재추출이 없다. 확정 로고와 (선택) 로고 시스템(wordmark·favicon·app-icon)을 `.design/final/logo/assets/`에 확정한다. 품질 기준은 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 마크**다. 형태 언어·컨셉 방법·품질 테스트는 `../references/design/logo-art-direction.md`, 시트 저작은 `references/logo-sheet-html-direction.md`를 따른다.
 
 ## 전제
 
@@ -30,19 +30,20 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 
 ```
 .design/
-  generated/logo/
-    seed.png                     # logo-base 복사/참조 (모드 A·C 앵커)
-    seed-user.png                # (선택) 사용자 첨부 이미지
-    concepts/round-N/01..04.png  # 라운드별 개별 투명 PNG (--auto-version)
-    logos.html                   # 현재 라운드 시트 (교체, 상대경로 <img>)
-    logo-candidate.png (+v2…)    # 고른 #N 단독 다듬기
+  logo/
+    logos.html                       # 현재 라운드 시트 (교체, assets/ 상대경로 <img>)
+    logo-briefs.md                   # 시드 출처·발산 모드·라운드 로그·확정 컨셉·시스템 스펙
+    assets/
+      seed.png                       # logo-base 복사/참조 (모드 A·C 앵커)
+      seed-user.png                  # (선택) 사용자 첨부 이미지
+      concepts/round-N/01..04.png    # 라운드별 개별 투명 PNG (--auto-version)
+      logo-candidate.png (+v2…)      # 고른 #N 단독 다듬기
   final/logo/
-    logo.png · wordmark.png · favicon.png · app-icon.png   # lock 세트
-  image-briefs/logo-briefs.md    # 시드 출처·발산 모드·라운드 로그·확정 컨셉·시스템 스펙
+    assets/  logo.png · wordmark.png · favicon.png · app-icon.png   # lock 세트
 ```
 
-- `logos.html`의 모든 `<img>`는 형제 상대경로(`concepts/round-N/01.png`·`seed.png`) → generated/든 어디든 동일 동작.
-- 탐색 시트(`logos.html`)는 **작업 산출물** — final로 잠그지 않는다. 시안은 `generated/logo/`에 `--auto-version`으로 누적. 확정 단일 로고·시스템만 `final/logo/`로 복사한다. **`final/logo`는 이 스킬이 단독으로 채운다**(brand-kit은 로고를 final로 잠그지 않는다).
+- `logos.html`의 모든 `<img>`는 형제 `assets/` 상대경로(`assets/concepts/round-N/01.png`·`assets/seed.png`) → `.design/logo/`든 복사본이든 동일 동작.
+- 탐색 시트(`logos.html`)는 **작업 산출물** — final로 잠그지 않는다. 시안은 `.design/logo/assets/`에 `--auto-version`으로 누적. 확정 단일 로고·시스템만 `final/logo/assets/`로 복사한다. **`final/logo`는 이 스킬이 단독으로 채운다**(brand-kit은 로고를 final로 잠그지 않는다).
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
@@ -58,15 +59,15 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <컨셉 프롬프트 파일> \
-    --out "<cwd>/.design/generated/logo/concepts/round-1/01.png" \
+    --out "<cwd>/.design/logo/assets/concepts/round-1/01.png" \
     --auto-version --model gpt-image-1.5 --background transparent --autocrop --quality low
   ```
 - 호출 예(모드 A/C·수렴 — 앵커 첨부, **high fidelity로 묶음**):
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <컨셉 프롬프트 파일> \
-    --image "<cwd>/.design/generated/logo/seed.png" --input-fidelity high \
-    --out "<cwd>/.design/generated/logo/concepts/round-2/01.png" \
+    --image "<cwd>/.design/logo/assets/seed.png" --input-fidelity high \
+    --out "<cwd>/.design/logo/assets/concepts/round-2/01.png" \
     --auto-version --model gpt-image-1.5 --background transparent --autocrop --quality low
   ```
 
@@ -79,7 +80,7 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 `logos.html`을 **처음 제시할 때** 공유 런처로 로컬 라이브 서버를 **한 번 백그라운드로** 띄운다 — 이후 PNG 재생성·HTML 편집 때마다 자동 새로고침.
 
 ```
-node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
+node ../../scripts/lib/serve-design.mjs <cwd>/.design/logo
 ```
 
 - 명령 실행이므로 **최초 1회만 사용자 확인** 후 백그라운드 기동. lock 후/세션 종료 시 서버를 종료한다(포트 점유 방지).
@@ -89,7 +90,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
 ### Phase 0 — 입력 감지 (시작 시 필수)
 
 - `.design/final/brand-kit/BRAND_KIT.md`와 `.design/final/brand-kit/assets/logo-base.png` 존재, 그리고 **사용자 첨부 이미지** 유무를 확인한다.
-- **사용자 첨부 이미지가 있으면** → `generated/logo/seed-user.png`로 저장하고 **역할을 묻는다**:
+- **사용자 첨부 이미지가 있으면** → `.design/logo/assets/seed-user.png`로 저장하고 **역할을 묻는다**:
   - **"이 방향으로 발산"** → Phase 2 발산 모드 C(그 이미지를 앵커로; brand-kit이 있으면 tokens·BRAND_KIT.md도 함께 읽어 시트 실색·실폰트·베이스라인에 쓴다).
   - **"이걸 다듬자/확정"** → Phase 2 단독 다듬기 루프로 직행(그 이미지를 시드로).
 - **brand-kit이 있으면** → Phase 1.
@@ -100,7 +101,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
 ### Phase 1 — 시드 + 승인 게이트 (brand kit가 있을 때)
 
 1. 입력 읽기(`BRAND_KIT.md` §6·tokens·assets/logo-base.png).
-2. **시드 = `assets/logo-base.png` 직접**(재추출하지 않는다). `generated/logo/seed.png`로 복사하거나 경로를 그대로 시드로 쓴다. 보여주고 "이 마크 맞아요?" 확인.
+2. **시드 = `assets/logo-base.png` 직접**(재추출하지 않는다). `.design/logo/assets/seed.png`로 복사하거나 경로를 그대로 시드로 쓴다. 보여주고 "이 마크 맞아요?" 확인.
    - **단일 커밋 옵션**: 사용자가 `logo-base`를 그대로 확정할 수 있다(탐색은 opt-in).
 3. `logo-briefs.md` 작성(시드 출처·발산 방향·제약).
 4. **승인 게이트 (생성 전 필수)**: 시드 + brief를 제시하고 방향 확인. 승인 전엔 이미지를 한 장도 생성하지 않는다.
@@ -110,13 +111,13 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
 **탐색은 opt-in.** `logo-base`가 만족스러우면 탐색을 건너뛰고 바로 단독 확정(8)→로고 시스템(Phase 3)으로 간다. "다른 방향도 보고 싶다"일 때만 탐색을 시작한다.
 
 5. **발산 모드 선택**: A(기준·logo-base 앵커) / B(제로베이스 완전 발산·미첨부) / C(첨부 이미지 앵커). 라운드마다 다시 고를 수 있다. (Phase 0 최소 Q&A 경로는 B 고정.)
-6. **발산 라운드 생성**: 컨셉 3~4개를 `references/logo-sheet-html-direction.md` §8 청크로 **병렬 백그라운드** 생성(`gpt-image-1.5 --background transparent --autocrop --quality low`) → `concepts/round-N/01..04.png`. `logos.html`을 저작해 번호·방향 라벨·베이스라인 타일(#0)로 보여준다. 처음 제시 시 라이브 서버 1회 기동.
+6. **발산 라운드 생성**: 컨셉 3~4개를 `references/logo-sheet-html-direction.md` §8 청크로 **병렬 백그라운드** 생성(`gpt-image-1.5 --background transparent --autocrop --quality low`) → `assets/concepts/round-N/01..04.png`. `logos.html`을 저작해 번호·방향 라벨·베이스라인 타일(#0)로 보여준다. 처음 제시 시 라이브 서버 1회 기동.
 7. **수정 루프**:
    - **"다시, 더 다르게"** → 발산 라운드 재생성(모드 재선택 가능), `logos.html` **교체**.
    - **"#N 좋다"** → 사용자에게 묻는다: **(a) 수렴 라운드** — 그 PNG를 `--image --input-fidelity high`로 첨부해 같은 방향 3~4 변주를 만들고 시트 교체(반복 가능), 또는 **(b) 바로 단독 확정**.
-8. **단독 로고**: 고른 PNG는 이미 투명 단독 컷아웃이므로 **재추출 없이** `logo-candidate.png`로 승격한다. 더 다듬고 싶으면 그 PNG를 `--image --input-fidelity high`로 첨부해 "중앙 정렬, 형태·기하 유지, 단일 마크만"으로 다듬는다(`logo-art-direction.md` §7 품질 프레이밍, §8 품질 테스트로 자가 판정).
+8. **단독 로고**: 고른 PNG는 이미 투명 단독 컷아웃이므로 **재추출 없이** `assets/logo-candidate.png`로 승격한다. 더 다듬고 싶으면 그 PNG를 `--image --input-fidelity high`로 첨부해 "중앙 정렬, 형태·기하 유지, 단일 마크만"으로 다듬는다(`logo-art-direction.md` §7 품질 프레이밍, §8 품질 테스트로 자가 판정).
 9. **다듬기 루프**: 직전 후보를 `--image --input-fidelity high`로 첨부해 한 번에 한 가지만 증분 편집(나머지 보존), `--auto-version`. lock까지.
-10. **확정(복사)**: 확정본을 `.design/final/logo/logo.png`로 복사. 시안은 `generated/logo/`에 보존.
+10. **확정(복사)**: 확정본을 `.design/final/logo/assets/logo.png`로 복사. 시안은 `.design/logo/assets/`에 보존.
 
 ### Phase 3 — (선택) 로고 시스템
 
@@ -124,7 +125,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design/generated/logo
     - **wordmark**: "<제품명>을 BRAND_KIT §8 타입 방향으로 워드마크화, 심볼+워드마크 락업 또는 워드마크 단독, plain 단색 배경" → `wordmark.png`.
     - **favicon**: "이 마크를 16/24/32px에서 읽히게 단순화, 단색, 정사각, plain 단색 배경" → `favicon.png`.
     - **app-icon**: "이 마크를 라운드 사각 앱 아이콘 타일에 배치, 브랜드 컬러 배경, iOS/Android 앱 아이콘 스타일, 넉넉한 패딩" → `app-icon.png`(gpt-image-2 불투명).
-    - 각 확정본을 `final/logo/`로 복사, `logo-briefs.md`에 로고 시스템 스펙을 기록.
+    - 각 확정본을 `final/logo/assets/`로 복사, `logo-briefs.md`에 로고 시스템 스펙을 기록.
 12. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-page-image`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
 
 ## 품질 기준 / 금지 사항

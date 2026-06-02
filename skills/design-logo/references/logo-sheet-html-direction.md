@@ -8,7 +8,7 @@
 
 ## 1. 시트 레이아웃 (logos.html)
 
-- **단일 self-contained HTML**(CSS 인라인). 모든 `<img>`는 **형제 상대경로**(`concepts/round-N/01.png`·`seed.png`) — `generated/logo/`든 어디든 같은 HTML이 동작.
+- **단일 self-contained HTML**(CSS 인라인). 시트는 `.design/logo/logos.html`에 두고, 모든 `<img>`는 형제 **`assets/` 상대경로**(`assets/concepts/round-N/01.png`·`assets/seed.png`) — `.design/logo/`든 복사본이든 같은 HTML이 동작.
 - brand-kit의 A/B/C/D 아키타입을 쓰지 **않는다** — 목적이 다른 **전용 탐색 시트**(마크 비교 갤러리).
 - **번호 카드 그리드**: 한 라운드 3~4개 + 베이스라인 타일. 카드 사이 넉넉한 거터, 절제된 밀도.
 - **헤더**: 브랜드명 + "LOGO EXPLORATION" + 라운드·발산 모드 라벨(예: "Round 2 · 제로베이스 발산").
@@ -43,7 +43,7 @@
 ## 5. 수렴 (고른 #N → 좁히기)
 
 - 사용자가 #N을 고르면 그 **PNG를 `--image --input-fidelity high`로 첨부** + "이 방향을 유지하며 서로 조금씩 다른 3~4 변주". high fidelity가 방향을 단단히 묶는다.
-- 새 라운드는 시트를 **교체**한다. 이전 PNG는 `concepts/round-N/`에 `--auto-version`으로 남는다.
+- 새 라운드는 시트를 **교체**한다. 이전 PNG는 `assets/concepts/round-N/`에 `--auto-version`으로 남는다.
 
 ## 6. 단독 로고 만들기 (고른 #N → 단독 로고)
 

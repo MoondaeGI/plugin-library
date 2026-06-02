@@ -27,6 +27,8 @@
 
 > **보정 노트 (리뷰 중 발견):** 스펙·계획이 "`--image`는 항상 high fidelity"라는 구 gpt-image-2 보드 플로우의 전제를 베껴왔으나, 새 플로우의 컷아웃은 `gpt-image-1.5`이고 `image-gen`이 `input_fidelity`를 보내지 않아 기본 low로 느슨하게 참조한다. 따라서 Task 0에서 `--input-fidelity`를 복원하고, 앵커 호출(모드 A·C·수렴·다듬기)은 `--input-fidelity high`를 쓰도록 문서를 보정한다. 스펙 결정 7 참조.
 
+> **레이아웃 후속 변경 (실행 후):** 아래 Task 1·2 본문에 박힌 경로 스냅샷은 `.design/generated/logo/`(작업)·`.design/final/logo/`(flat lock)을 쓰지만, 사용자 결정으로 **brand-kit 동형 레이아웃**으로 옮겼다 — 작업은 `.design/logo/`(시트·brief는 루트, 모든 PNG는 `assets/`), lock은 `.design/final/logo/assets/`, `logos.html`의 `<img>`는 `assets/...` 상대참조, 라이브 서버는 `.design/logo`. **정본은 커밋된 `skills/design-logo/SKILL.md`·`references/logo-sheet-html-direction.md`와 스펙의 "파일 구조" 절**이며, 아래 스냅샷은 그보다 앞선 상태다.
+
 ---
 
 ### Task 0: image-gen `--input-fidelity` 복원 (선행)
