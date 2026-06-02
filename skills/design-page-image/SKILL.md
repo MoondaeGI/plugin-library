@@ -13,16 +13,16 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
-- `.design/final/brand-kit/BRAND_KIT.md`
-- `.design/final/brand-kit/brand-tokens.json`
-- `.design/final/brand-kit/assets/ui-base.png` — UI 컴포넌트 룩 시드(있으면 섹션 목업 생성 시 `--image`로 첨부).
-- `.design/final/brand-kit/assets/key-visual.png` — 히어로/배경 자산(있으면 §1 등에서 활용·참조).
-- (있으면) `.design/final/brand-kit/overview.html` — 오버뷰 룩 참조.
+- `.design/BRAND_KIT.md`
+- `.design/brand-tokens.json`
+- `.design/assets/brand-kit/ui-base.png` — UI 컴포넌트 룩 시드(있으면 섹션 목업 생성 시 `--image`로 첨부).
+- `.design/assets/brand-kit/key-visual.png` — 히어로/배경 자산(있으면 §1 등에서 활용·참조).
+- (있으면) `.design/view/overview.html` — 오버뷰 룩 참조.
 
 ## 출력 파일
 
-- `.design/image-briefs/page-briefs.md` (섹션당 브리프 1개)
-- `.design/generated/page/` — 섹션 이미지 PNG가 채워지는 폴더 (Codex 생성 또는 수동 드롭; 아래 흐름 2단계 참고)
+- `.design/candidate/page/page-briefs.md` (섹션당 브리프 1개)
+- `.design/candidate/page/` — 섹션 이미지 PNG가 채워지는 폴더 (Codex 생성 또는 수동 드롭; 아래 흐름 2단계 참고)
 
 ## 핵심 규칙
 
@@ -103,24 +103,24 @@ description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 �
 
 - **섹션당 1회 호출.** 한 번에 한 섹션만 만든다 (여러 장은 `--n`이 아니라 개별 호출).
 - 프롬프트는 섹션의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)에 `Use case: ui-mockup`·색/스타일(`brand-tokens.json` + 공통 디자인 방향)을 더해 구성하고, **임시 파일에 써서 `--prompt-file`로 넘긴다**. 보이는 텍스트는 한국어로 렌더.
-- **brand-kit 자산 활용**: UI 목업 섹션은 `assets/ui-base.png`를, 히어로/배경은 `assets/key-visual.png`를 `--image`로 첨부해 룩 일관성을 잡는다(있을 때). 투명 로고/아이콘을 섹션에 얹을 땐 `assets/`의 투명 PNG를 활용.
+- **brand-kit 자산 활용**: UI 목업 섹션은 `../assets/brand-kit/ui-base.png`를, 히어로/배경은 `../assets/brand-kit/key-visual.png`를 `--image`로 첨부해 룩 일관성을 잡는다(있을 때). 투명 로고/아이콘을 섹션에 얹을 땐 `assets/brand-kit/`의 투명 PNG를 활용.
 - 호출 예:
   ```bash
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <임시 프롬프트 파일> \
-    --out "<cwd>/.design/generated/page/section-1-hero.png" \
+    --out "<cwd>/.design/candidate/page/section-1-hero.png" \
     --auto-version --quality high
   ```
-- **저장 경로**: 시안은 `<cwd>/.design/generated/page/`에 누적한다 — `--auto-version`을 항상 붙여 재생성 때 `-v2`,`-v3`…로 증분하고 기존 시안을 덮지 않는다. 파일명 `section-1-hero.png` 식.
-- **확정본 분리**: 섹션을 lock하면 그 시안을 `<cwd>/.design/final/page/`로 복사하고(버전 접미를 뗀 의미 이름, 예: `section-1-hero-v3.png` → `final/page/section-1-hero.png`), 시안은 지우지 않는다. 다운스트림(`design-md-compiler`·`design-html-prototype`)은 `.design/final/`을 우선 읽는다.
+- **저장 경로**: 시안은 `<cwd>/.design/candidate/page/`에 누적한다 — `--auto-version`을 항상 붙여 재생성 때 `-v2`,`-v3`…로 증분하고 기존 시안을 덮지 않는다. 파일명 `section-1-hero.png` 식.
+- **확정본 분리**: 섹션을 lock하면 그 시안을 `<cwd>/.design/assets/page/`로 복사하고(버전 접미를 뗀 의미 이름, 예: `section-1-hero-v3.png` → `assets/page/section-1-hero.png`), 시안은 지우지 않는다. 다운스트림(`design-md-compiler`·`design-html-prototype`)은 `.design/assets/`를 읽는다.
 
 ## 흐름 (디자이너 협업 루프)
 
-1. `.design/image-briefs/page-briefs.md` 작성 (섹션 계획; 섹션당 브리프 1개).
+1. `.design/candidate/page/page-briefs.md` 작성 (섹션 계획; 섹션당 브리프 1개).
 2. **섹션을 하나씩** 진행한다. 각 섹션마다:
    - 이미지 1장 생성(`image-gen` 스크립트; 키 없으면 사람이 드롭) → 보여주고 피드백을 청한다 (예: "이 섹션 어때요? 뭘 바꿀까요?").
    - 피드백을 받아 **한 번에 한 가지만** 고쳐 재생성한다. 만족(lock)할 때까지 반복.
-   - 확정(lock)되면 그 시안을 `.design/final/page/`로 복사(버전 접미 뗀 이름)하고 다음 섹션으로. 시안은 `.design/generated/page/`에 그대로 둔다.
+   - 확정(lock)되면 그 시안을 `.design/assets/page/`로 복사(버전 접미 뗀 이름)하고 다음 섹션으로. 시안은 `.design/candidate/page/`에 그대로 둔다.
 3. 필요한 섹션이 다 확정되면 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-md-compiler`"**.
 
 전체 섹션을 한꺼번에 생성하지 않는다 — 한 섹션 만들고, 고치고, 다음으로.
