@@ -57,7 +57,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 
 ## 에이전트
 
-`designer` 서브에이전트는 디자인 스킬 파이프라인(`design-brand-kit` → `design-page-image` → `design-md-compiler` → `design-html-prototype`)을 협업하며 운전한다.
+`designer` 서브에이전트는 디자인 스킬 파이프라인(`design-brand-kit` → `design-ui-kit` → `design-page-image` → `design-md-compiler` → `design-html-prototype`)을 협업하며 운전한다.
 
 - **소스**: `agents/designer.md` (Claude 네이티브 — 단일 진실 소스).
 - **Claude**: 플러그인이 `agents/`를 번들하므로 자동 노출된다 (`@agent-personal:designer`). 수정 후 `/reload-plugins`.
@@ -67,7 +67,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 <details>
 <summary>🎨 <b>디자인 스킬 파이프라인 (designer)</b> — 펼쳐 보기</summary>
 
-`design-brand-kit`(브랜드 정체성·base 자산·HTML 오버뷰) → `design-logo` / `design-iconset` → `design-page-image` → `design-md-compiler` → `design-html-prototype`. `designer`가 협업 루프로 운전하고, 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받는다.
+`design-brand-kit`(브랜드 정체성·base 자산·HTML 오버뷰·공유 `tokens.css`) → `design-logo` / `design-iconset` → `design-ui-kit`(토큰 기반 UI 컴포넌트 라이브러리 HTML/CSS) → `design-page-image` → `design-md-compiler` → `design-html-prototype`. `designer`가 협업 루프로 운전하고, 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받는다. `tokens.css`는 brand-kit이 만들어 모든 view HTML이 공유하는 토큰 토대다.
 
 전체 흐름·`design-brand-kit` 심화·Nooknote 예시는 **[docs/design/README.md](docs/design/README.md)** 참고.
 
