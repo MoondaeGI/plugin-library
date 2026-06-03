@@ -15,6 +15,9 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 - `.design/BRAND_KIT.md`
 - `.design/brand-tokens.json`
+- `.design/assets/tokens.css` (있으면 — §4 디자인 토큰의 실제 변수·값 권위)
+- `.design/assets/ui-kit/ui-kit.css` (있으면 — §5 컴포넌트 규칙의 권위: 확정된 class·variant·상태)
+- `.design/view/ui-kit.html` (있으면 — 컴포넌트 쇼케이스 룩·분류 참조)
 - `.design/candidate/brand-kit/brand-briefs.md`
 - `.design/candidate/page/page-briefs.md`
 - `.design/view/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)
@@ -89,6 +92,8 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - 색상은 HEX 값으로 작성한다.
 - `brand-tokens.json`의 `typography` 토큰(`display`/`heading`/`body`/`mono`)을 그대로 기록한다. `typography.accent`(선택)는 인용/에디토리얼용 폰트로, 값이 있으면 함께 기록하고 풀쿼트·히어로 태그라인 등 소량 포인트 용도임을 명시한다.
 - spacing·radius·shadow는 실제 CSS 값으로 작성한다.
+- **§4 디자인 토큰**은 `assets/tokens.css`(있으면)의 실제 변수명·값을 권위로 기록한다(`--color-*`·`--font-*`·`--radius-*`·`--shadow-*`·`--space-*`·`--tint-*`). tokens.css가 없으면 `brand-tokens.json`에서 채운다(폴백).
+- **§5 컴포넌트 규칙**은 확정된 `assets/ui-kit/ui-kit.css`(권위, 있으면)의 **실제 class·variant·상태**에서 뽑는다 — 이미지 추론이 아니다. ui-kit.css의 class명·변형·강제상태(`.is-hover`·`.is-checked` 등)를 그대로 옮겨 구현자가 복사해 쓰게 한다. ui-kit.css가 없으면 기존대로 BRAND_KIT §10·이미지에서 추론한다(폴백).
 - 컴포넌트 규칙은 class나 variant로 옮길 수 있게 쓴다.
 - **이미지 레퍼런스의 살릴 점과 구현 시 버릴 점을 구분한다.**
 - 최종 문구는 이미지가 아니라 코드에 있어야 한다고 명시한다.
