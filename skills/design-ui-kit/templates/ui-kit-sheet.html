@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- view/ui-kit.html — UI Kit 쇼케이스(개발자 핸드오프). chrome=고정 템플릿.
+     컴포넌트 specimen은 <!-- slot:* --> 자리에 design-ui-kit이 저작해 채운다. -->
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI Kit</title>
+<!-- 폰트 CDN link는 brand-tokens.json typography에 맞춰 design-ui-kit이 주입 -->
+<!-- slot:font-links -->
+<link rel="stylesheet" href="../assets/tokens.css">
+<link rel="stylesheet" href="../assets/ui-kit/ui-kit.css">
+<style>
+  body { margin:0; background:var(--color-background); color:var(--color-text); font-family:var(--font-body); }
+  .board { max-width:1180px; margin:0 auto; padding:32px 24px 80px; }
+  /* 헤더 밴드: key-visual 은은한 블리드(제목 쪽 불투명 surface로 가독 보호; 패널 뒤엔 안 깔림) */
+  .board-head { position:relative; overflow:hidden; display:flex; align-items:center; gap:16px;
+    padding:26px 24px; margin-bottom:18px; border:1px solid var(--color-border);
+    border-radius:var(--radius-lg); background:var(--color-surface); }
+  .board-head::before { content:""; position:absolute; inset:0;
+    background:var(--kv, none) right center / cover no-repeat; opacity:.28;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 32%,rgba(0,0,0,.55) 62%,#000 100%);
+    mask-image:linear-gradient(90deg,transparent 0%,transparent 32%,rgba(0,0,0,.55) 62%,#000 100%); }
+  .board-head::after { content:""; position:absolute; inset:0;
+    background:linear-gradient(90deg,var(--color-surface) 28%,transparent 78%); }
+  .board-head > * { position:relative; z-index:1; }
+  .board-head .wm { font:700 22px var(--font-display); color:var(--color-primary); }
+  .board-head .sub { font:400 13px var(--font-body); color:var(--color-text-muted); }
+  .panel { background:var(--color-surface); border:1px solid var(--color-border);
+    border-radius:var(--radius-lg); padding:22px 24px; box-shadow:var(--shadow-sm); margin-bottom:18px; }
+  .panel > h2 { margin:0 0 18px; font:700 12px var(--font-heading); letter-spacing:.1em;
+    text-transform:uppercase; color:var(--color-primary); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  @media (max-width:780px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+  .sub-h { font:600 11px var(--font-heading); letter-spacing:.06em; text-transform:uppercase;
+    color:var(--color-text-muted); margin:0 0 12px; }
+  .block { margin-bottom:22px; }
+  .row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .stack { display:flex; flex-direction:column; gap:12px; }
+  .matrix { display:grid; gap:10px 16px; align-items:center; }
+  .matrix .h { font:600 11px var(--font-heading); text-transform:uppercase; letter-spacing:.05em; color:var(--color-text-muted); }
+  .matrix .st { font:500 12px var(--font-body); color:var(--color-text-muted); }
+  .label-n { font:600 11px var(--font-mono); color:var(--color-primary); opacity:.7; margin-bottom:8px; display:block; }
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="board-head"><!-- slot:masthead key-visual은 style="--kv:url('../assets/brand-kit/key-visual.png')" 로 .board-head에 주입 --></div>
+  <div class="panel"><h2>1 · Foundations</h2><!-- slot:foundations --></div>
+  <div class="panel"><h2>2 · Core Interactive Components</h2><!-- slot:core --></div>
+  <div class="panel"><h2>3 · Informational Components</h2><!-- slot:informational --></div>
+  <div class="panel"><h2>4 · Structural Components</h2><!-- slot:structural --></div>
+</div>
+</body>
+</html>
