@@ -2,7 +2,9 @@
 <!--
   design-iconset 시트 템플릿 (iconset-sheet.html 생성용 스켈레톤)
   - 책임: 레이아웃·CSS 골격만. 자유 저작 금지 — build-iconset-sheet.mjs 가 토큰을 치환한다.
-  - 치환 토큰: TITLE, BRAND, COUNT, CANVAS, INK, ACCENT, CELLS, STRIP
+  - 치환 토큰: TITLE, BRAND, COUNT, CELLS, STRIP
+  - 색은 공유 ../assets/tokens.css 의 var(--color-*) 를 참조한다(HEX 인라인 금지 — 전사 드리프트 방지).
+    tokens.css 부재 시 var() 폴백값으로 graceful degradation.
   - 아이콘은 인라인 SVG(currentColor) — .grid 는 ink 색, .striprow 는 accent 색으로 recolor 시연.
 -->
 <html lang="ko">
@@ -10,8 +12,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{TITLE}}</title>
+<link rel="stylesheet" href="../assets/tokens.css">
 <style>
-  :root{ --canvas:{{CANVAS}}; --ink:{{INK}}; --accent:{{ACCENT}}; --line:rgba(127,127,127,.18); }
+  :root{ --canvas:var(--color-background,#ffffff); --ink:var(--color-text,#111111); --accent:var(--color-accent,#555555); --line:rgba(127,127,127,.18); }
   *{ box-sizing:border-box; }
   body{ margin:0; background:var(--canvas); color:var(--ink);
     font-family:-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif; padding:40px 28px 64px; }

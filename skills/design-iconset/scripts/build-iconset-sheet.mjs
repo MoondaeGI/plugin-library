@@ -3,9 +3,10 @@
 //
 // 책임: 아이콘 폴더의 *.svg 를 파일명 정렬로 모아 번호+kebab 라벨 그리드 HTML 을 결정적으로 렌더한다.
 //   SVG 는 인라인 임베드(currentColor/CSS 작동), 루트 <svg> 의 width/height 는 제거해 CSS 로 크기 제어.
-//   색(캔버스/잉크/액센트)은 brand-tokens.json 이 있으면 거기서, 없으면 기본값.
+//   색(캔버스/잉크/액센트)은 시트가 공유 ../assets/tokens.css 의 var(--color-*) 를 참조한다
+//   (HEX 인라인 주입 폐지 — 전사 드리프트 방지. tokens.css 부재 시 var() 폴백값으로 degrade).
 //
-// 사용: node build-iconset-sheet.mjs --in <icon디렉터리> --out <html> [--tokens <brand-tokens.json>] [--brand <이름>]
+// 사용: node build-iconset-sheet.mjs --in <icon디렉터리> --out <html> [--brand <이름>]
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -13,7 +14,6 @@ import { dirname, join } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_PATH = join(HERE, "iconset-sheet.template.html");
-const DEFAULTS = { canvas: "#ffffff", ink: "#111111", accent: "#555555" };
 
 class IconsetSheetError extends Error {
   constructor(message) { super(message); this.name = "IconsetSheetError"; }
@@ -29,7 +29,7 @@ function parseArgs(argv) {
     out[key.slice(2)] = argv[i + 1];
   }
   if (!out.in || !out.out)
-    throw new IconsetSheetError("사용: --in <icon디렉터리> --out <html> [--tokens <brand-tokens.json>] [--brand <이름>]");
+    throw new IconsetSheetError("사용: --in <icon디렉터리> --out <html> [--brand <이름>]");
   return out;
 }
 
@@ -56,19 +56,6 @@ function loadIcons(dir) {
   });
 }
 
-function loadColors(tokensPath) {
-  if (!tokensPath) return { ...DEFAULTS };
-  let data;
-  try { data = JSON.parse(readFileSync(tokensPath, "utf8")); }
-  catch (err) { throw new IconsetSheetError(`brand-tokens.json 을 읽을 수 없습니다: ${err.message}`); }
-  const c = (data && data.color) || {};
-  return {
-    canvas: c.background || DEFAULTS.canvas,
-    ink: c.text || DEFAULTS.ink,
-    accent: c.accent || DEFAULTS.accent,
-  };
-}
-
 const pad = (n) => String(n).padStart(2, "0");
 const escHtml = (s) => String(s)
   .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -84,16 +71,13 @@ function buildCells(icons) {
 
 const buildStrip = (icons) => icons.map((ic) => `<span class="mini">${ic.svg}</span>`).join("\n");
 
-function render({ icons, colors, brand }) {
+function render({ icons, brand }) {
   const safeBrand = escHtml(brand);
   const template = readFileSync(TEMPLATE_PATH, "utf8");
   return template
     .replace(/\{\{TITLE\}\}/g, `${safeBrand} · ICON SET`)
     .replace(/\{\{BRAND\}\}/g, safeBrand)
     .replace(/\{\{COUNT\}\}/g, String(icons.length))
-    .replace(/\{\{CANVAS\}\}/g, colors.canvas)
-    .replace(/\{\{INK\}\}/g, colors.ink)
-    .replace(/\{\{ACCENT\}\}/g, colors.accent)
     .replace(/\{\{CELLS\}\}/g, buildCells(icons))
     .replace(/\{\{STRIP\}\}/g, buildStrip(icons));
 }
@@ -101,9 +85,8 @@ function render({ icons, colors, brand }) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const icons = loadIcons(args.in);
-  const colors = loadColors(args.tokens);
   const brand = args.brand || "Brand";
-  writeFileSync(args.out, render({ icons, colors, brand }), "utf8");
+  writeFileSync(args.out, render({ icons, brand }), "utf8");
   console.log(`아이콘 시트 생성: ${args.out} (${icons.length}개)`);
 }
 

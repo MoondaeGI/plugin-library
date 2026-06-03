@@ -9,19 +9,14 @@ import path from 'node:path';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SCRIPT = path.resolve(__dirname, '..', 'skills', 'design-iconset', 'scripts', 'build-iconset-sheet.mjs');
 
-// 아이콘 폴더 + 선택적 tokens.json 을 tmp 에 만들고 스크립트 실행
-function setup(svgs, tokens) {
+// 아이콘 폴더를 tmp 에 만들고 스크립트 실행 (색은 공유 tokens.css 가 보유 — 시트는 var(--token) 참조)
+function setup(svgs) {
   const d = mkdtempSync(path.join(tmpdir(), 'is-'));
   const iconDir = path.join(d, 'icon');
   mkdirSync(iconDir);
   for (const [name, content] of Object.entries(svgs)) writeFileSync(path.join(iconDir, name), content, 'utf8');
   const outPath = path.join(d, 'iconset-sheet.html');
   const argv = [SCRIPT, '--in', iconDir, '--out', outPath, '--brand', 'MODO'];
-  if (tokens) {
-    const tp = path.join(d, 'brand-tokens.json');
-    writeFileSync(tp, JSON.stringify(tokens), 'utf8');
-    argv.push('--tokens', tp);
-  }
   const res = spawnSync('node', argv, { encoding: 'utf8' });
   return { res, outPath, iconDir };
 }
@@ -70,18 +65,17 @@ test('결정적 — 같은 입력 두 번 → 바이트 동일', () => {
   assert.equal(readFileSync(r1.outPath, 'utf8'), readFileSync(r2.outPath, 'utf8'));
 });
 
-test('tokens 있으면 캔버스/잉크/액센트 색 적용', () => {
-  const { outPath } = setup({ 'a.svg': SVG() },
-    { color: { background: '#0B0F14', text: '#E6EDF3', accent: '#14B8A6' } });
-  const html = readFileSync(outPath, 'utf8');
-  assert.match(html, /--canvas:#0B0F14/);
-  assert.match(html, /--ink:#E6EDF3/);
-  assert.match(html, /--accent:#14B8A6/);
+test('시트가 공유 tokens.css 를 링크', () => {
+  const { outPath } = setup({ 'a.svg': SVG() });
+  assert.match(readFileSync(outPath, 'utf8'), /<link[^>]+href="\.\.\/assets\/tokens\.css"/);
 });
 
-test('tokens 없으면 기본색', () => {
+test('색은 tokens.css 변수 참조 (HEX 인라인 아님)', () => {
   const { outPath } = setup({ 'a.svg': SVG() });
-  assert.match(readFileSync(outPath, 'utf8'), /--canvas:#ffffff/);
+  const html = readFileSync(outPath, 'utf8');
+  assert.match(html, /--canvas:\s*var\(--color-background/);
+  assert.match(html, /--ink:\s*var\(--color-text/);
+  assert.match(html, /--accent:\s*var\(--color-accent/);
 });
 
 test('SVG 0개 → 종료코드 2', () => {
@@ -115,18 +109,6 @@ test('값 없는 플래그(--in 만) → 종료코드 2', () => {
 test('HTML 특수문자 라벨 이스케이프', () => {
   const { outPath } = setup({ 'a&b.svg': SVG() });
   assert.match(readFileSync(outPath, 'utf8'), /a&amp;b/);
-});
-
-test('잘못된 --tokens JSON → 종료코드 2', () => {
-  const d = mkdtempSync(path.join(tmpdir(), 'is-'));
-  const iconDir = path.join(d, 'icon');
-  mkdirSync(iconDir);
-  writeFileSync(path.join(iconDir, 'a.svg'), SVG(), 'utf8');
-  const tp = path.join(d, 'brand-tokens.json');
-  writeFileSync(tp, '{ not json', 'utf8');
-  const outPath = path.join(d, 'out.html');
-  const res = spawnSync('node', [SCRIPT, '--in', iconDir, '--out', outPath, '--tokens', tp], { encoding: 'utf8' });
-  assert.equal(res.status, 2);
 });
 
 test("루트 <svg> 의 single-quote width/height 도 제거", () => {

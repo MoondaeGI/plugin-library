@@ -40,12 +40,12 @@
 
 - 검수 시트는 `scripts/build-iconset-sheet.mjs`가 `candidate/icon/`의 `*.svg`를 **파일명 정렬**로 글롭해 결정적으로 렌더한다 — 항상 폴더와 일치(별도 생성 이미지 없음).
 - 각 셀: 좌상단 인덱스 번호(`01`–) + 인라인 SVG + 하단 영어 kebab-case 라벨(= 파일명). 하단에 16px accent strip(Small UI Test + recolor 시연).
+- 색은 공유 `../assets/tokens.css`의 `var(--color-*)`로 들어간다(시트가 link). 별도 `--tokens` 주입은 폐지 — brand-kit lock이 만든 `assets/tokens.css`가 단일 토대다(부재 시 var() 폴백으로 degrade).
 - 호출:
   ```bash
   node "<스킬 디렉터리>/scripts/build-iconset-sheet.mjs" \
     --in "<cwd>/.design/candidate/icon" \
     --out "<cwd>/.design/view/iconset-sheet.html" \
-    --tokens "<cwd>/.design/brand-tokens.json" \
     --brand "<브랜드명>"
   ```
 - 라이브 프리뷰: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server가 watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`.
