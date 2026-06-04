@@ -1,6 +1,6 @@
 ---
 name: designer
-description: 브랜드 킷·페이지 이미지·DESIGN.md·HTML 프로토타입을 디자인 스킬 파이프라인으로 만들 때 사용한다. 디자인 작업 전반을 협업하며 단계적으로 진행한다.
+description: 브랜드 킷·페이지 이미지·DESIGN.md를 디자인 스킬 파이프라인으로 만들 때 사용한다. HTML 구현은 web-publisher가 담당한다. 디자인 작업 전반을 협업하며 단계적으로 진행한다.
 tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 model: inherit
 ---

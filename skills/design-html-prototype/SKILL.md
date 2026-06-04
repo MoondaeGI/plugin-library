@@ -1,6 +1,6 @@
 ---
 name: design-html-prototype
-description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능한 단일 HTML/CSS 프로토타입을 만들 때 사용한다.
+description: DESIGN.md와 brand tokens를 바탕으로 단일 HTML/CSS를 충실히 구현할 때 사용한다. web-publisher 에이전트가 호출한다.
 ---
 
 # Design HTML Prototype
@@ -97,4 +97,4 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 1. `DESIGN.md`·`.design/brand-tokens.json`·생성 이미지를 읽고 `prototype/index.html`을 작성한다.
 2. 사람이 브라우저로 확인한다.
 3. 마음에 안 들면 프로토타입(1단계)을 고쳐 다시 확인한다(2단계).
-4. 더 손볼 게 있으면 `DESIGN.md`나 토큰을 고쳐 `design-md-compiler`·`design-html-prototype`을 다시 돌리거나, 만족하면 **실제 구현으로 진행**하도록 안내한다. (이 스킬이 파이프라인의 마지막 단계다.)
+4. 더 손볼 게 있으면 `DESIGN.md`나 토큰을 고쳐 `design-md-compiler`·`design-html-prototype`을 다시 돌리거나, 만족하면 **실제 구현으로 진행**하도록 안내한다. (구현 후 web-publisher가 `web-publisher-qa` 스킬로 레이아웃을 점검한다.)
