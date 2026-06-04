@@ -26,6 +26,22 @@ function generateWordmarkClass(wordmark = {}, color = {}) {
 
 const kebab = (s) => s.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 
+// typography 역할당 토큰 emit. 값이 문자열이면 family 단독(하위호환), 객체면 family + 정량 스펙.
+// 정량 변수: --text-<role>-size|weight|leading|tracking (leading=lineHeight, tracking=letterSpacing).
+function pushTypography(L, typography) {
+  const has = (x) => x !== undefined && x !== null && String(x).trim() !== "";
+  for (const [k, v] of Object.entries(typography)) {
+    if (!v) continue;
+    const role = kebab(k);
+    if (typeof v === "string") { L.push(`  --font-${role}: ${v};`); continue; }
+    if (has(v.family)) L.push(`  --font-${role}: ${v.family};`);
+    if (has(v.size)) L.push(`  --text-${role}-size: ${v.size};`);
+    if (has(v.weight)) L.push(`  --text-${role}-weight: ${v.weight};`);
+    if (has(v.lineHeight)) L.push(`  --text-${role}-leading: ${v.lineHeight};`);
+    if (has(v.letterSpacing)) L.push(`  --text-${role}-tracking: ${v.letterSpacing};`);
+  }
+}
+
 export function hexToRgba(hex, alpha) {
   const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
   if (!m) return hex;
@@ -38,7 +54,7 @@ export function generateTokensCss(tokens) {
   const L = ["/* tokens.css — brand-tokens.json + 고정 관례 레이어 (tokens-to-css.mjs 생성, 직접 수정 금지) */", ":root {"];
 
   for (const [k, v] of Object.entries(color)) L.push(`  --color-${kebab(k)}: ${v};`);
-  for (const [k, v] of Object.entries(typography)) if (v) L.push(`  --font-${kebab(k)}: ${v};`);
+  pushTypography(L, typography);
   if (wordmark.font) L.push(`  --font-wordmark: ${wordmark.font};`);
   for (const [k, v] of Object.entries(radius)) L.push(`  --radius-${k}: ${v};`);
   L.push(`  --radius-pill: 999px;`);

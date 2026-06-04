@@ -91,3 +91,48 @@ test("wordmark.color가 없는 토큰이면 text로 폴백", () => {
   const css = generateTokensCss({ ...SAMPLE, wordmark: { color: "nonexistent" } });
   assert.match(css, /color:\s*var\(--color-text\)/);
 });
+
+const SAMPLE_RICH = {
+  color: SAMPLE.color,
+  typography: {
+    display: { family: '"Gowun Batang", serif', size: "48px", weight: 700, lineHeight: 1.1, letterSpacing: "-0.02em" },
+    heading: { family: '"Pretendard", sans-serif', size: "32px", weight: 600, lineHeight: 1.25, letterSpacing: "-0.01em" },
+    body:    { family: '"Pretendard", sans-serif', size: "16px", weight: 400, lineHeight: 1.6, letterSpacing: "0" },
+    caption: { family: '"Pretendard", sans-serif', size: "13px", weight: 400, lineHeight: 1.4, letterSpacing: "0" },
+    label:   { family: '"Pretendard", sans-serif', size: "12px", weight: 600, lineHeight: 1.2, letterSpacing: "0.04em" },
+    mono:    { family: '"IBM Plex Mono", monospace', size: "13px", weight: 400, lineHeight: 1.5, letterSpacing: "0" },
+    accent:  { family: '"Gowun Batang", serif' }
+  }
+};
+
+test("객체 typography: --font-<role>를 family에서 emit", () => {
+  const css = generateTokensCss(SAMPLE_RICH);
+  assert.match(css, /--font-display:\s*"Gowun Batang", serif/);
+  assert.match(css, /--font-heading:\s*"Pretendard", sans-serif/);
+});
+
+test("객체 typography: --text-<role>-{size,weight,leading,tracking} emit", () => {
+  const css = generateTokensCss(SAMPLE_RICH);
+  assert.match(css, /--text-display-size:\s*48px/);
+  assert.match(css, /--text-display-weight:\s*700/);
+  assert.match(css, /--text-display-leading:\s*1\.1/);
+  assert.match(css, /--text-display-tracking:\s*-0\.02em/);
+});
+
+test("caption·label 역할도 emit", () => {
+  const css = generateTokensCss(SAMPLE_RICH);
+  assert.match(css, /--font-caption:\s*"Pretendard"/);
+  assert.match(css, /--text-label-tracking:\s*0\.04em/);
+});
+
+test("객체에 숫자 필드 없으면 해당 --text-* 생략 (accent는 family만)", () => {
+  const css = generateTokensCss(SAMPLE_RICH);
+  assert.match(css, /--font-accent:\s*"Gowun Batang"/);
+  assert.doesNotMatch(css, /--text-accent-size/);
+});
+
+test("하위호환: 문자열 typography는 --font-<role>만 emit (--text-* 없음)", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /--font-display:\s*"Gowun Batang"/);
+  assert.doesNotMatch(css, /--text-display-size/);
+});
