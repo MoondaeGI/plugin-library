@@ -146,7 +146,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 - 캡션/라벨용 방향:
 - 숫자/데이터(mono)용 방향:
 - 인용/액센트용 폰트 방향(선택): (에디토리얼·인용·풀쿼트·히어로 액센트용 — 보통 명조/세리프, 문학·럭셔리 브랜드만. 과용 금지. `font-catalog.md`의 Serif/Script에서 고름. 안 쓰면 비움.)
-- 타입 스케일 (예: Display 48/60, H1 32/40, H2 24/32, Body 16/24):
+- 타입 스케일 — 역할별 size/weight/lineHeight/letterSpacing을 정한다 (`brand-tokens.json`의 `typography.<role>` 객체로 박힘). 역할: display · heading · body · caption · label · mono · accent. (예: Display 48/700/1.1/-0.02em, H1=heading 32/600/1.25/-0.01em, Body 16/400/1.6/0, Caption 13/400/1.4/0, Label 12/600/1.2/0.04em)
 - 한글 사용 시 주의점:
 
 ## 9. 보이스 & 톤 (Voice & Tone) — 원칙 + O/X 예시 (3~4개)
@@ -195,13 +195,23 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
     "surfaceAlt": "", "text": "", "textMuted": "", "border": "",
     "success": "", "warning": "", "danger": ""
   },
-  "typography": { "display": "", "heading": "", "body": "", "mono": "", "accent": "" },
+  "typography": {
+    "display": { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "heading": { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "body":    { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "caption": { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "label":   { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "mono":    { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "accent":  { "family": "" }
+  },
   "radius": { "sm": "6px", "md": "10px", "lg": "16px", "xl": "24px" },
   "shadow": { "sm": "", "md": "", "lg": "" },
   "spacing": { "sectionY": "", "containerX": "", "cardPadding": "" },
   "wordmark": { "font": "", "tracking": "", "weight": "700", "case": "none", "color": "primary" }
 }
 ```
+
+> **`typography.<role>`는 객체다**: `family`(폰트 스택, 카탈로그 실존값) + `size`/`weight`/`lineHeight`/`letterSpacing`(정량 스펙). `tokens-to-css.mjs`가 `--font-<role>`(family) + `--text-<role>-{size,weight,leading,tracking}`로 emit한다. `accent`는 family만 필수, 나머지 정량 필드는 선택(있는 것만 emit). 폰트명 문자열(구형)도 하위호환으로 받지만, 신규 킷은 객체로 작성한다.
 
 > **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다. 워드마크가 폰트 모드이고 전용 로고타입 폰트를 쓰면 `font-catalog.md`의 **Logotype 서브셋**에서 고른다(없으면 display 재사용).
 
