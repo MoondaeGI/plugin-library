@@ -196,12 +196,12 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
     "success": "", "warning": "", "danger": ""
   },
   "typography": {
-    "display": { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
-    "heading": { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
-    "body":    { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
-    "caption": { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
-    "label":   { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
-    "mono":    { "family": "", "size": "", "weight": 0, "lineHeight": 0, "letterSpacing": "" },
+    "display": { "family": "", "size": "", "weight": "", "lineHeight": "", "letterSpacing": "" },
+    "heading": { "family": "", "size": "", "weight": "", "lineHeight": "", "letterSpacing": "" },
+    "body":    { "family": "", "size": "", "weight": "", "lineHeight": "", "letterSpacing": "" },
+    "caption": { "family": "", "size": "", "weight": "", "lineHeight": "", "letterSpacing": "" },
+    "label":   { "family": "", "size": "", "weight": "", "lineHeight": "", "letterSpacing": "" },
+    "mono":    { "family": "", "size": "", "weight": "", "lineHeight": "", "letterSpacing": "" },
     "accent":  { "family": "" }
   },
   "radius": { "sm": "6px", "md": "10px", "lg": "16px", "xl": "24px" },
@@ -213,7 +213,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 > **`typography.<role>`는 객체다**: `family`(폰트 스택, 카탈로그 실존값) + `size`/`weight`/`lineHeight`/`letterSpacing`(정량 스펙). `tokens-to-css.mjs`가 `--font-<role>`(family) + `--text-<role>-{size,weight,leading,tracking}`로 emit한다. `accent`는 family만 필수, 나머지 정량 필드는 선택(있는 것만 emit). 폰트명 문자열(구형)도 하위호환으로 받지만, 신규 킷은 객체로 작성한다.
 
-> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다. 워드마크가 폰트 모드이고 전용 로고타입 폰트를 쓰면 `font-catalog.md`의 **Logotype 서브셋**에서 고른다(없으면 display 재사용).
+> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`caption`/`label`/`mono`/`accent`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다. 워드마크가 폰트 모드이고 전용 로고타입 폰트를 쓰면 `font-catalog.md`의 **Logotype 서브셋**에서 고른다(없으면 display 재사용).
 
 > `wordmark`(선택)는 **폰트 모드 워드마크**의 스타일이다. `font`는 비우면 `display` 재사용, 채우면 `font-catalog.md`의 **Logotype 서브셋**에서 고른 전용 폰트(폴백 스택 포함). `tracking`/`weight`/`case`(none|uppercase|lowercase)/`color`(color 토큰 키)는 `tokens.css`의 `.wordmark` 클래스로 emit된다 — 이게 워드마크 레터링의 단일 권위이며 §6 산문에 중복하지 않는다. 이미지 모드면 이 블록은 무시된다.
 
