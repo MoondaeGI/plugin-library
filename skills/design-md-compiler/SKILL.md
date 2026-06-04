@@ -1,6 +1,6 @@
 ---
 name: design-md-compiler
-description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목록을 바탕으로 실제 구현자가 따를 수 있는 DESIGN.md를 만들 때 사용한다.
+description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목록을 바탕으로 실제 구현자가 따를 수 있는 DESIGN.md를 만들 때 사용한다. 토큰 frontmatter + 컴포넌트 산문으로 외부 도구에서도 단독 활용 가능하게 컴파일한다.
 ---
 
 # Design MD Compiler
@@ -9,28 +9,49 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 ## 목적
 
-이미지 생성 결과와 브랜드 문서를 그대로 두지 않고, HTML/CSS/React 구현자가 따를 수 있는 `DESIGN.md`로 정리한다.
+이미지 생성 결과와 브랜드 문서를 그대로 두지 않고, HTML/CSS/React 구현자가 따를 수 있는 `DESIGN.md`로 정리한다. DESIGN.md는 **이 파이프라인 밖의 다른 도구·AI가 단독으로 받아 써도 동작하도록(portable)** 토큰을 frontmatter에 컴파일하고 컴포넌트를 산문으로 충실히 기술한 self-contained 문서다.
 
 ## 입력 파일 (있는 것만 읽는다, cwd 기준)
 
 - `.design/BRAND_KIT.md`
 - `.design/brand-tokens.json`
-- `.design/assets/tokens.css` (있으면 — §4 디자인 토큰의 실제 변수·값 권위)
+- `.design/assets/tokens.css` (있으면 — §4 디자인 토큰·frontmatter의 실제 변수·값 권위)
 - `.design/assets/ui-kit/ui-kit.css` (있으면 — §5 컴포넌트 규칙의 권위: 확정된 class·variant·상태)
+- `.design/candidate/ui-kit/ui-kit-briefs.md` (있으면 — §5 컴포넌트 **의도(왜 이 형태)** 전사 근거)
 - `.design/view/ui-kit.html` (있으면 — 컴포넌트 쇼케이스 룩·분류 참조)
 - `.design/candidate/brand-kit/brand-briefs.md`
 - `.design/candidate/page/page-briefs.md`
 - `.design/view/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)
-- `.design/assets/brand-kit/*.png`, `.design/assets/brand-kit/icon/*.png` (확정 base 자산 — 로고·키비주얼·UI·컨셉 아이콘)
+- `.design/assets/brand-kit/*.png`, `.design/assets/brand-kit/icon/*.png` (확정 base 자산)
 - `.design/assets/logo/*.png`, `.design/assets/icon/*.svg`, `.design/assets/page/*.{png,jpg,jpeg,webp}` (확정 deliverable)
 - `.design/candidate/page/*.{png,jpg,jpeg,webp}` (확정 전 시안 폴백)
-- `.design/manifest.json` (선택 — 있으면 캡션·순서·섹션 매핑 메타, 없으면 파일명 glob)
+- `.design/manifest.json` (선택 — 캡션·순서·섹션 매핑 메타, 없으면 파일명 glob)
 
 ## 출력 파일
 
 - `DESIGN.md` (대상 프로젝트 cwd 루트)
 
 ## DESIGN.md 구조
+
+### A. Frontmatter (tokens.css에서 컴파일 — `do not edit`, 매 호출 재생성)
+
+`DESIGN.md` 맨 위에 `---`로 감싼 YAML frontmatter를 둔다. 값은 **손으로 쓰지 않고 `tokens.css`에서 긁어** 채운다(`tokens.css` 없으면 `brand-tokens.json` 폴백). 컴포넌트는 frontmatter에 넣지 않는다(§5 산문).
+
+```yaml
+---
+# generated from .design/assets/tokens.css — do not edit (regenerated on every compile)
+meta:          # 제품 에센스 한 문단
+colors:        # 의미키 → HEX                       (--color-*)
+typography:    # 역할 → {family,size,weight,lineHeight,letterSpacing}  (--font-* + --text-*-*)
+spacing:       # (--space-*)
+radius:        # (--radius-*)
+shadow:        # (--shadow-*)
+border:        # (있으면)
+breakpoints:   # (--bp-* 있으면 — 없으면 생략 + §12에 표시)
+---
+```
+
+### B. 본문 (산문 — 모든 토큰 참조는 `{colors.x}`·`{typography.y}` 점 표기)
 
 ```md
 # DESIGN.md
@@ -43,71 +64,70 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 ## 3. 시각 방향
 - 전체 분위기: / 레이아웃 원칙: / 이미지 사용 방식: / 아이콘·일러스트 방향:
+- Key Characteristics: (이 디자인을 한 줄씩 규정하는 불릿 5~8개)
 
 ## 4. 디자인 토큰
-### Colors
-### Typography
+각 토큰은 값 + "왜/어디"를 함께 적는다(아래 작성 규칙 D3 전사).
+### Colors        — 의미키·{colors.x}·HEX·용도
+### Typography    — 역할·{typography.x}·family/size/weight/lineHeight/letterSpacing·용도
 ### Spacing
 ### Radius
-### Shadow
+### Elevation     — shadow/elevation 레벨·용도 (별도 대섹션 없이 여기에)
+### Shapes        — radius 스케일·기하 규칙 (여기에)
 ### Border
 
 ## 5. 컴포넌트 규칙
-### Button
-### Input
-### Card
-### Badge
-### Navigation
-### Table
-### Dashboard Panel
-### Alert / Toast
-### Empty State
+컴포넌트마다 스펙 블록: **의미 이름** + 실제 ui-kit class + 배경/텍스트/타이포/radius/padding(전부 {token.ref}) + 상태(default·active·focus 등 ui-kit.css 강제상태 그대로) + 용도 + 살릴점/버릴점.
+### Button / Input / Card / Badge / Navigation / Table / Dashboard Panel / Alert·Toast / Empty State …(ui-kit.css에 있는 것)
 
 ## 6. 페이지 섹션 규칙
-### Hero
-### Problem
-### Product Mechanism
-### Feature Grid
-### Dashboard / Evidence
-### CTA / Footer
+### Hero / Problem / Product Mechanism / Feature Grid / Dashboard·Evidence / CTA·Footer
 
-## 7. 이미지 에셋 사용 규칙
+## 7. Responsive Behavior
+breakpoint 표·터치타깃·collapsing 전략. (breakpoint 토큰 없으면 "고정폭 데스크톱 전용"으로 적고 §12에 표시)
+
+## 8. 이미지 에셋 사용 규칙
 - 로고: / 배경: / 제품 목업: / UI 킷 레퍼런스: / 사용하지 말아야 할 방식:
 
-## 8. 구현 제약
+## 9. Do's & Don'ts
+토큰 참조로 박은 강제·금지(예: "모든 인터랙티브는 {colors.primary} — 2번째 accent 금지").
+
+## 10. 구현 제약
 - HTML/CSS: / React 이식: / 접근성: / 반응형: / 성능:
 
-## 9. Anti-slop checklist
-- Hero가 2~3줄 안에 들어오는가?
-- 버튼 대비가 충분한가?
-- 의미 없는 blob이나 glow가 없는가?
-- 섹션 간 레이아웃이 반복되지 않는가?
-- UI 텍스트가 이미지에 박혀 있지 않은가?
-- 컴포넌트가 재사용 가능한 구조인가?
+## 11. Anti-slop checklist
+- Hero가 2~3줄 안에 들어오는가? / 버튼 대비가 충분한가? / 의미 없는 blob·glow가 없는가?
+- 섹션 간 레이아웃이 반복되지 않는가? / UI 텍스트가 이미지에 박혀 있지 않은가? / 컴포넌트가 재사용 가능한 구조인가?
+
+## 12. Provenance & Known Gaps
+- 읽은 입력 파일 목록 / 추측한 값(표시) / 누락 입력(어떤 이전 단계가 필요한지) / 근거 부족 항목 / frontmatter는 tokens.css에서 재생성됨을 명시.
 ```
 
 ## 작성 규칙
 
-- 감성적인 설명만 쓰지 말고 구현 가능한 규칙으로 바꾼다.
-- 색상은 HEX 값으로 작성한다.
-- `brand-tokens.json`의 `typography` 토큰(`display`/`heading`/`body`/`mono`)을 그대로 기록한다. `typography.accent`(선택)는 인용/에디토리얼용 폰트로, 값이 있으면 함께 기록하고 풀쿼트·히어로 태그라인 등 소량 포인트 용도임을 명시한다.
-- spacing·radius·shadow는 실제 CSS 값으로 작성한다.
-- **§4 디자인 토큰**은 `assets/tokens.css`(있으면)의 실제 변수명·값을 권위로 기록한다(`--color-*`·`--font-*`·`--radius-*`·`--shadow-*`·`--space-*`·`--tint-*`). tokens.css가 없으면 `brand-tokens.json`에서 채운다(폴백).
-- **§5 컴포넌트 규칙**은 확정된 `assets/ui-kit/ui-kit.css`(권위, 있으면)의 **실제 class·variant·상태**에서 뽑는다 — 이미지 추론이 아니다. ui-kit.css의 class명·변형·강제상태(`.is-hover`·`.is-checked` 등)를 그대로 옮겨 구현자가 복사해 쓰게 한다. ui-kit.css가 없으면 기존대로 BRAND_KIT §10·이미지에서 추론한다(폴백).
-- 컴포넌트 규칙은 class나 variant로 옮길 수 있게 쓴다.
-- **이미지 레퍼런스의 살릴 점과 구현 시 버릴 점을 구분한다.**
-- 최종 문구는 이미지가 아니라 코드에 있어야 한다고 명시한다.
-- 모든 필드를 비워두지 않는다 — 입력 파일에서 추론 가능한 값을 채우고, 추측한 값은 표시한다.
-- 이미지는 `assets/` 하위 폴더로 종류를 구분한다: `assets/brand-kit/`(키비주얼·UI·컨셉 아이콘 — 브랜드 base) · `assets/logo/`(확정 로고) · `assets/icon/`(프로덕션 SVG 아이콘셋) · `assets/page/`(페이지 섹션). `view/overview.html`은 브랜드 오버뷰 룩의 참조다.
+- **D1 — frontmatter 컴파일(거울)**: frontmatter 값은 `tokens.css`(없으면 `brand-tokens.json`)에서 긁어 채운다. 손으로 쓰지 않으며 `# generated ... do not edit` 주석을 박는다. `tokens.css`가 단일 권위, frontmatter는 거울(projection). typography는 `--font-<role>`(family)와 `--text-<role>-{size,weight,leading,tracking}`를 합쳐 역할 객체로 적는다.
+- **D6 — 재생성 트리거**: 이 스킬은 호출될 때마다 frontmatter를 `tokens.css`에서 **항상 재컴파일**한다(거울을 매번 다시 닦음). 이미 `DESIGN.md`가 있고 `tokens.css`가 더 최신이면 "frontmatter stale — 재생성함"을 §12에 적는다. "한 번 만들고 방치"로 인한 drift를 막는다.
+- **D2 — 컴포넌트는 §5 산문**: 컴포넌트는 frontmatter에 구조화 YAML로 넣지 않는다(임의 CSS→YAML 변환은 깨지기 쉽고 ui-kit.css와 이중 관리). §5에 의미 이름 + 실제 ui-kit class명 + 토큰 참조 스펙 + 상태 + 용도로 산문 기술한다. 포터빌리티는 토큰 frontmatter + 이 산문으로 달성한다.
+- **§5 컴포넌트 권위**: 확정된 `assets/ui-kit/ui-kit.css`(있으면)의 **실제 class·variant·강제상태**(`.is-hover`·`.is-checked` 등)에서 뽑아 구현자가 복사해 쓰게 한다 — 이미지 추론이 아니다. 없으면 BRAND_KIT §10·이미지에서 추론(폴백)하되 §12에 폴백임을 표시.
+- **D3 — rationale 전사, 창작 금지**: 토큰/컴포넌트별 "왜/어디"는 ① `BRAND_KIT.md` §7/§8/§10·금지 패턴 + `ui-kit-briefs.md`의 의도를 **그대로 옮긴다** → ② 근거 없으면 **사실만**("이 토큰은 `.btn-primary`에서 참조됨") → 시적 의도를 지어내지 않는다. 근거 얇은 항목은 얇은 채로 두고 §12에 "근거 부족" 표시.
+- **토큰 참조 문법**: 본문 산문은 인라인 HEX·px 대신 `{colors.primary}`·`{typography.body}` 점 표기로 frontmatter를 가리킨다.
+- 색상은 HEX, spacing·radius·shadow는 실제 CSS 값(frontmatter에 정의, 산문은 참조).
+- **이미지 레퍼런스의 살릴 점과 버릴 점을 구분한다.** 최종 문구는 이미지가 아니라 코드에 있어야 한다고 명시한다.
+- 이미지는 `assets/` 하위 폴더로 종류 구분: `assets/brand-kit/`·`assets/logo/`·`assets/icon/`·`assets/page/`. `view/overview.html`은 브랜드 오버뷰 룩 참조.
 
 ## 금지 사항
 
 - "고급스럽게"·"깔끔하게" 같은 추상 표현만 남기지 않는다.
 - 이미지 결과를 무조건 정답으로 취급하지 않는다.
 - 구현 불가능한 효과를 강제하지 않는다.
+- **근거 없는 의도(rationale)를 창작하지 않는다**(D3). 빈칸을 그럴듯하게 메우지 말고 §12에 표시한다.
 
 ## 흐름 (리뷰 게이트)
 
-1. 존재하는 입력 파일을 모두 읽고 `DESIGN.md`(cwd 루트)를 작성한다.
-2. 사람이 DESIGN.md를 검토한다.
-3. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(1단계) 다시 검토한다(2단계). 좋으면 안내한다: **"다음 단계: `design-html-prototype`"**.
+1. **입력 점검 → 없으면 이전 단계 먼저 안내(D4)**:
+   - `ui-kit.css` 없음 → "§5를 제대로 채우려면 `design-ui-kit`을 먼저 lock하고 다시 호출하세요"를 먼저 안내. 사용자가 그래도 진행하면 폴백(BRAND_KIT §10·이미지 추론) + §12 Known Gaps.
+   - `--bp-*` breakpoint 토큰 없음 → "반응형이 필요하면 `design-brand-kit`에서 폼팩터를 정하고 다시 시도하세요" 안내. 진행 시 §7은 "고정폭 데스크톱 전용".
+   - `page-briefs.md`/page 이미지 없음 → §6은 가능한 범위만, 누락은 §12.
+2. 존재하는 입력을 읽고 `DESIGN.md`(cwd 루트)를 작성한다 — frontmatter는 tokens.css에서 재컴파일(D1·D6), 본문은 §1–12.
+3. 사람이 DESIGN.md를 검토한다.
+4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다: **"다음 단계: `design-html-prototype`"**.
