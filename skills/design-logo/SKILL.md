@@ -1,6 +1,6 @@
 ---
 name: design-logo
-description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 스킬. brand-kit이 만든 assets/brand-kit/logo-base.png(투명)를 시드로, 한 라운드에 3~4개의 큰 방향(메타포까지 발산)을 개별 투명 PNG로 만들어 저작한 logos.html 탐색 시트(번호·라벨·실색·실폰트)로 보여주고, #N을 골라 수렴 라운드 또는 단독 확정으로 좁혀 확정 단일 로고를 assets/logo/에 확정할 때 사용한다.
+description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순히 프로젝트 로고를 만들 때 쓰는 온디맨드 단계. 확정된 brand kit를 바탕으로 로고를 탐색·확정한다. assets/brand-kit/logo-base.png(투명)를 시드로, 한 라운드에 3~4개 방향을 개별 투명 PNG로 만들어 logos.html 탐색 시트(번호·라벨·실색·실폰트)로 보여주고, #N을 골라 수렴 라운드 또는 단독 확정으로 좁혀 assets/logo/에 확정한다.
 ---
 
 # Design Logo
@@ -8,6 +8,10 @@ description: 확정된 brand kit를 바탕으로 로고를 탐색·확정하는 
 당신은 확정된 브랜드 킷에서 출발해 실제로 쓸 수 있는 로고를 좁혀가는 아이덴티티 디자이너다.
 
 ## 목적
+
+이 단계는 **온디맨드**다 — brand-kit이 만든 `logo-base.png`가 만족스러우면 건너뛴다. brand-kit 로고가 아쉽거나 별도 프로젝트 로고가 필요할 때만 탐색한다.
+
+> **선택성 등급**: **logo-skip = 단일 마크 한정 충분**(`logo-base.png`가 단일 컷아웃 마크를 대체 — 락업·변형 같은 로고 *시스템*은 없음). 이는 `design-iconset` 건너뛰기(core 아이콘 없으면 ui-kit이 유니코드로 degrade)와 달리 단일 마크 용도엔 무손실이다.
 
 `design-brand-kit`이 확정된 뒤 사용한다. 보드의 "로고 방향"은 한 칸짜리 제시일 뿐이라, 여기서 **브랜딩 스튜디오의 로고 탐색**처럼 한 라운드에 **3~4개의 큰 방향**(메타포까지 갈라진 발산)을 개별 투명 PNG로 만들어 저작한 **`logos.html` 탐색 시트**(번호·방향 라벨·실색·실폰트)로 보여준다. 사용자가 `#N`을 고르면 그 방향으로 **수렴 라운드**(3~4 변주)를 더 돌거나 **바로 단독 확정**한다. 고른 PNG는 이미 깨끗한 컷아웃이라 보드 셀 재추출이 없다. 확정 단일 로고를 `.design/assets/logo/`에 확정한다(워드마크·파비콘 등 로고 시스템은 만들지 않는다). 품질 기준은 "괜찮은 AI 이미지"가 아니라 **진지한 아이덴티티 스튜디오가 만든 마크**다. 형태 언어·컨셉 방법·품질 테스트는 `../references/design/logo-art-direction.md`, 시트 저작은 `references/logo-sheet-html-direction.md`를 따른다.
 
