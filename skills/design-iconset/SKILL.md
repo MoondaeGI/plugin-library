@@ -69,17 +69,18 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 2. **게이트1 — 목록**: 코어/도메인/상태 3분류로 아이콘 목록 확정(기존 유지).
 3. **게이트2 — 세트 선택**: §11 스타일 → `../references/design/icon/icon-style-catalog.md`·`icon-reference-vendors.md`로 후보 set-id 2~3개 → 후보의 동일 대표 아이콘을 `scripts/fetch-icons.mjs`로 가져와 비교 시트로 제시 → 스타일/라이선스/밀도로 점수화해 **단일 세트 lock**. backbone 합성 문법 1개 합의.
 4. **게이트2.5 — 적중률 측정**: `scripts/probe-set.mjs`로 리스트를 세트에 대조 → 분류별 카운트 제시(코어/도메인/상태). 도메인 적중률이 낮으면 분기 제시: (a) 다른 세트 (b) 합성 진행 (c) 도메인 손저작 유지. **세트 go/no-go.**
-5. **게이트3 — 조건부 메타포**: `fetched`는 자동(생략), `ambiguous`는 가벼운 확인, `gap`만 concept→metaphor(→mode) 합의.
+5. **게이트3 — 조건부 메타포·모드**: `fetched`는 자동(생략), `ambiguous`는 가벼운 확인, `gap`만 concept→metaphor→**합성 모드(M1~M5 중) 합의**(`references/compose-modes.md`). hero는 M6 손저작.
 
 ### Phase 2 — fetch+정규화 → (부족분 처리) → 시트 검수 → lock
 6. **fetch+정규화**: `scripts/fetch-icons.mjs`가 `fetched`/확정된 `ambiguous`를 가져와 `scripts/normalize.mjs`로 24그리드·currentColor 정규화해 `candidate/icon/*.svg`로 기록.
 7. **부족분(gap) 처리 — cascade**:
    - ① 세트에 있음 → fetch (위)
-   - ② **없으면 합성(M1~M5)** — *자동 합성 엔진은 Plan 2 예정.* 그전까지는 ③/④로 처리.
+   - ② **없으면 합성(M1~M5)** — 게이트3에서 gap마다 합의한 `mode`로 `scripts/compose-and-write.mjs`가 base/overlay를 fetch→정규화→`compose.mjs` 합성→`candidate/icon/<name>.svg` 기록. 모드·규율은 `references/compose-modes.md`.
    - ③ 단일 새 개념/hero → 세트를 레퍼런스로 손저작(`viewBox 0 0 24 24`·`currentColor`, 24그리드).
    - ④ 안 읽힘 → 가장 가까운 세트 아이콘 대체 + 플래그.
 8. **시트 검수·편집**: `build-iconset-sheet.mjs`로 렌더 → `serve-design.mjs` 라이브 프리뷰 → 번호/이름 지목 외과 편집(기존). One-Color·Small UI·cross-icon 검사.
 9. **lock**: `candidate/icon/*.svg` → `assets/icon/*.svg` 순수 복사. `scripts/build-icon-map.mjs`로 `assets/icon/icon-map.json` **재생성** + `validateMap`로 1:1 정합 확인(어긋나면 경고). overview 슬롯 주입(기존). 다운스트림(`design-ui-kit` 등)은 `assets/icon/*.svg`를 읽음. 라이브 서버 종료.
+   - icon-map 입력 = fetch 결정 + `composeAndWrite` custom 결정을 `Object.fromEntries(decisions.map(d => [d.name, d]))`로 병합해 `build-icon-map.mjs`에 전달.
 
 ## 품질 기준 / 금지 사항
 
