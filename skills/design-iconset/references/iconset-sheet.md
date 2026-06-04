@@ -2,7 +2,7 @@
 
 ## 0. 목적 / 사용법
 
-`design-iconset`이 **제품용 SVG 아이콘을 직접 저작**하고 그것을 **HTML 그리드 시트**로 렌더할 때 읽는 문서다. 아이콘 형태·시스템 규칙·스타일 선택·도메인 모티프·Avoid·검증 테스트는 공유 ref 팩 `../../references/design/icon/`(`icon-rules.md`·`icon-style-catalog.md`·`icon-domain-examples.md`·`icon-reference-vendors.md`)을 따른다. 이 문서는 **SVG 가족 계약·currentColor 규칙·그리드 렌더·셀 참조·편집 스티어링·구조 린트**만 다룬다.
+`design-iconset`이 **제품용 SVG 아이콘을 직접 저작**하고 그것을 **HTML 그리드 시트**로 렌더할 때 읽는 문서다. 아이콘 형태·시스템 규칙·스타일 선택·도메인 모티프·Avoid·검증 테스트는 공유 ref 팩 `../../references/design/icon/`(`icon-rules.md`·`icon-style-catalog.md`·`icon-domain-examples.md`·`icon-reference-vendors.md`(세트 선택 카탈로그 — 스타일↔Iconify set-id))을 따른다. 이 문서는 **SVG 가족 계약·currentColor 규칙·그리드 렌더·셀 참조·편집 스티어링·구조 린트**만 다룬다.
 
 > **중요:** `icon-rules.md §6`·이 문서의 이전 §6은 **image-gen 프롬프트 청크**였다. iconset은 더 이상 래스터를 생성하지 않으므로 그 청크를 쓰지 않는다 — 그건 brand-kit 컨셉 아이콘용이다. iconset은 SVG 코드를 직접 저작한다.
 
@@ -30,6 +30,11 @@
 - **상태 아이콘**(success/warning/danger)은 어느 스타일이든 구성 동일, `brand-tokens.json`의 **토큰 색만 분기**.
 - 저작 중 형태·일관성·메타포·회피의 권위는 계약이 아니라 `icon-rules.md §1–§5` + `icon-domain-examples.md`다 — 충돌·모호 시 원 팩으로 해소.
 
+### 세트 기반 계약 (라이브러리 소싱)
+- **단일 세트 출처**: 모든 fetch 아이콘은 한 Iconify 세트(`icon-map.json`의 `set.id`)에서 온다.
+- **정규화 불변**: 모든 .svg는 `normalize.mjs`로 viewBox `0 0 24 24`·`currentColor`로 통일된다(원본 좌표계 무관). 합성/저작 아이콘도 동일 24그리드에서 만들어 세트와 좌표·광학 무게를 맞춘다.
+- **깊이**: 두 번째 색 금지 — stroke 굵기·간격·`currentColor` opacity로만(상태 아이콘 색 분기 제외).
+
 ## 2. currentColor / recolor
 
 - 일반 아이콘은 `currentColor`로 — 호출부의 `color`(또는 CSS `color`)를 상속해 recolor된다.
@@ -39,6 +44,7 @@
 ## 3. 그리드 렌더 (build-iconset-sheet.mjs)
 
 - 검수 시트는 `scripts/build-iconset-sheet.mjs`가 `candidate/icon/`의 `*.svg`를 **파일명 정렬**로 글롭해 결정적으로 렌더한다 — 항상 폴더와 일치(별도 생성 이미지 없음).
+- 시트는 `candidate/icon/*.svg`를 글롭 렌더하므로 **fetch·합성·저작 출처와 무관**하게 동일하게 동작한다. 출처는 `icon-map.json`이 기록한다.
 - 각 셀: 좌상단 인덱스 번호(`01`–) + 인라인 SVG + 하단 영어 kebab-case 라벨(= 파일명). 하단에 16px accent strip(Small UI Test + recolor 시연).
 - 색은 공유 `../assets/tokens.css`의 `var(--color-*)`로 들어간다(시트가 link). 별도 `--tokens` 주입은 폐지 — brand-kit lock이 만든 `assets/tokens.css`가 단일 토대다(부재 시 var() 폴백으로 degrade).
 - 호출:
