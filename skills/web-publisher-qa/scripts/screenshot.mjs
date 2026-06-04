@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+// web-publisher-qa: OS 설치 브라우저로 HTML을 breakpoint별 스크린샷한다.
+// npm 의존성 0 — Edge/Chrome/Chromium/Brave를 --headless=new --screenshot으로 호출.
+import { existsSync } from 'node:fs';
+
+// 플랫폼별 Chromium 계열 실행 파일 후보(우선순위 순).
+export function defaultBrowserCandidates(platform = process.platform, env = process.env) {
+  if (platform === 'win32') {
+    const pf = env['ProgramFiles'] || 'C:\\Program Files';
+    const pfx86 = env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
+    const local = env['LOCALAPPDATA'] || '';
+    const list = [
+      `${pfx86}\\Microsoft\\Edge\\Application\\msedge.exe`,
+      `${pf}\\Microsoft\\Edge\\Application\\msedge.exe`,
+      `${pf}\\Google\\Chrome\\Application\\chrome.exe`,
+      `${pfx86}\\Google\\Chrome\\Application\\chrome.exe`,
+      `${pf}\\BraveSoftware\\Brave-Browser\\Application\\brave.exe`,
+    ];
+    if (local) list.push(`${local}\\Google\\Chrome\\Application\\chrome.exe`);
+    return list;
+  }
+  if (platform === 'darwin') {
+    return [
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+      '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
+      '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    ];
+  }
+  return [
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/microsoft-edge',
+    '/usr/bin/brave-browser',
+  ];
+}
+
+export function resolveBrowser({ candidates, exists = existsSync } = {}) {
+  const list = candidates ?? defaultBrowserCandidates();
+  for (const p of list) {
+    if (exists(p)) return p;
+  }
+  return null;
+}
