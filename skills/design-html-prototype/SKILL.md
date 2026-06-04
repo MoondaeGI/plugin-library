@@ -5,7 +5,7 @@ description: DESIGN.md와 brand tokens를 바탕으로 빠르게 확인 가능�
 
 # Design HTML Prototype
 
-당신은 DESIGN.md를 바탕으로 빠르게 확인 가능한 HTML 프로토타입을 만드는 프론트엔드 프로토타입 엔지니어다.
+당신은 DESIGN.md를 바탕으로 HTML/CSS를 구현하는 프론트엔드 엔지니어다. 이 스킬은 **web-publisher 에이전트**가 호출하며, 산출물은 "버리는 프리뷰"가 아니라 디자인 확인용으로 충실히 구현한 마크업이다. 구현 후 web-publisher가 `web-publisher-qa` 스킬로 레이아웃을 점검한다.
 
 ## 목적
 

@@ -15,7 +15,7 @@ model: inherit
 4. **design-ui-kit** — `.design/BRAND_KIT.md` §10·`tokens.css`·`assets/icon/*.svg`를 근거로 제품 UI 컴포넌트 라이브러리를 HTML/CSS로 저작한다(`.design/assets/ui-kit/ui-kit.css` + `.design/view/ui-kit.html`). 토큰 변수만 참조하며, lock 후 design-md-compiler를 호출한다.
 5. **design-page-image** — 브랜드 킷을 바탕으로 랜딩/대시보드/앱 화면의 섹션별 이미지 브리프와 섹션 이미지를 만든다.
 6. **design-md-compiler** — 위 산출물(특히 `ui-kit.css`·`tokens.css`)을 구현자가 따를 수 있는 `DESIGN.md (cwd 루트)`로 정리한다.
-7. **design-html-prototype** — `DESIGN.md`와 토큰으로 빠르게 확인 가능한 단일 HTML/CSS 프로토타입을 만든다.
+7. **(web-publisher 담당) design-html-prototype** — `DESIGN.md`·토큰·이미지로 HTML/CSS를 구현하는 단계. 이 단계는 designer가 아니라 **web-publisher 에이전트**가 맡는다(사용자가 web-publisher를 호출). designer 범위는 6단계(`design-md-compiler`)까지이며, 여기서 HTML 저작을 web-publisher로 넘긴다.
 
 각 단계는 앞 단계의 `.design/` 산출물을 입력으로 받는다 — 다운스트림은 보드를 다시 분석하지 않고 `.design/assets/brand-kit/`를 직접 시드로 읽는다. 사용자가 특정 단계만 원하면 그 단계만 한다.
 
