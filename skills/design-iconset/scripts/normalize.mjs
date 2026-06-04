@@ -22,7 +22,12 @@ const STYLE_COLOR_RE = /\b(fill|stroke)\s*:\s*(#[0-9a-fA-F]{3,8}|rgb\([^)]*\)|(?
 export function normalizeSvg(svg) {
   let out = svg.trim()
 
-  // ① 재스케일: 정사각 viewBox W가 TARGET_SIZE가 아니면 scale 래핑
+  // ① 루트 <svg ...> 태그에서 width/height 속성 제거 (내부 요소는 보존)
+  out = out.replace(/(<svg\b[^>]*>)/, (tag) =>
+    tag.replace(/\s(width|height)=["'][^"']*["']/g, '')
+  )
+
+  // ② 재스케일: 정사각 viewBox W가 TARGET_SIZE가 아니면 scale 래핑
   const vb = out.match(VIEWBOX_RE)
   if (vb) {
     const parts = vb[1].split(/\s+/).map(Number)

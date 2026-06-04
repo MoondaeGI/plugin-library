@@ -46,3 +46,14 @@ test('style 안 fill:none은 보존', () => {
   assert.match(out, /fill:none/)
   assert.match(out, /stroke:currentColor/)
 })
+
+test('루트 svg의 width/height 제거(내부 요소는 보존)', () => {
+  const input = '<svg width="1em" height="1em" viewBox="0 0 24 24"><rect width="10" height="10" fill="#000"/></svg>'
+  const out = normalizeSvg(input)
+  // 루트엔 width/height 없음
+  assert.doesNotMatch(out, /<svg[^>]*\swidth=/)
+  assert.doesNotMatch(out, /<svg[^>]*\sheight=/)
+  // 내부 rect의 width/height는 보존
+  assert.match(out, /<rect[^>]*width="10"/)
+  assert.match(out, /currentColor/)
+})

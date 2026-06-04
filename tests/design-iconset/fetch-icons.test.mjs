@@ -14,6 +14,7 @@ test('각 아이콘을 정규화해 <name>.svg로 기록', async () => {
     deps: {
       fetchIconSvg: async () => '<svg viewBox="0 0 256 256"><path fill="#000" d="M1 1"/></svg>',
       normalizeSvg: (s) => s.replace('256 256', '24 24').replace('#000', 'currentColor'),
+      optimizeSvg: async (s) => s,
     },
   })
   assert.deepEqual(written, ['search.svg'])
