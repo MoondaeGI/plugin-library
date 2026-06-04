@@ -22,3 +22,15 @@ test('fetchSetInfo는 라이선스를 파싱', async () => {
   const info = await fetchSetInfo('ph', { fetchFn: okFetch(body) })
   assert.equal(info.license, 'MIT')
 })
+
+test('fetchSetInfo는 실제 API 형태(data.info)를 파싱', async () => {
+  const body = JSON.stringify({
+    prefix: 'ph',
+    title: 'Phosphor',
+    info: { name: 'Phosphor Icons', license: { title: 'MIT', spdx: 'MIT', url: 'https://example.com/LICENSE' } }
+  })
+  const info = await fetchSetInfo('ph', { fetchFn: okFetch(body) })
+  assert.equal(info.license, 'MIT')
+  assert.equal(info.name, 'Phosphor Icons')
+  assert.equal(info.licenseUrl, 'https://example.com/LICENSE')
+})
