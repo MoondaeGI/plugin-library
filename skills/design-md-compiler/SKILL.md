@@ -136,5 +136,5 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
 3. 사람이 DESIGN.md를 검토한다.
 4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다 — **여기까지가 designer 핵심 파이프라인**이다:
    - 핵심 다음 단계: **`design-component-export`** (front-developer 몫 · **미구현** placeholder)로 대상 프로젝트에 컴포넌트를 export.
-   - 페이지 디자인이 필요하면 **`design-page-image`** (designer · **미구현 · 추후 재작성**) — `DESIGN.md`를 시드로 하는 선택 단계.
+   - 페이지 디자인이 필요하면 웹은 **`design-image-web`**, 앱은 **`design-image-mobile`** — `DESIGN.md`를 시드로 하는 선택 단계. 페이지 이미지는 `assets/page/<slug>-<platform>-<section>.png`(평면)로 저장되며, md-compiler는 파일명을 파싱하지 않고 `candidate/page/page-briefs.md` 산문에서 의미(섹션·순서·캡션)를 읽는다.
    - 풀페이지 HTML 프로토타입은 **web-publisher**가 `design-html-prototype`으로 빌드+QA한다.

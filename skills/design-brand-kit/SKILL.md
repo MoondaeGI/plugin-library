@@ -1,6 +1,6 @@
 ---
 name: design-brand-kit
-description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타이포그래피·로고 방향·UI 분위기·금지 패턴을 정리한 브랜드 킷을 만들고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 HTML 오버뷰(overview.html)를 협업하며 만든다. 데이터 섹션은 토큰에서 HTML 렌더(진짜 HEX·실폰트). 오버뷰 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. 다운스트림(design-logo·iconset·page-image)은 보드 재추출 없이 assets/brand-kit/를 직접 시드로 읽는다.
+description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타이포그래피·로고 방향·UI 분위기·금지 패턴을 정리한 브랜드 킷을 만들고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 HTML 오버뷰(overview.html)를 협업하며 만든다. 데이터 섹션은 토큰에서 HTML 렌더(진짜 HEX·실폰트). 오버뷰 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. 다운스트림(design-logo·iconset·image-web/mobile)은 보드 재추출 없이 assets/brand-kit/를 직접 시드로 읽는다.
 ---
 
 # Design Brand Kit
@@ -350,4 +350,4 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 8. **lock (승인)** — 산출물이 이미 캐노니컬 홈에 있다(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`). 별도 복사가 없으므로 lock은 "확정 승인"이다.
    - **로고 캐노니컬 미러(non-clobber)**: `candidate/logo/logo-briefs.md`가 **없으면** `assets/logo/logo.png`가 최신 `logo-base.png`의 복사본이 되도록 보장한다(없으면 복사). **있으면** design-logo 확정 로고이므로 건드리지 않는다. 이로써 brand-kit 재실행이 확정 로고를 날리지 않는다.
    - **tokens.css 생성(필수)**: lock 시 `node "<이 스킬 디렉터리>/scripts/tokens-to-css.mjs" <cwd>/.design/brand-tokens.json <cwd>/.design/assets/tokens.css`를 실행해 `assets/tokens.css`를 만든다(브랜드 토큰이 바뀌면 재실행). 이 파일은 **생성물 — 직접 수정 금지**이며, 토큰을 고치려면 `brand-tokens.json`을 수정하고 재생성한다. overview.html이 `var(--token)`을 쓰므로 생성 후 새로고침하면 실값이 반영된다. (명령 실행이므로 사용자 확인 후 실행.)
-   - 탐색물(`candidate/brand-kit/brief.md`·`directions.json`·`brand-briefs.md`)은 그대로 보존. 확정되면 산출 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-ui-kit` → `design-md-compiler`"** (각자 `assets/brand-kit/`를 시드로, `assets/tokens.css`를 공유 토대로 읽음. `design-md-compiler`까지가 designer 핵심 파이프라인이며, 페이지 이미지는 핵심 이후 선택 단계 `design-page-image` — 현재 미구현·재작성 예정). 라이브 프리뷰 서버가 떠 있으면 종료한다.
+   - 탐색물(`candidate/brand-kit/brief.md`·`directions.json`·`brand-briefs.md`)은 그대로 보존. 확정되면 산출 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-ui-kit` → `design-md-compiler`"** (각자 `assets/brand-kit/`를 시드로, `assets/tokens.css`를 공유 토대로 읽음. `design-md-compiler`까지가 designer 핵심 파이프라인이며, 페이지 이미지는 핵심 이후 선택 단계 `design-image-web`·`design-image-mobile`). 라이브 프리뷰 서버가 떠 있으면 종료한다.

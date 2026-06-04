@@ -1,6 +1,6 @@
 ---
 name: image-gen
-description: 구성된 텍스트 프롬프트를 래스터 이미지 파일로 만들 때 사용한다 — OpenAI Images API를 직접 호출하는 Codex 비의존 공유 생성기. design-brand-kit·design-page-image 등 이미지 생성이 필요한 스킬이 공통으로 호출한다. OPENAI_API_KEY 필요.
+description: 구성된 텍스트 프롬프트를 래스터 이미지 파일로 만들 때 사용한다 — OpenAI Images API를 직접 호출하는 Codex 비의존 공유 생성기. design-brand-kit·design-image-web·design-image-mobile 등 이미지 생성이 필요한 스킬이 공통으로 호출한다. OPENAI_API_KEY 필요.
 ---
 
 # image-gen

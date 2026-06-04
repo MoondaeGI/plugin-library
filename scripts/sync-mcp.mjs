@@ -15,7 +15,7 @@ const PLUGIN_ROOT = path.resolve(__dirname, '..');
 const EXTRA_ENV = [
   {
     key: 'OPENAI_API_KEY',
-    comment: 'image-gen: OpenAI Images API 호출용 (design-brand-kit·design-page-image 공유)',
+    comment: 'image-gen: OpenAI Images API 호출용 (design-brand-kit·design-image-web·design-image-mobile 공유)',
   },
 ];
 

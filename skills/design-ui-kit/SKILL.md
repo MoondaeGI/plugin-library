@@ -11,7 +11,7 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
 
 `design-brand-kit`(과 보통 `design-logo`·`design-iconset`)이 확정된 뒤 사용한다. brand kit의 §10은 비주얼·UI 방향을, §7·§8은 색·타이포를 결정으로 박아둔 상태다. 여기서 그 결정을 따라 **제품에서 실제로 쓸 버튼·입력·카드·배지·네비·테이블·알림 등 컴포넌트를 토큰 기반 CSS class로 직접 저작**하고, 개발자 핸드오프용 **쇼케이스(view/ui-kit.html)**로 한눈에 보여준다. 품질 기준은 "예쁜 목업 이미지"가 아니라 **그대로 복사해 쓰는 진짜 코드**다 — 하드코딩 값 0, 토큰 변수만 참조한다.
 
-**이미지가 아니다:** 컴포넌트는 PNG로 만들지 않는다. `design-page-image`는 마케팅/페이지 레이아웃 이미지를, 이 스킬은 재사용 CSS 컴포넌트를 만든다. 둘은 보완 관계다.
+**이미지가 아니다:** 컴포넌트는 PNG로 만들지 않는다. `design-image-web`은 마케팅/페이지 레이아웃 이미지를, 이 스킬은 재사용 CSS 컴포넌트를 만든다. 둘은 보완 관계다.
 
 ## 전제
 
@@ -74,10 +74,10 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 | **1 Foundations** | 색 스와치·타이포 스케일·radius·shadow·spacing 시연 | — | 토큰 정의 자체(tokens.css 소관) |
 | **2 Core Interactive** | button(variant×state)·input·textarea·select·checkbox·radio·toggle·badge/chip | slider·stepper·search field | 폼 검증 로직 |
 | **3 Informational** | card·alert/banner·toast·tooltip·empty state·tag | stat tile·avatar | 차트(데이터 시각화) |
-| **4 Structural** | navbar/topbar·tabs·breadcrumb·table·pagination·list | sidebar·dashboard 패널(예시 1개, 차트 제외) | 마케팅 히어로/CTA 섹션 → design-page-image |
+| **4 Structural** | navbar/topbar·tabs·breadcrumb·table·pagination·list | sidebar·dashboard 패널(예시 1개, 차트 제외) | 마케팅 히어로/CTA 섹션 → design-image-web |
 
 - table·nav·card·empty·toast는 **기본 포함**(IN). dashboard 패널은 레이아웃 예시 1개만(내부 차트는 제외).
-- 마케팅 히어로·풀 페이지 레이아웃은 만들지 않는다 → `design-page-image` 몫.
+- 마케팅 히어로·풀 페이지 레이아웃은 만들지 않는다 → `design-image-web` 몫.
 
 ## 흐름 (디자이너 협업 루프)
 
@@ -117,5 +117,5 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 - **대비**: 텍스트/배경 대비 확보(§10 분위기 안에서). key-visual 헤더 밴드는 제목 쪽 불투명 surface로 가독 보호.
 - **반응형**: 컴포넌트는 컨테이너 폭에 깨지지 않게(매트릭스 grid는 좁아지면 1열).
 - **§10 "피해야 할 시각 요소" 금지**를 그대로 지킨다.
-- 컴포넌트를 이미지로 만들지 않는다(마케팅 페이지 → design-page-image). DESIGN.md를 직접 쓰지 않는다(→ design-md-compiler).
+- 컴포넌트를 이미지로 만들지 않는다(마케팅 페이지 → design-image-web). DESIGN.md를 직접 쓰지 않는다(→ design-md-compiler).
 - 권위 원본은 md/tokens/icon — 계약과 어긋나면 그쪽이 정답.
