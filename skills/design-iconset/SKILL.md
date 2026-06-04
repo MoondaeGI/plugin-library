@@ -78,7 +78,7 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
 6. **시트 렌더**: `build-iconset-sheet.mjs`로 `.design/view/iconset-sheet.html` 생성 → `serve-design.mjs` 라이브 프리뷰로 검수.
 7. **편집 루프**: 번호/이름 지목 → **해당 `.svg`만 외과 편집**(`references/iconset-sheet.md §4`) → 자동 새로고침. 목록 변경이면 파일 추가/삭제 후 재렌더.
 8. **일관성 검사**: 구조 린트(viewBox·스타일 앵커 균일) + 시각 자가 검수(One-Color/Small UI/cross-icon, `icon-rules.md §5`).
-9. **lock (승격 + overview 주입)**: 확정 `*.svg`를 `.design/assets/icon/`로 순수 복사. `iconset-briefs.md`는 작업 참조용이라 복사하지 않는다(`candidate/icon/`에만 두고 git 추적). 이어 `view/overview.html`의 `<!-- design-iconset:slot -->…<!-- /design-iconset:slot -->` 사이를 `assets/icon/*.svg`를 인라인한 그리드(`<div>`에 각 SVG를 currentColor로, 토큰색 배경)로 **외과 치환**한다(멱등 — 재실행 안전; 마커 없으면 §11 끝에 삽입). 라이브 서버가 떠 있으면 자동 새로고침. 다운스트림(`design-page-image`·`design-md-compiler`)은 `.design/assets/icon/`를 읽는다. 산출 경로 제시 후 안내: **"다음 단계: `design-page-image` 또는 `design-md-compiler`"**. 라이브 프리뷰 서버가 떠 있으면 종료.
+9. **lock (승격 + overview 주입)**: 확정 `*.svg`를 `.design/assets/icon/`로 순수 복사. `iconset-briefs.md`는 작업 참조용이라 복사하지 않는다(`candidate/icon/`에만 두고 git 추적). 이어 `view/overview.html`의 `<!-- design-iconset:slot -->…<!-- /design-iconset:slot -->` 사이를 `assets/icon/*.svg`를 인라인한 그리드(`<div>`에 각 SVG를 currentColor로, 토큰색 배경)로 **외과 치환**한다(멱등 — 재실행 안전; 마커 없으면 §11 끝에 삽입). 라이브 서버가 떠 있으면 자동 새로고침. 다운스트림(`design-ui-kit`·`design-md-compiler`)은 `.design/assets/icon/`를 읽는다. 산출 경로 제시 후 안내: **"다음 단계: `design-ui-kit`"**. 라이브 프리뷰 서버가 떠 있으면 종료.
 
 ## 품질 기준 / 금지 사항
 

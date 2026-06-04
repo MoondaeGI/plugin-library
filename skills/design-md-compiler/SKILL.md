@@ -134,4 +134,7 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
    - `page-briefs.md`/page 이미지 없음 → §6은 가능한 범위만, 누락은 §12.
 2. 존재하는 입력을 읽고 `DESIGN.md`(cwd 루트)를 작성한다 — frontmatter는 tokens.css에서 재컴파일(D1·D6), 본문은 §1–12.
 3. 사람이 DESIGN.md를 검토한다.
-4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다: **"다음 단계: `design-html-prototype`"**.
+4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다 — **여기까지가 designer 핵심 파이프라인**이다:
+   - 핵심 다음 단계: **`design-component-export`** (front-developer 몫 · **미구현** placeholder)로 대상 프로젝트에 컴포넌트를 export.
+   - 페이지 디자인이 필요하면 **`design-page-image`** (designer · **미구현 · 추후 재작성**) — `DESIGN.md`를 시드로 하는 선택 단계.
+   - 풀페이지 HTML 프로토타입은 **web-publisher**가 `design-html-prototype`으로 빌드+QA한다.

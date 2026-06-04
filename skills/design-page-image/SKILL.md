@@ -1,126 +1,19 @@
 ---
 name: design-page-image
-description: 브랜드 킷을 바탕으로 랜딩 페이지·대시보드·앱 화면의 섹션별 디자인 이미지 브리프를 만들 때 사용한다.
+description: （placeholder · 미구현 — 아직 호출하지 말 것）DESIGN.md를 시드로 랜딩/대시보드/앱 화면의 섹션별 디자인 이미지를 만드는 designer 소유의 선택 다운스트림 단계. 전면 재작성 예정 — 범위·입력·산출물은 별도 논의에서 확정한다.
 ---
 
-# Design Page Image
+# Design Page Image (재작성 중 — 미구현)
 
-당신은 페이지 디자인 이미지 레퍼런스를 기획하는 프론트엔드 아트 디렉터다.
+> **상태: placeholder.** 기존 구현(브랜드 킷 기반 섹션별 이미지 브리프 + `image-gen` 생성)은 전면 재작성을 위해 보류됐다. 호출하지 말 것 — 기존 내용은 git 히스토리에 남아 있다(복구·참조 가능).
 
-## 목적
+## 의도 (재작성 전 메모)
 
-하나의 긴 전체 페이지 이미지를 만들지 않는다. 각 섹션별로 별도의 이미지 브리프를 작성하여, 나중에 구현 모델이 레이아웃과 컴포넌트를 정확히 해석할 수 있게 한다.
+디자인 핵심 파이프라인(`…ui-kit → md-compiler`)에서 **유리된 선택 다운스트림 단계**. 소유: **designer** 에이전트. 핵심 파이프라인의 일부가 아니라, `DESIGN.md`가 확정된 *뒤* 필요할 때만 실행한다.
 
-## 입력 파일 (대상 프로젝트 cwd 기준)
+- 입력(예정): `DESIGN.md`(단일 시드 계약) + `.design/assets/`(브랜드·로고·아이콘 등 시각 앵커). 기존처럼 `BRAND_KIT.md`·`ui-base.png` 등을 여러 갈래로 직접 읽는 대신 **DESIGN.md 중심**으로 재설계한다 — 외부 도구도 DESIGN.md 하나로 받아 쓰게.
+- 산출(예정): 랜딩/대시보드/앱 화면의 섹션별 디자인 이미지.
+- 위치: md-compiler 뒤 *선택*. designer가 핵심 파이프라인을 마친 후 "page-image 만들까요?"로 제안·실행.
+- 검토 중: Stitch 등 외부 MCP를 이미지/UI 생성 백엔드로 쓰는 옵션.
 
-- `.design/BRAND_KIT.md`
-- `.design/brand-tokens.json`
-- `.design/assets/brand-kit/ui-base.png` — UI 컴포넌트 룩 시드(있으면 섹션 목업 생성 시 `--image`로 첨부).
-- `.design/assets/brand-kit/key-visual.png` — 히어로/배경 자산(있으면 §1 등에서 활용·참조).
-- (있으면) `.design/view/overview.html` — 오버뷰 룩 참조.
-
-## 출력 파일
-
-- `.design/candidate/page/page-briefs.md` (섹션당 브리프 1개)
-- `.design/candidate/page/` — 섹션 이미지 PNG가 채워지는 폴더 (Codex 생성 또는 수동 드롭; 아래 흐름 2단계 참고)
-
-## 핵심 규칙
-
-- 섹션당 이미지 브리프 하나를 만든다.
-- 전체 페이지를 하나의 긴 이미지로 합치지 않는다.
-- 좌측 텍스트 / 우측 이미지 레이아웃을 반복하지 않는다.
-- Hero 제목은 넓고 짧게(2~3줄) 유지한다.
-- 의미 없는 glow·blob·가짜 대시보드 카드 남발을 피한다.
-- 섹션마다 역할이 있어야 하고, 브랜드 일관성은 유지하되 구성은 달라야 한다.
-
-## 기본 랜딩 페이지 섹션
-
-요청이 없으면 다음 6개 섹션을 기본값으로 사용한다.
-
-1. Navigation + Hero
-2. Problem / Pain
-3. Product Mechanism
-4. Feature / Channel Grid
-5. Dashboard / Evidence
-6. CTA / Footer
-
-## page-briefs.md 구조
-
-```md
-# Page Image Briefs
-
-## 공통 디자인 방향
-- 브랜드:
-- 색상:
-- 타이포그래피:
-- 전체 리듬:
-- 공통 컴포넌트:
-- 금지 패턴:
-
-## Section 1 — Navigation + Hero
-### 섹션 목적
-### 레이아웃 구성
-### 시각 계층
-### 컴포넌트 사용
-### 이미지 / 일러스트 사용
-### 이미지 생성 Prompt
-### Negative Prompt
-### 구현 메모
-
-## Section 2 — Problem / Pain
-## Section 3 — Product Mechanism
-## Section 4 — Feature / Channel Grid
-## Section 5 — Dashboard / Evidence
-## Section 6 — CTA / Footer
-
-> Section 2~6도 각각 위 Section 1과 동일한 8개 하위 항목(섹션 목적 / 레이아웃 구성 / 시각 계층 / 컴포넌트 사용 / 이미지 / 일러스트 사용 / 이미지 생성 Prompt / Negative Prompt / 구현 메모)을 가진다.
-```
-
-## Taste-adapted 규칙
-
-- 일반적인 AI SaaS 느낌을 피한다.
-- 보라/파랑 glow와 의미 없는 blob을 남발하지 않는다.
-- Hero는 2~3줄 안에 들어오도록 넓은 폭과 적절한 글자 크기를 쓴다.
-- 주요 섹션 간 여백을 충분히 둔다.
-- cheap meta label을 피한다 (예: SECTION 01, QUESTION 05, ABOUT US).
-- CTA 버튼은 배경과 충분한 대비를 가져야 한다.
-- Bento grid를 쓸 경우 빈 공간이 생기지 않게 설계한다.
-- 카드는 많이 만들기보다 3~5개의 의도적인 카드로 구성한다.
-- 이미지 레퍼런스는 코드 구현이 가능할 정도로 명확해야 한다.
-- 이미지에 보이는 텍스트(Hero 카피·라벨·버튼·UI 문구 등)는 한국어로 렌더한다 (영어권 제품이면 한/영 병기 가능; 한글 글리프 렌더 한계를 감안해 짧고 또렷하게).
-
-## 금지 사항
-
-- 모든 섹션을 같은 레이아웃으로 만들지 않는다.
-- 텍스트가 너무 작거나 읽기 어려운 디자인을 만들지 않는다.
-- UI를 이미지로만 구현해야 하는 구조로 만들지 않는다.
-
-## 이미지 생성 (공유 `image-gen` 스킬)
-
-이미지는 공유 **`image-gen`** 스킬의 스크립트로 생성한다 — Codex 내장 `image_gen` 도구를 쓰지 않으므로 Claude·Codex 어디서든 동작하고, 출력 위치를 직접 지정한다. **`OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 그때만 사람이 직접 드롭한다. 스크립트 옵션·전제는 `image-gen` 스킬 참조.
-
-스크립트 경로(형제 스킬): `<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs`.
-
-- **섹션당 1회 호출.** 한 번에 한 섹션만 만든다 (여러 장은 `--n`이 아니라 개별 호출).
-- 프롬프트는 섹션의 "이미지 생성 Prompt"(Negative는 프롬프트 안 `Avoid:` 줄로)에 `Use case: ui-mockup`·색/스타일(`brand-tokens.json` + 공통 디자인 방향)을 더해 구성하고, **임시 파일에 써서 `--prompt-file`로 넘긴다**. 보이는 텍스트는 한국어로 렌더.
-- **brand-kit 자산 활용**: UI 목업 섹션은 `../assets/brand-kit/ui-base.png`를, 히어로/배경은 `../assets/brand-kit/key-visual.png`를 `--image`로 첨부해 룩 일관성을 잡는다(있을 때). 투명 로고/아이콘을 섹션에 얹을 땐 `assets/brand-kit/`의 투명 PNG를 활용.
-- 호출 예:
-  ```bash
-  node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
-    --prompt-file <임시 프롬프트 파일> \
-    --out "<cwd>/.design/candidate/page/section-1-hero.png" \
-    --auto-version --quality high
-  ```
-- **저장 경로**: 시안은 `<cwd>/.design/candidate/page/`에 누적한다 — `--auto-version`을 항상 붙여 재생성 때 `-v2`,`-v3`…로 증분하고 기존 시안을 덮지 않는다. 파일명 `section-1-hero.png` 식.
-- **확정본 분리**: 섹션을 lock하면 그 시안을 `<cwd>/.design/assets/page/`로 복사하고(버전 접미를 뗀 의미 이름, 예: `section-1-hero-v3.png` → `assets/page/section-1-hero.png`), 시안은 지우지 않는다. 다운스트림(`design-md-compiler`·`design-html-prototype`)은 `.design/assets/`를 읽는다.
-
-## 흐름 (디자이너 협업 루프)
-
-1. `.design/candidate/page/page-briefs.md` 작성 (섹션 계획; 섹션당 브리프 1개).
-2. **섹션을 하나씩** 진행한다. 각 섹션마다:
-   - 이미지 1장 생성(`image-gen` 스크립트; 키 없으면 사람이 드롭) → 보여주고 피드백을 청한다 (예: "이 섹션 어때요? 뭘 바꿀까요?").
-   - 피드백을 받아 **한 번에 한 가지만** 고쳐 재생성한다. 만족(lock)할 때까지 반복.
-   - 확정(lock)되면 그 시안을 `.design/assets/page/`로 복사(버전 접미 뗀 이름)하고 다음 섹션으로. 시안은 `.design/candidate/page/`에 그대로 둔다.
-3. 필요한 섹션이 다 확정되면 산출물 경로를 제시하고 안내한다: **"다음 단계: `design-md-compiler`"**.
-
-전체 섹션을 한꺼번에 생성하지 않는다 — 한 섹션 만들고, 고치고, 다음으로.
+재설계가 시작되면 이 파일을 정식 SKILL.md로 대체한다.

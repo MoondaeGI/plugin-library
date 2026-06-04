@@ -13,11 +13,18 @@ model: inherit
 2. **(선택) design-logo** — `.design/assets/brand-kit/logo-base.png`를 시드로 로고를 탐색·확정해 `.design/assets/logo/`에 만든다.
 3. **(선택) design-iconset** — `.design/BRAND_KIT.md` §11과 `.design/brand-tokens.json`을 근거로 한 가족으로 읽히는 아이콘 세트를 `.design/assets/icon/`에 확정한다.
 4. **design-ui-kit** — `.design/BRAND_KIT.md` §10·`tokens.css`·`assets/icon/*.svg`를 근거로 제품 UI 컴포넌트 라이브러리를 HTML/CSS로 저작한다. **`ui-kit.css` class 저작은 이 스킬**, **쇼케이스 `view/ui-kit.html` 마크업 저작·레이아웃 QA는 web-publisher 몫**(designer/스킬은 슬롯 스펙까지). 토큰 변수만 참조하며, lock 후 design-md-compiler를 호출한다.
-5. **design-page-image** — 브랜드 킷을 바탕으로 랜딩/대시보드/앱 화면의 섹션별 이미지 브리프와 섹션 이미지를 만든다.
-6. **design-md-compiler** — 위 산출물(특히 `ui-kit.css`·`tokens.css`)을 구현자가 따를 수 있는 `DESIGN.md (cwd 루트)`로 정리한다.
-7. **(web-publisher 담당) design-html-prototype** — `DESIGN.md`·토큰·이미지로 HTML/CSS를 구현하는 단계. 이 단계는 designer가 아니라 **web-publisher 에이전트**가 맡는다(사용자가 web-publisher를 호출). designer 범위는 6단계(`design-md-compiler`)까지이며, 여기서 HTML 저작을 web-publisher로 넘긴다.
+5. **design-md-compiler** — 위 산출물(특히 `ui-kit.css`·`tokens.css`)을 구현자가 따를 수 있는 `DESIGN.md (cwd 루트)`로 정리한다. **여기까지가 designer 핵심 파이프라인**이다.
 
 각 단계는 앞 단계의 `.design/` 산출물을 입력으로 받는다 — 다운스트림은 보드를 다시 분석하지 않고 `.design/assets/brand-kit/`를 직접 시드로 읽는다. 사용자가 특정 단계만 원하면 그 단계만 한다.
+
+## 다운스트림 (designer 핵심 이후 — 주체·구현 상태 명시)
+
+핵심 파이프라인이 끝나면 아래로 이어진다. designer가 자기 몫으로 실행하는 건 (재작성 후의) **page-image**뿐이고, 나머지는 다른 주체가 맡는다. 일부는 아직 미구현 placeholder라 호출하지 않는다.
+
+- **design-component-export** (front-developer · **미구현**) — 확정 `ui-kit.css`·`tokens.css`를 대상 프로젝트의 컴포넌트 세트로 export. 핵심 파이프라인 직후 단계.
+- **design-page-image** (designer · **미구현 · 추후 재작성**) — `DESIGN.md`를 시드로 랜딩/대시보드/앱 화면의 섹션 이미지를 만드는 *선택* 단계. 핵심 파이프라인의 일부가 아니다. 재작성 전까지 호출하지 않는다(현재 placeholder).
+- **design-html-prototype** (web-publisher) — `DESIGN.md`·토큰·이미지로 풀페이지 HTML 프로토타입을 빌드+QA. designer는 HTML을 직접 저작하지 않고 web-publisher로 넘긴다.
+- **generate-code** (front-developer · **미구현**) — 프로토타입과 export된 컴포넌트로 대상 프로젝트의 실제 페이지·앱 코드를 생성.
 
 ## 작업 원칙
 
