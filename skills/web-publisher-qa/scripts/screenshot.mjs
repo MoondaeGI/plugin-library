@@ -15,8 +15,12 @@ export function defaultBrowserCandidates(platform = process.platform, env = proc
       `${pf}\\Google\\Chrome\\Application\\chrome.exe`,
       `${pfx86}\\Google\\Chrome\\Application\\chrome.exe`,
       `${pf}\\BraveSoftware\\Brave-Browser\\Application\\brave.exe`,
+      `${pfx86}\\BraveSoftware\\Brave-Browser\\Application\\brave.exe`,
     ];
-    if (local) list.push(`${local}\\Google\\Chrome\\Application\\chrome.exe`);
+    if (local) {
+      list.push(`${local}\\Google\\Chrome\\Application\\chrome.exe`);
+      list.push(`${local}\\BraveSoftware\\Brave-Browser\\Application\\brave.exe`);
+    }
     return list;
   }
   if (platform === 'darwin') {
@@ -32,6 +36,7 @@ export function defaultBrowserCandidates(platform = process.platform, env = proc
     '/usr/bin/google-chrome-stable',
     '/usr/bin/chromium',
     '/usr/bin/chromium-browser',
+    '/snap/bin/chromium',
     '/usr/bin/microsoft-edge',
     '/usr/bin/brave-browser',
   ];
