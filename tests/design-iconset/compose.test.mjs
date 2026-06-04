@@ -33,3 +33,16 @@ test('M3-depth: 뒤 글리프 opacity 0.2, 앞 글리프 풀', () => {
   assert.match(out, /id="base"/)  // 뒤
   assert.match(out, /id="over"/)  // 앞
 })
+
+test('M4-stack: base를 오프셋 복제(뒤+앞)', () => {
+  const out = compose({ mode: 'M4-stack', baseSvg: BASE })
+  assert.equal((out.match(/id="base"/g) || []).length, 2) // 두 번 등장
+  assert.match(out, /translate\(3,-3\)/)
+})
+
+test('M5-reticle: 모서리 마크 4 + base 중앙 62%', () => {
+  const out = compose({ mode: 'M5-reticle', baseSvg: BASE })
+  assert.equal((out.match(/<path d="M3 8V4/g) || []).length, 1) // reticle 좌상 마크
+  assert.match(out, /translate\(4\.56,4\.56\) scale\(0\.62\)/)
+  assert.match(out, /id="base"/)
+})
