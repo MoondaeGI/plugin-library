@@ -96,8 +96,8 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    ```
    컨트롤은 `.is-checked`·`.is-on` 등.
 5. **ui-kit.html 저작**: `templates/ui-kit-sheet.html`을 `view/ui-kit.html`로 복사 → slot을 채운다.
-   - `slot:font-links`: brand-tokens.json typography에 맞춘 실폰트 CDN `<link>`(`../references/design/font-catalog.md` 기준).
-   - `slot:masthead`: 워드마크/제목. **key-visual은 `.board-head`에 `style="--kv:url('../assets/brand-kit/key-visual.png')"`로 은은히 주입**(헤더 밴드 한정).
+   - `slot:font-links`: brand-tokens.json typography(display/heading/body/mono) **+ `wordmark.font`(있으면)**의 실폰트 CDN `<link>`를 모두 주입(`../references/design/font-catalog.md` 기준 — 전용 로고타입 폰트 누락 시 시스템 폴백으로 깨짐).
+   - `slot:masthead`: 워드마크 = 폰트 모드면 `<span class="wordmark">브랜드명</span>`(`.wordmark`는 tokens.css 정의 — 레터링 재구현 금지), 이미지 모드면 `<img src="../assets/brand-kit/wordmark-base.png">`. **key-visual `--kv` 주입은 현행 유지** — `.board-head`에 `style="--kv:url('../assets/brand-kit/key-visual.png')"`로 은은히 주입(헤더 밴드 한정).
    - `slot:foundations|core|informational|structural`: 각 그룹 specimen. **매트릭스(행=상태×열=변형)**로 변형·상태를 한눈에. 번호/라벨로 검수 가능하게.
    - 아이콘은 `assets/icon/*.svg`를 **인라인**(currentColor).
    - **key-visual은 헤더 밴드에만**(패널 뒤 금지 — 토큰 충실도·대비 보호).

@@ -23,7 +23,7 @@
   .board-head::after { content:""; position:absolute; inset:0;
     background:linear-gradient(90deg,var(--color-surface) 28%,transparent 78%); }
   .board-head > * { position:relative; z-index:1; }
-  .board-head .wm { font:700 22px var(--font-display); color:var(--color-primary); }
+  .board-head .wordmark { font-size:22px; }
   .board-head .sub { font:400 13px var(--font-body); color:var(--color-text-muted); }
   .panel { background:var(--color-surface); border:1px solid var(--color-border);
     border-radius:var(--radius-lg); padding:22px 24px; box-shadow:var(--shadow-sm); margin-bottom:18px; }
@@ -46,7 +46,7 @@
 </head>
 <body>
 <div class="board">
-  <div class="board-head"><!-- slot:masthead key-visual은 style="--kv:url('../assets/brand-kit/key-visual.png')" 로 .board-head에 주입 --></div>
+  <div class="board-head"><!-- slot:masthead 워드마크: 폰트 모드=<span class="wordmark">브랜드명</span>, 이미지 모드=<img src="../assets/brand-kit/wordmark-base.png">. key-visual은 style="--kv:url('../assets/brand-kit/key-visual.png')" 로 .board-head에 주입 --></div>
   <div class="panel"><h2>1 · Foundations</h2><!-- slot:foundations --></div>
   <div class="panel"><h2>2 · Core Interactive Components</h2><!-- slot:core --></div>
   <div class="panel"><h2>3 · Informational Components</h2><!-- slot:informational --></div>
