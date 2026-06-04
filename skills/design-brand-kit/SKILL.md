@@ -119,6 +119,9 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 ## 6. 로고 방향 (Logo Direction)
 - 워드마크 방향:
+  - 모드: (폰트 | 이미지 — **기본 바이어스 폰트**). **도메인 역게이트**: 로고 방향이 콤비네이션 마크·엠블럼·커스텀 레터마크이거나, `references/brand-kit-image.md`가 해당 도메인(럭셔리·뷰티·패션·컬처럴·실험)에 커스텀/세리프 워드마크를 처방하면 **이미지 모드 권장**. 폰트 바이어스는 "조판형 워드마크" 한정 — 정체성이 커스텀 레터링인 브랜드를 폰트로 평준화하지 않는다.
+  - (폰트 모드) 텍스트(브랜드명) · 폰트(display 재사용 | 카탈로그 Logotype 서브셋의 전용 폰트). case/tracking/weight/color는 brand-tokens.json `wordmark` 블록이 권위(여기 산문 중복 금지).
+  - (이미지 모드) `wordmark-base.png`가 production 워드마크(재저작 없음). 단, 단순 타입 조판이면 폰트 모드 재분류 검토(특히 한글 — 글리프 뭉갬).
 - 심볼/모노그램 방향:
 - 앱 아이콘 방향:
 - 구성·의미(Construction & Meaning):
@@ -195,11 +198,14 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
   "typography": { "display": "", "heading": "", "body": "", "mono": "", "accent": "" },
   "radius": { "sm": "6px", "md": "10px", "lg": "16px", "xl": "24px" },
   "shadow": { "sm": "", "md": "", "lg": "" },
-  "spacing": { "sectionY": "", "containerX": "", "cardPadding": "" }
+  "spacing": { "sectionY": "", "containerX": "", "cardPadding": "" },
+  "wordmark": { "font": "", "tracking": "", "weight": "700", "case": "none", "color": "primary" }
 }
 ```
 
-> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다.
+> **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`mono`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다. 워드마크가 폰트 모드이고 전용 로고타입 폰트를 쓰면 `font-catalog.md`의 **Logotype 서브셋**에서 고른다(없으면 display 재사용).
+
+> `wordmark`(선택)는 **폰트 모드 워드마크**의 스타일이다. `font`는 비우면 `display` 재사용, 채우면 `font-catalog.md`의 **Logotype 서브셋**에서 고른 전용 폰트(폴백 스택 포함). `tracking`/`weight`/`case`(none|uppercase|lowercase)/`color`(color 토큰 키)는 `tokens.css`의 `.wordmark` 클래스로 emit된다 — 이게 워드마크 레터링의 단일 권위이며 §6 산문에 중복하지 않는다. 이미지 모드면 이 블록은 무시된다.
 
 ## brand-briefs.md 구조
 
@@ -252,7 +258,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 - **자산별 개별 호출** (한 프롬프트의 변형이 아님 — `--n` 금지).
 - **투명 라우팅 (중요)**: 컷아웃 자산은 투명 PNG가 필요하다.
-  - `logo-base.png`·`wordmark-base.png`·`icon/<name>.png` → `--model gpt-image-1.5 --background transparent --output-format png --autocrop`.
+  - `logo-base.png`·`wordmark-base.png`·`icon/<name>.png` → `--model gpt-image-1.5 --background transparent --output-format png --autocrop`. **워드마크가 폰트 모드면 `wordmark-base.png`를 생성하지 않는다**(텍스트로 렌더). 이미지 모드일 때만 생성.
   - `key-visual.png`·`ui-base.png` → `--model gpt-image-2`(불투명). (gpt-image-2는 `transparent` 미지원.)
   - **컷아웃은 생성 직후 여백이 잘리도록 --autocrop 을 붙인다(없으면 마크가 콩알만 해짐).**
 - **자산 간 일관성**: 먼저 **스타일 앵커**(또는 `key-visual`)를 만들고, 이후 각 자산을 그 앵커를 `--image`로 첨부 + 공통 스타일 프리앰블(BRAND_KIT/tokens)로 생성해 한 가족이 되게 한다. 아이콘은 가족 앵커(또는 첫 아이콘)를 `--image`로 시드.
@@ -285,7 +291,12 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 ### overview.html 저작 (이미지 아님)
 
-`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 `view/overview.html`에 제자리 저작**한다: 자산은 `<img src="../assets/brand-kit/...">`(상대경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`, §1 워드마크는 `../assets/brand-kit/wordmark-base.png`를 `<img>`로. 콘텐츠를 지어내지 않는다(변주는 레이아웃만). 저작 전 `candidate/brand-kit/brief.md`의 레이아웃 메모에서 **고른 아키타입**을 확인하고 해당 `references/archetypes/<name>.md`를 따른다.
+`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 `view/overview.html`에 제자리 저작**한다: 자산은 `<img src="../assets/brand-kit/...">`(상대경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`. 콘텐츠를 지어내지 않는다(변주는 레이아웃만). 저작 전 `candidate/brand-kit/brief.md`의 레이아웃 메모에서 **고른 아키타입**을 확인하고 해당 `references/archetypes/<name>.md`를 따른다.
+
+**§1 워드마크는 모드에 따라 분기한다:**
+- 이미지 모드: §1 워드마크 = `<img src="../assets/brand-kit/wordmark-base.png">`(현행).
+- 폰트 모드: §1 워드마크 = `<span class="wordmark">브랜드명</span>`. `wordmark-base.png`는 없음. `.wordmark` 클래스는 `tokens.css`가 정의하므로 레터링(case/tracking/weight/color)을 HTML에서 재구현하지 않는다.
+- 폰트 `<link>` 주입(필수): `wordmark.font`가 전용 Logotype 폰트면 그 폰트의 실폰트 CDN `<link>`도 head 폰트 링크 세트에 포함한다(누락 시 시스템 폴백으로 깨짐). `font-catalog.md`의 URL/패밀리를 사용한다.
 
 **토큰은 tokens.css로 소비(중요):** head에 `<link rel="stylesheet" href="../assets/tokens.css">`(`view/` 깊이 기준 상대경로)를 넣고, 데이터 섹션(§7 색·§8 타이포·radius·shadow)의 색·폰트·radius·shadow를 **실 HEX·실 px 인라인 대신 `var(--token)`**으로 렌더한다(실값은 tokens.css가 보유 — 전사 드리프트 방지). 예: `background: var(--color-primary)`, `font-family: var(--font-display)`, `border-radius: var(--radius-lg)`. 변수 네이밍은 tokens.css가 권위(`--color-<kebab(key)>`·`--font-<key>`·`--radius-<key>`·`--shadow-<key>`). lock 전 저작 시점엔 tokens.css가 아직 없을 수 있으므로, lock 단계(흐름 8)에서 tokens.css를 먼저 생성한 뒤 새로고침으로 반영한다.
 
@@ -321,7 +332,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 2. **brief 작성** — 고정이면 `candidate/brand-kit/brief.md`. 열림이면 게이트에서 방향을 고른 뒤 그 1벌만 작성(Step 4). (자산·HTML 오버뷰·선택 추가탐색.)
 3. **승인 게이트 (생성 전 필수)** — 분위기 **열림** → `build-contact-sheet.mjs`로 `view/directions.html`(3열 컨택트 시트)을 생성해 제시 → 한 열 선택. 분위기 **고정** → data-only `view/overview.html`(이미지 슬롯 플레이스홀더)을 제시 → 승인. 어느 쪽이든 게이트까지 이미지 0콜이며, 승인/선택 전 한 장도 생성하지 않는다.
 4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 캐노니컬 홈(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html`)에 인스턴스화한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
-5. **자산 생산 (`assets/brand-kit/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icon/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의).
+5. **자산 생산 (`assets/brand-kit/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icon/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의). 워드마크 **이미지 모드일 때만** `wordmark-base.png` 생성. 폰트 모드면 스킵하고 §1을 `<span class="wordmark">`로 저작.
 6. **overview.html 마무리** — `view/overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`../assets/brand-kit/key-visual.png`·`../assets/brand-kit/ui-base.png`·`../assets/brand-kit/icon/*.png` 등)으로 채워 **재저작 또는 외과 편집(아키타입 불변은 유지, 자유 존만 조정)**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
 8. **lock (승인)** — 산출물이 이미 캐노니컬 홈에 있다(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`). 별도 복사가 없으므로 lock은 "확정 승인"이다.
