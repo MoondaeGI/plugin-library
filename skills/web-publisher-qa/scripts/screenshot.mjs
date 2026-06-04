@@ -3,7 +3,7 @@
 // npm 의존성 0 — Edge/Chrome/Chromium/Brave를 --headless=new --screenshot으로 호출.
 import { existsSync, mkdirSync, mkdtempSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { pathToFileURL, fileURLToPath } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
@@ -97,15 +97,15 @@ export function parseArgv(argv) {
     if (a === '--print-plan') opts.printPlan = true;
     else if (a === '--width' || a === '--widths') {
       const v = argv[++i];
-      if (v === undefined) throw new Error(`${a} 값이 필요합니다`);
+      if (v === undefined || v.startsWith('--')) throw new Error(`${a} 값이 필요합니다`);
       opts.widths.push(v);
     } else if (a === '--out') {
       const v = argv[++i];
-      if (v === undefined) throw new Error('--out 값이 필요합니다');
+      if (v === undefined || v.startsWith('--')) throw new Error('--out 값이 필요합니다');
       opts.outDir = v;
     } else if (a === '--browser') {
       const v = argv[++i];
-      if (v === undefined) throw new Error('--browser 값이 필요합니다');
+      if (v === undefined || v.startsWith('--')) throw new Error('--browser 값이 필요합니다');
       opts.browser = v;
     } else if (a.startsWith('--')) {
       throw new Error(`알 수 없는 플래그: ${a}`);

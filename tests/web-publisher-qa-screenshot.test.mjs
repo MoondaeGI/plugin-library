@@ -115,3 +115,11 @@ test('CLI: 잘못된 width → exit 2', () => {
   assert.equal(res.status, 2);
   rmSync(d, { recursive: true, force: true });
 });
+
+test('CLI: 값 플래그 뒤에 또 다른 플래그가 오면 exit 2', () => {
+  const { d, f } = tmpHtml();
+  const res = runCli([f, '--widths', '--print-plan']);
+  assert.equal(res.status, 2);
+  assert.match(res.stderr, /값이 필요합니다/);
+  rmSync(d, { recursive: true, force: true });
+});
