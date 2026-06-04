@@ -1,6 +1,6 @@
 ---
 name: design-brand-kit
-description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타이포그래피·로고 방향·UI 분위기·금지 패턴을 정리한 브랜드 킷을 만들고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 HTML 오버뷰(overview.html)를 협업하며 만든다. 데이터 섹션은 토큰에서 HTML 렌더(진짜 HEX·실폰트). 다운스트림(design-logo·iconset·page-image)은 보드 재추출 없이 assets/brand-kit/를 직접 시드로 읽는다.
+description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타이포그래피·로고 방향·UI 분위기·금지 패턴을 정리한 브랜드 킷을 만들고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 HTML 오버뷰(overview.html)를 협업하며 만든다. 데이터 섹션은 토큰에서 HTML 렌더(진짜 HEX·실폰트). 오버뷰 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. 다운스트림(design-logo·iconset·page-image)은 보드 재추출 없이 assets/brand-kit/를 직접 시드로 읽는다.
 ---
 
 # Design Brand Kit
@@ -300,9 +300,11 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
     --auto-version --model gpt-image-2 --quality low
   ```
 
-### overview.html 저작 (이미지 아님)
+### overview.html 스펙 → web-publisher 위임 (이미지 아님)
 
-`overview.html`은 생성기로 만들지 않는다 — `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 `view/overview.html`에 제자리 저작**한다: 자산은 `<img src="../assets/brand-kit/...">`(상대경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`. 콘텐츠를 지어내지 않는다(변주는 레이아웃만). 저작 전 `candidate/brand-kit/brief.md`의 레이아웃 메모에서 **고른 아키타입**을 확인하고 해당 `references/archetypes/<name>.md`를 따른다.
+`overview.html`은 생성기로 만들지 않는다. **마크업 저작과 레이아웃 QA는 web-publisher 서브에이전트**가 맡는다 — 이 스킬은 *무엇을 넣을지*(아키타입·자산 경로·슬롯·토큰 소비·폰트 링크·워드마크 모드, 아래 전부)를 정해 넘긴다. 깨진 div가 그대로 나오지 않도록 오버뷰 HTML이 web-publisher의 빌드+QA 루프를 거치게 하기 위함이다. web-publisher를 직접 부를 수 없으면(서브에이전트로 실행 중) 이 스펙과 "오버뷰는 web-publisher로 빌드해야 한다"는 점을 메인 세션에 넘긴다. 이 스킬에서 직접 div를 저작하지 않는다.
+
+넘길 스펙: `references/brand-kit-html-direction.md`의 레이아웃 규칙을 가드레일로 `view/overview.html`에 **제자리 저작**한다 — 자산은 `<img src="../assets/brand-kit/...">`(상대경로), 데이터는 `BRAND_KIT.md`/tokens에서 렌더, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`. 콘텐츠를 지어내지 않는다(변주는 레이아웃만). 저작 전 `candidate/brand-kit/brief.md`의 레이아웃 메모에서 **고른 아키타입**을 확인하고 해당 `references/archetypes/<name>.md`를 따른다.
 
 **§1 워드마크는 모드에 따라 분기한다:**
 - 이미지 모드: §1 워드마크 = `<img src="../assets/brand-kit/wordmark-base.png">`(현행).
@@ -343,7 +345,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 캐노니컬 홈(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html`)에 인스턴스화한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
 5. **자산 생산 (`assets/brand-kit/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icon/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의). 워드마크 **이미지 모드일 때만** `wordmark-base.png` 생성. 폰트 모드면 스킵하고 §1을 `<span class="wordmark">`로 저작.
    - **로고 캐노니컬 미러**: `logo-base.png`를 생성/갱신할 때마다 `assets/logo/logo.png`로 복사한다(§6이 이 경로를 가리킴). 단 `candidate/logo/logo-briefs.md`가 있으면(design-logo가 이미 확정 로고를 만듦) **덮어쓰지 않는다**(non-clobber — 확정 로고 보존).
-6. **overview.html 마무리** — `view/overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`../assets/brand-kit/key-visual.png`·`../assets/brand-kit/ui-base.png`·`../assets/brand-kit/icon/*.png` 등)으로 채워 **재저작 또는 외과 편집(아키타입 불변은 유지, 자유 존만 조정)**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
+6. **overview.html 마무리 (web-publisher 위임)** — `view/overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`../assets/brand-kit/key-visual.png`·`../assets/brand-kit/ui-base.png`·`../assets/brand-kit/icon/*.png` 등)으로 채운다. **마크업 저작·재저작·외과 편집·레이아웃 QA는 web-publisher**가 수행한다(아키타입 불변은 유지, 자유 존만 조정 — 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집). 이 스킬은 채울 자산·데이터·아키타입 스펙을 넘긴다. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
 8. **lock (승인)** — 산출물이 이미 캐노니컬 홈에 있다(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`). 별도 복사가 없으므로 lock은 "확정 승인"이다.
    - **로고 캐노니컬 미러(non-clobber)**: `candidate/logo/logo-briefs.md`가 **없으면** `assets/logo/logo.png`가 최신 `logo-base.png`의 복사본이 되도록 보장한다(없으면 복사). **있으면** design-logo 확정 로고이므로 건드리지 않는다. 이로써 brand-kit 재실행이 확정 로고를 날리지 않는다.

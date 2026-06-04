@@ -1,6 +1,6 @@
 ---
 name: design-ui-kit
-description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/ui-kit/ui-kit.css와 chrome 템플릿 기반 view/ui-kit.html 쇼케이스를 만든다. lock 후 design-md-compiler를 호출해 DESIGN.md에 반영한다. image-gen·OPENAI_API_KEY 불필요.
+description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/ui-kit/ui-kit.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 design-md-compiler를 호출해 DESIGN.md에 반영한다. image-gen·OPENAI_API_KEY 불필요.
 ---
 
 # Design UI Kit
@@ -52,7 +52,8 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 |---|---|---|
 | **토큰값**(실 HEX·실 px·실 폰트) | `assets/tokens.css` 주입 (`var(--token)`) | 저작 안 함 — 참조만 |
 | **chrome**(보드/패널/매트릭스 골격·쇼케이스 CSS·헤더 key-visual 슬롯) | `templates/ui-kit-sheet.html` | 저작 안 함 — 복사 후 slot만 채움 |
-| **specimen + 컴포넌트 class** | LLM이 ui-kit.css·ui-kit.html slot에 저작 | **저작함** |
+| **컴포넌트 class**(`ui-kit.css`) | LLM(이 스킬)이 저작 | **저작함** |
+| **쇼케이스 마크업**(`view/ui-kit.html` slot 채우기) | web-publisher 서브에이전트가 저작·QA | **위임** — 이 스킬은 슬롯 스펙만 정의 |
 
 **변수 네이밍 계약:** tokens.css가 내보내는 이름이 권위다. ui-kit.css는 **정확히 그 이름만** 쓴다.
 - color `--color-<kebab(key)>` (예: `--color-surface-alt`·`--color-text-muted`·`--color-background`)
@@ -95,14 +96,14 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    .input:focus, .input.is-focus { outline:2px solid var(--tint-primary); }
    ```
    컨트롤은 `.is-checked`·`.is-on` 등.
-5. **ui-kit.html 저작**: `templates/ui-kit-sheet.html`을 `view/ui-kit.html`로 복사 → slot을 채운다.
+5. **쇼케이스 스펙 정의 → web-publisher 위임**: `view/ui-kit.html`의 마크업 저작과 레이아웃 QA는 **web-publisher 서브에이전트**가 맡는다. 이 스킬은 *무엇을 넣을지*(아래 슬롯 스펙)를 정해 넘긴다 — 직접 div를 저작하지 않는다. web-publisher를 직접 부를 수 없으면(서브에이전트로 실행 중) 이 스펙과 "쇼케이스는 web-publisher로 빌드해야 한다"는 점을 메인 세션에 넘긴다. 넘길 스펙: `templates/ui-kit-sheet.html`을 `view/ui-kit.html`로 복사해 slot을 채운다 —
    - `slot:font-links`: brand-tokens.json typography(display/heading/body/mono) **+ `wordmark.font`(있으면)**의 실폰트 CDN `<link>`를 모두 주입(`../references/design/font-catalog.md` 기준 — 전용 로고타입 폰트 누락 시 시스템 폴백으로 깨짐).
    - `slot:masthead`: 워드마크 = 폰트 모드면 `<span class="wordmark">브랜드명</span>`(`.wordmark`는 tokens.css 정의 — 레터링 재구현 금지), 이미지 모드면 `<img src="../assets/brand-kit/wordmark-base.png">`. **key-visual `--kv` 주입은 현행 유지** — `.board-head`에 `style="--kv:url('../assets/brand-kit/key-visual.png')"`로 은은히 주입(헤더 밴드 한정).
    - `slot:foundations|core|informational|structural`: 각 그룹 specimen. **매트릭스(행=상태×열=변형)**로 변형·상태를 한눈에. 번호/라벨로 검수 가능하게.
    - 아이콘은 `assets/icon/*.svg`를 **인라인**(currentColor).
    - **key-visual은 헤더 밴드에만**(패널 뒤 금지 — 토큰 충실도·대비 보호).
 6. **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design`(루트=`.design/`). 시트 직접 URL `http://localhost:5500/view/ui-kit.html`. 처음 제시 시 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
-7. **편집 루프**: 번호/이름 지목 → 해당 class·specimen만 외과 편집 → 자동 새로고침.
+7. **편집 루프**: 번호/이름 지목 → 외과 편집 → 자동 새로고침. **`ui-kit.css` class 편집은 이 스킬**이, **`ui-kit.html` specimen 마크업 편집·레이아웃 깨짐 수정은 web-publisher**가 한다(쇼케이스 저작자가 일관되게 고치도록).
 8. **lock (승인 + overview 슬롯 + md-compiler 호출)**:
    - `assets/ui-kit/ui-kit.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.
    - `view/overview.html`의 `<!-- design-ui-kit:slot -->…<!-- /design-ui-kit:slot -->` 사이를 **UI 킷 한 줄 링크**(`<a href="ui-kit.html">UI Kit →</a>`)로 멱등 외과 치환(마커 없으면 §10 끝에 삽입). overview를 컴포넌트로 부풀리지 않는다.
