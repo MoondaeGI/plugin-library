@@ -68,7 +68,8 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
     directions.html    # 분위기 열림일 때만 — 3열 컨택트 시트 (= 발산 게이트)
   assets/
     tokens.css            # brand-tokens.json에서 결정적 생성 (lock 시 tokens-to-css.mjs) — 모든 view/ HTML 공유 토대
-    brand-kit/  logo-base.png · wordmark-base.png · key-visual.png · ui-base.png · icon/<name>.png
+    brand-kit/  logo-base.png(로고 시드) · wordmark-base.png · key-visual.png · ui-base.png · icon/<name>.png
+    logo/       logo.png   # 캐노니컬 표시 로고 — brand-kit이 logo-base에서 시드(미러), design-logo가 덮어씀. overview §6이 이 경로를 가리킴(non-clobber: logo-briefs.md 있으면 안 건드림)
   candidate/
     brand-kit/  brief.md(레이아웃 메모) · directions.json · brand-briefs.md(이미지 브리프)   # 탐색 데이터
 ```
@@ -312,11 +313,9 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 
 **§10 ui-kit 마커 슬롯 (필수):** §10 Visual & UI Direction 안에도 멱등 외과편집용 슬롯을 심는다 — `<!-- design-ui-kit:slot --><p class="muted">확정 UI 킷 대기 (design-ui-kit)</p><!-- /design-ui-kit:slot -->`. design-ui-kit이 lock 때 이 슬롯 사이를 확정 UI 킷 한 줄 링크로 치환한다(design-logo §6·design-iconset §11 슬롯과 동일 규약).
 
-**다운스트림 누적용 마커 슬롯 (필수):** 저작 시 두 곳에 멱등 외과편집용 HTML 주석 슬롯을 심는다 —
-- §6 Logo Direction 안: `<!-- design-logo:slot --><p class="muted">확정 로고 대기 (design-logo)</p><!-- /design-logo:slot -->`
-- §11 Imagery/Iconography 안(컨셉 아이콘 다음): `<!-- design-iconset:slot --><p class="muted">확정 아이콘셋 대기 (design-iconset)</p><!-- /design-iconset:slot -->`
+**아이콘셋 마커 슬롯 (필수):** §11 Imagery/Iconography 안(컨셉 아이콘 다음)에 멱등 외과편집용 HTML 주석 슬롯을 심는다 — `<!-- design-iconset:slot --><p class="muted">확정 아이콘셋 대기 (design-iconset)</p><!-- /design-iconset:slot -->`. design-iconset이 lock 때 이 슬롯 사이를 확정 SVG 세트로 치환한다(컨셉 PNG는 병존 — 브랜드 컨셉 전시).
 
-design-logo·design-iconset이 lock 때 이 슬롯 사이를 확정 자산으로 치환한다.
+**로고는 슬롯이 아니라 캐노니컬 경로로 처리한다 (중요):** §6의 로고 자리(심볼·락업 심볼·앱아이콘·파비콘)는 `<!-- design-logo:slot -->`을 쓰지 않고 **`../assets/logo/logo.png`를 직접 참조**한다. brand-kit이 그 파일을 `logo-base.png`에서 시드(흐름 5·8)하고, design-logo가 lock 때 덮어쓰면 HTML 편집 없이 반영된다. (로고는 갈아치움, 아이콘은 병존 — 이 비대칭은 의도다.) 로고 자리는 `max-height`+`object-fit:contain`으로 저작해 확정 마크 종횡비가 base와 달라도 graceful하게 degrade한다.
 
 ### 라이브 프리뷰 (자동 새로고침)
 
@@ -343,8 +342,10 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 3. **승인 게이트 (생성 전 필수)** — 분위기 **열림** → `build-contact-sheet.mjs`로 `view/directions.html`(3열 컨택트 시트)을 생성해 제시 → 한 열 선택. 분위기 **고정** → data-only `view/overview.html`(이미지 슬롯 플레이스홀더)을 제시 → 승인. 어느 쪽이든 게이트까지 이미지 0콜이며, 승인/선택 전 한 장도 생성하지 않는다.
 4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 캐노니컬 홈(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html`)에 인스턴스화한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
 5. **자산 생산 (`assets/brand-kit/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icon/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의). 워드마크 **이미지 모드일 때만** `wordmark-base.png` 생성. 폰트 모드면 스킵하고 §1을 `<span class="wordmark">`로 저작.
+   - **로고 캐노니컬 미러**: `logo-base.png`를 생성/갱신할 때마다 `assets/logo/logo.png`로 복사한다(§6이 이 경로를 가리킴). 단 `candidate/logo/logo-briefs.md`가 있으면(design-logo가 이미 확정 로고를 만듦) **덮어쓰지 않는다**(non-clobber — 확정 로고 보존).
 6. **overview.html 마무리** — `view/overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`../assets/brand-kit/key-visual.png`·`../assets/brand-kit/ui-base.png`·`../assets/brand-kit/icon/*.png` 등)으로 채워 **재저작 또는 외과 편집(아키타입 불변은 유지, 자유 존만 조정)**. 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
 8. **lock (승인)** — 산출물이 이미 캐노니컬 홈에 있다(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`). 별도 복사가 없으므로 lock은 "확정 승인"이다.
+   - **로고 캐노니컬 미러(non-clobber)**: `candidate/logo/logo-briefs.md`가 **없으면** `assets/logo/logo.png`가 최신 `logo-base.png`의 복사본이 되도록 보장한다(없으면 복사). **있으면** design-logo 확정 로고이므로 건드리지 않는다. 이로써 brand-kit 재실행이 확정 로고를 날리지 않는다.
    - **tokens.css 생성(필수)**: lock 시 `node "<이 스킬 디렉터리>/scripts/tokens-to-css.mjs" <cwd>/.design/brand-tokens.json <cwd>/.design/assets/tokens.css`를 실행해 `assets/tokens.css`를 만든다(브랜드 토큰이 바뀌면 재실행). 이 파일은 **생성물 — 직접 수정 금지**이며, 토큰을 고치려면 `brand-tokens.json`을 수정하고 재생성한다. overview.html이 `var(--token)`을 쓰므로 생성 후 새로고침하면 실값이 반영된다. (명령 실행이므로 사용자 확인 후 실행.)
    - 탐색물(`candidate/brand-kit/brief.md`·`directions.json`·`brand-briefs.md`)은 그대로 보존. 확정되면 산출 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-ui-kit` → `design-page-image`"** (각자 `assets/brand-kit/`를 시드로, `assets/tokens.css`를 공유 토대로 읽음). 라이브 프리뷰 서버가 떠 있으면 종료한다.

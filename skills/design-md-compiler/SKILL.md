@@ -22,9 +22,11 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - `.design/candidate/brand-kit/brand-briefs.md`
 - `.design/candidate/page/page-briefs.md`
 - `.design/view/overview.html` (있으면 — 브랜드 오버뷰 룩·섹션 구조 참조)
-- `.design/assets/brand-kit/*.png`, `.design/assets/brand-kit/icon/*.png` (확정 base 자산)
-- `.design/assets/logo/*.png`, `.design/assets/icon/*.svg`, `.design/assets/page/*.{png,jpg,jpeg,webp}` (확정 deliverable)
-- `.design/candidate/page/*.{png,jpg,jpeg,webp}` (확정 전 시안 폴백)
+- `.design/assets/brand-kit/*.png` (확정 base 자산 — `logo-base`·`key-visual`·`ui-base`·`wordmark-base`)
+- `.design/assets/brand-kit/icon/*.png` (**컨셉 전용 — DESIGN.md 제품 아이코노그래피로 쓰지 않음**; 브랜드 정체성 전시물)
+- `.design/assets/logo/logo.png` (확정 로고 — brand-kit lock 후 **항상 존재**: design-logo 덮어쓰기 또는 base 시드)
+- `.design/assets/icon/*.svg`, `.design/assets/page/*.{png,jpg,jpeg,webp}` (확정 deliverable)
+- `.design/candidate/logo/logo-briefs.md` (선택 — 있으면 전용 로고 탐색됨; §12 출처 표식)
 - `.design/manifest.json` (선택 — 캡션·순서·섹션 매핑 메타, 없으면 파일명 glob)
 
 ## 출력 파일
@@ -87,7 +89,8 @@ breakpoints:   # (--bp-* 있으면 — 없으면 생략 + §12에 표시)
 breakpoint 표·터치타깃·collapsing 전략. (breakpoint 토큰 없으면 "고정폭 데스크톱 전용"으로 적고 §12에 표시)
 
 ## 8. 이미지 에셋 사용 규칙
-- 로고: / 배경: / 제품 목업: / UI 킷 레퍼런스: / 사용하지 말아야 할 방식:
+DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·컨셉 전시물 제외).
+- 로고: `assets/logo/logo.png`(brand-kit lock 후 항상 존재 — design-logo 덮어쓰기 또는 base 시드) / 배경: / 제품 목업: / 아이콘셋: `assets/icon/*.svg`(없으면 §12 Gap; 컨셉 아이콘 `brand-kit/icon/*`는 제품 아이코노그래피로 쓰지 않음) / UI 킷 레퍼런스: / 사용하지 말아야 할 방식: candidate 시안을 확정처럼 참조하는 것.
 
 ## 9. Do's & Don'ts
 토큰 참조로 박은 강제·금지(예: "모든 인터랙티브는 {colors.primary} — 2번째 accent 금지").
@@ -101,6 +104,7 @@ breakpoint 표·터치타깃·collapsing 전략. (breakpoint 토큰 없으면 "�
 
 ## 12. Provenance & Known Gaps
 - 읽은 입력 파일 목록 / 추측한 값(표시) / 누락 입력(어떤 이전 단계가 필요한지) / 근거 부족 항목 / frontmatter는 tokens.css에서 재생성됨을 명시.
+- **확정 자산 출처**: `candidate/logo/logo-briefs.md`가 없으면 "전용 로고 미탐색 — brand-kit base 마크 사용(design-logo 권장)"을 적는다. 확정 아이콘셋(`assets/icon/*.svg`)이 없으면 "아이콘셋 미확정 — design-iconset 필요"를 적는다.
 ```
 
 ## 작성 규칙

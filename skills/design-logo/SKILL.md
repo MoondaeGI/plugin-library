@@ -47,7 +47,7 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
 ```
 
 - `logos.html`(view/)의 모든 `<img>`는 `../candidate/logo/concepts/round-N/01.png`·`../candidate/logo/seed.png` 상대경로.
-- 탐색 시트·시안은 `candidate/logo/`에 `--auto-version`으로 누적. 확정 단일 로고만 `assets/logo/logo.png`로 승격하고, **lock 때 `view/overview.html` §6 슬롯에 주입한다**(아래 흐름 10).
+- 탐색 시트·시안은 `candidate/logo/`에 `--auto-version`으로 누적. 확정 단일 로고는 `assets/logo/logo.png`에 **덮어쓴다** — `view/overview.html` §6이 이 경로를 직접 가리키므로 HTML 편집 없이 라이브 새로고침으로 반영된다(아래 흐름 10).
 
 ## 이미지 생성 (공유 `image-gen` 스킬)
 
@@ -125,7 +125,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
    - **"#N 좋다"** → 사용자에게 묻는다: **(a) 수렴 라운드** — 그 PNG를 `--image --input-fidelity high`로 첨부해 같은 방향 3~4 변주를 만들고 시트 교체(반복 가능), 또는 **(b) 바로 단독 확정**.
 8. **단독 로고**: 고른 PNG는 이미 투명 단독 컷아웃이므로 **재추출 없이** `candidate/logo/logo-candidate.png`로 승격한다. 더 다듬고 싶으면 그 PNG를 `--image --input-fidelity high`로 첨부해 "중앙 정렬, 형태·기하 유지, 단일 마크만"으로 다듬는다(`logo-art-direction.md` §7 품질 프레이밍, §8 품질 테스트로 자가 판정).
 9. **다듬기 루프**: 직전 후보를 `--image --input-fidelity high`로 첨부해 한 번에 한 가지만 증분 편집(나머지 보존), `--auto-version`. lock까지.
-10. **확정(승격 + overview 주입)**: 확정본을 `.design/assets/logo/logo.png`로 복사. 시안은 `candidate/logo/`에 보존. 이어 `view/overview.html`의 `<!-- design-logo:slot -->…<!-- /design-logo:slot -->` 사이를 `<img src="../assets/logo/logo.png" alt="확정 로고" style="height:64px">`로 **외과 치환**한다(멱등 — 재실행 안전; 마커가 없으면 §6 Logo Direction 끝에 삽입). 라이브 서버가 떠 있으면 자동 새로고침된다. `candidate/logo/logo-briefs.md`에 확정 컨셉을 기록.
+10. **확정(덮어쓰기 — HTML 무수정)**: 확정본을 `.design/assets/logo/logo.png`에 **덮어쓴다**(brand-kit이 시드해 둔 base 복사본을 교체). 시안은 `candidate/logo/`에 보존. `view/overview.html` §6의 로고 자리(심볼·락업 심볼·앱아이콘·파비콘)가 이미 `../assets/logo/logo.png`를 가리키므로 **HTML을 편집하지 않는다** — 라이브 서버가 파일 교체를 감지해 자동 새로고침한다. 시드 `assets/brand-kit/logo-base.png`는 불변이다(작업 시드는 `candidate/logo/seed.png`에 이미 복사됨). `candidate/logo/logo-briefs.md`에 확정 컨셉을 기록한다 — 이 파일은 brand-kit의 non-clobber 표식이자 md-compiler의 출처 표식이다(design-brand-kit 흐름 8·design-md-compiler §12).
 11. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
 
 > 워드마크·파비콘·앱 아이콘 같은 로고 시스템은 이 스킬에서 만들지 않는다(현재 불필요). 확정 단일 로고만 산출한다.
