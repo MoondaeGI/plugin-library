@@ -59,3 +59,35 @@ test("brand-tokens에 없는 키는 만들지 않음", () => {
   assert.doesNotMatch(css, /--color-primary-dark/);
   assert.doesNotMatch(css, /--color-bg:/);
 });
+
+test("wordmark 블록 없으면 기본값 .wordmark 클래스 emit", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /\.wordmark\s*\{/);
+  assert.match(css, /font-family:\s*var\(--font-wordmark,\s*var\(--font-display\)\)/);
+  assert.match(css, /letter-spacing:\s*normal/);
+  assert.match(css, /font-weight:\s*700/);
+  assert.match(css, /text-transform:\s*none/);
+  assert.match(css, /color:\s*var\(--color-text\)/);
+});
+
+test("wordmark.font 있으면 --font-wordmark emit", () => {
+  const css = generateTokensCss({ ...SAMPLE, wordmark: { font: '"Gugi", sans-serif' } });
+  assert.match(css, /--font-wordmark:\s*"Gugi", sans-serif/);
+});
+
+test("wordmark.font 없으면 --font-wordmark 생략", () => {
+  assert.doesNotMatch(generateTokensCss(SAMPLE), /--font-wordmark:/);
+});
+
+test("wordmark 레터링 값 적용", () => {
+  const css = generateTokensCss({ ...SAMPLE, wordmark: { tracking: "-0.02em", weight: "800", case: "uppercase", color: "primary" } });
+  assert.match(css, /letter-spacing:\s*-0\.02em/);
+  assert.match(css, /font-weight:\s*800/);
+  assert.match(css, /text-transform:\s*uppercase/);
+  assert.match(css, /color:\s*var\(--color-primary\)/);
+});
+
+test("wordmark.color가 없는 토큰이면 text로 폴백", () => {
+  const css = generateTokensCss({ ...SAMPLE, wordmark: { color: "nonexistent" } });
+  assert.match(css, /color:\s*var\(--color-text\)/);
+});

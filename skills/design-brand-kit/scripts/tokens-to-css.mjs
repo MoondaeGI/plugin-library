@@ -6,6 +6,24 @@ import { readFile, writeFile } from "node:fs/promises";
 const MICRO_SPACE = { 1:"4px", 2:"8px", 3:"12px", 4:"16px", 5:"24px", 6:"32px", 7:"48px", 8:"64px" };
 const TINT_ALPHA = { primary:0.08, accent:0.10, success:0.14, warning:0.16, danger:0.12 };
 
+const WORDMARK_DEFAULTS = { tracking: "normal", weight: "700", case: "none", color: "text" };
+
+const pick = (v, d) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : d);
+
+function generateWordmarkClass(wordmark = {}, color = {}) {
+  const colorKey = color[wordmark.color] ? wordmark.color : "text";
+  return [
+    ".wordmark {",
+    "  font-family: var(--font-wordmark, var(--font-display));",
+    `  letter-spacing: ${pick(wordmark.tracking, WORDMARK_DEFAULTS.tracking)};`,
+    `  font-weight: ${pick(wordmark.weight, WORDMARK_DEFAULTS.weight)};`,
+    `  text-transform: ${pick(wordmark.case, WORDMARK_DEFAULTS.case)};`,
+    `  color: var(--color-${kebab(colorKey)});`,
+    "}",
+    "",
+  ].join("\n");
+}
+
 const kebab = (s) => s.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
 
 export function hexToRgba(hex, alpha) {
@@ -16,11 +34,12 @@ export function hexToRgba(hex, alpha) {
 }
 
 export function generateTokensCss(tokens) {
-  const { color = {}, typography = {}, radius = {}, shadow = {}, spacing = {} } = tokens;
+  const { color = {}, typography = {}, radius = {}, shadow = {}, spacing = {}, wordmark = {} } = tokens;
   const L = ["/* tokens.css — brand-tokens.json + 고정 관례 레이어 (tokens-to-css.mjs 생성, 직접 수정 금지) */", ":root {"];
 
   for (const [k, v] of Object.entries(color)) L.push(`  --color-${kebab(k)}: ${v};`);
   for (const [k, v] of Object.entries(typography)) if (v) L.push(`  --font-${kebab(k)}: ${v};`);
+  if (wordmark.font) L.push(`  --font-wordmark: ${wordmark.font};`);
   for (const [k, v] of Object.entries(radius)) L.push(`  --radius-${k}: ${v};`);
   L.push(`  --radius-pill: 999px;`);
   for (const [k, v] of Object.entries(shadow)) L.push(`  --shadow-${k}: ${v};`);
@@ -33,7 +52,7 @@ export function generateTokensCss(tokens) {
   }
 
   L.push("}", "");
-  return L.join("\n");
+  return L.join("\n") + generateWordmarkClass(wordmark, color);
 }
 
 // CLI: node tokens-to-css.mjs <brand-tokens.json> <out tokens.css>
