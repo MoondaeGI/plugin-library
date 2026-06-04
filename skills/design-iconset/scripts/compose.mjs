@@ -6,6 +6,9 @@ export function compose({ mode, baseSvg, overlaySvg, idSuffix = 'a' }) {
   const base = baseSvg ? innerSvg(baseSvg) : ''
   const over = overlaySvg ? innerSvg(overlaySvg) : ''
 
+  const NEEDS_OVERLAY = new Set(['M1-affix', 'M2-container', 'M3-depth'])
+  if (NEEDS_OVERLAY.has(mode) && !over) throw new MissingOverlayError(mode)
+
   switch (mode) {
     case 'M1-affix':     return wrap24(affix(base, over, idSuffix))
     case 'M2-container': return wrap24(container(base, over))
@@ -51,5 +54,12 @@ export class ComposeModeError extends Error {
   constructor(mode) {
     super(`Unknown compose mode: ${mode}`)
     this.name = 'ComposeModeError'
+  }
+}
+
+export class MissingOverlayError extends Error {
+  constructor(mode) {
+    super(`Mode ${mode} requires an overlay but none was provided`)
+    this.name = 'MissingOverlayError'
   }
 }

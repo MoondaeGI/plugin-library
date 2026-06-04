@@ -46,3 +46,7 @@ test('M5-reticle: 모서리 마크 4 + base 중앙 62%', () => {
   assert.match(out, /translate\(4\.56,4\.56\) scale\(0\.62\)/)
   assert.match(out, /id="base"/)
 })
+
+test('overlay 필요한 모드에 overlay 없으면 에러', () => {
+  assert.throws(() => compose({ mode: 'M1-affix', baseSvg: BASE }), /MissingOverlayError|overlay/i)
+})
