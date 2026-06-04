@@ -4,37 +4,57 @@
 
 const VIEWBOX_RE = /viewBox\s*=\s*"([\d.\-\s]+)"/i
 
+/** 재스케일 목표 크기 (px) */
+const TARGET_SIZE = 24
+
+/** style 속성 안의 fill 또는 stroke 색 값만 매칭 (none·currentColor는 보존) */
+const STYLE_COLOR_RE = /\b(fill|stroke)\s*:\s*(#[0-9a-fA-F]{3,8}|rgb\([^)]*\)|(?!none\b)(?!currentcolor\b)[a-zA-Z]+)/gi
+
 /**
  * SVG 문자열을 24×24 viewBox + currentColor 계약으로 정규화한다.
+ *
+ * 정사각 viewBox 가정(Iconify 세트는 사실상 정사각).
+ * 비정사각이면 width 기준으로만 스케일되어 부정확할 수 있음.
+ *
  * @param {string} svg - 원본 SVG 문자열
  * @returns {string} - 정규화된 SVG 문자열
  */
 export function normalizeSvg(svg) {
   let out = svg.trim()
 
-  // ① 재스케일: 정사각 viewBox W가 24가 아니면 scale 래핑
+  // ① 재스케일: 정사각 viewBox W가 TARGET_SIZE가 아니면 scale 래핑
   const vb = out.match(VIEWBOX_RE)
   if (vb) {
     const parts = vb[1].split(/\s+/).map(Number)
     const w = parts[2]
-    if (w && w !== 24) {
-      const factor = +(24 / w).toFixed(5)
+    if (w && w !== TARGET_SIZE) {
+      const factor = +(TARGET_SIZE / w).toFixed(5)
       out = out
-        .replace(VIEWBOX_RE, 'viewBox="0 0 24 24"')
+        .replace(VIEWBOX_RE, `viewBox="0 0 ${TARGET_SIZE} ${TARGET_SIZE}"`)
         .replace(/(<svg[^>]*>)([\s\S]*)(<\/svg>)/i,
           (_, open, inner, close) => `${open}<g transform="scale(${factor})">${inner}</g>${close}`)
     } else {
-      out = out.replace(VIEWBOX_RE, 'viewBox="0 0 24 24"')
+      out = out.replace(VIEWBOX_RE, `viewBox="0 0 ${TARGET_SIZE} ${TARGET_SIZE}"`)
     }
   }
 
-  // ② 색 → currentColor (none·currentColor 제외, opacity는 별도 속성이라 영향 없음)
+  // ② 속성 색 → currentColor (none·currentColor 제외, opacity는 별도 속성이라 영향 없음)
   out = out.replace(/(fill|stroke)\s*=\s*"(#[0-9a-fA-F]{3,8}|rgb\([^)]*\)|[a-zA-Z]+)"/g,
     (m, attr, val) => {
       const low = val.toLowerCase()
       if (low === 'none' || low === 'currentcolor') return m
       return `${attr}="currentColor"`
     })
+
+  // ③ style 속성 안의 fill:/stroke: 색 → currentColor (none·currentColor는 보존)
+  out = out.replace(/style\s*=\s*"([^"]*)"/gi, (m, styleVal) => {
+    const replaced = styleVal.replace(STYLE_COLOR_RE, (_, prop, val) => {
+      const low = val.toLowerCase()
+      if (low === 'none' || low === 'currentcolor') return `${prop}:${val}`
+      return `${prop}:currentColor`
+    })
+    return `style="${replaced}"`
+  })
 
   return out
 }

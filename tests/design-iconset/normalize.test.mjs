@@ -31,3 +31,18 @@ test('fill="none"은 보존', () => {
   assert.match(out, /fill="none"/)
   assert.match(out, /stroke="currentColor"/)
 })
+
+test('style 속성 안의 fill/stroke 색도 currentColor로, 다른 style prop 보존', () => {
+  const input = '<svg viewBox="0 0 24 24"><path style="fill:#ff0000;stroke-width:2;opacity:0.2"/></svg>'
+  const out = normalizeSvg(input)
+  assert.doesNotMatch(out, /#ff0000/)
+  assert.match(out, /fill:currentColor/)
+  assert.match(out, /stroke-width:2/)
+  assert.match(out, /opacity:0\.2/)
+})
+
+test('style 안 fill:none은 보존', () => {
+  const out = normalizeSvg('<svg viewBox="0 0 24 24"><path style="fill:none;stroke:#000"/></svg>')
+  assert.match(out, /fill:none/)
+  assert.match(out, /stroke:currentColor/)
+})
