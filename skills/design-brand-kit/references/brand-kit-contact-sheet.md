@@ -79,6 +79,8 @@
 | `directions[n].typography.display` | string | 디스플레이 폰트 스택(CSS font-family 문법). 따옴표 안 family를 추출해 CDN 로드. |
 | `directions[n].typography.body` | string | 본문 폰트 스택. |
 
+> **참고:** `directions.json`의 `typography`는 발산 탐색용이라 **폰트 스택 문자열만** 쓴다(`display`/`body`). lock된 `brand-tokens.json`의 `typography.<role>` 정량 객체(`tokens-to-css.mjs` 입력)와는 **다른 스키마**다 — 컨택트 시트는 색·폰트 *방향* 비교가 목적이므로 정량 스펙을 받지 않는다.
+
 **palette 스와치 표시 순서**: primary → accent → background → surface → text → textMuted → border (스크립트 `PALETTE_ROLES` 순).
 
 **palette 키 누락 처리**: 값이 없는 키는 스와치에서 조용히 제외됨(오류 아님). 단 `REQUIRED_DIR_FIELDS`의 `palette` 자체가 없으면 오류.
