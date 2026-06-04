@@ -16,7 +16,8 @@ design-brand-kit  (+ 공유 assets/tokens.css)
 
 다운스트림 (주체 · 구현 상태):
    design-component-export   (front-developer · 미구현)
-   design-page-image         (designer · 미구현 · 재작성 예정 · 선택, DESIGN.md 시드)
+   design-image-web          (designer · 선택, DESIGN.md 시드)
+   design-image-mobile       (designer · 선택, DESIGN.md 시드)
    design-html-prototype     (web-publisher)
    design-generate-code      (front-developer · 미구현)
 ```
@@ -29,11 +30,12 @@ design-brand-kit  (+ 공유 assets/tokens.css)
 | **design-ui-kit** | 제품 UI 컴포넌트 라이브러리를 토큰 기반 HTML/CSS로 저작(이미지 아님). lock 후 design-md-compiler 호출 | `BRAND_KIT.md` §10 · `tokens.css` · `assets/icon/*.svg` | `.design/assets/ui-kit/ui-kit.css` · `view/ui-kit.html` |
 | **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리(§4 토큰=tokens.css, §5 컴포넌트=ui-kit.css 권위). **designer 핵심 파이프라인의 종착** | 브랜드 킷 + tokens.css + ui-kit.css (페이지 이미지 있으면 선택 입력) | `DESIGN.md` (cwd 루트) |
 | **design-component-export** *(front-developer·미구현)* | 확정 ui-kit.css·tokens.css를 대상 프로젝트 컴포넌트 세트로 export | ui-kit.css·tokens.css | (예정) 컴포넌트 세트 |
-| **design-page-image** *(designer·미구현·재작성 예정)* | 랜딩·대시보드·앱 화면을 섹션별 디자인 이미지로 기획. 핵심 이후 *선택* 단계 | `DESIGN.md` 시드 | 섹션별 디자인 이미지 |
+| **design-image-web** *(designer)* | 웹 페이지 섹션별 가로 이미지 생성. 핵심 이후 *선택* 단계 | `DESIGN.md` 시드 | 웹 섹션별 가로 이미지 |
+| **design-image-mobile** *(designer)* | 모바일 앱 화면·플로우 세로 이미지 생성. 핵심 이후 *선택* 단계 | `DESIGN.md` 시드 | 앱 화면 세로 이미지 |
 | **design-html-prototype** *(web-publisher)* | DESIGN.md로 풀페이지 HTML 프로토타입을 빌드+QA | `DESIGN.md` + 토큰 | 풀페이지 HTML 프로토타입 |
 | **design-generate-code** *(front-developer·미구현)* | 프로토타입+컴포넌트로 실제 페이지·앱 코드 생성 | 프로토타입 + 컴포넌트 세트 | (예정) 페이지·앱 코드 |
 
-핵심 파이프라인의 후속 단계(`design-logo`·`design-iconset`·`design-ui-kit`)는 보드를 다시 분석하지 않고 `design-brand-kit`이 만든 `.design/assets/brand-kit/`를 **직접 시드로**, `assets/tokens.css`를 **공유 토큰 토대로** 읽는다. (재작성될 `design-page-image`는 `DESIGN.md`를 시드로 받는 방향이다.)
+핵심 파이프라인의 후속 단계(`design-logo`·`design-iconset`·`design-ui-kit`)는 보드를 다시 분석하지 않고 `design-brand-kit`이 만든 `.design/assets/brand-kit/`를 **직접 시드로**, `assets/tokens.css`를 **공유 토큰 토대로** 읽는다. (`design-image-web`·`design-image-mobile`은 `DESIGN.md`를 시드로 받는다.)
 
 이미지 생성은 공유 [`image-gen`](../../skills/image-gen) 스킬(OpenAI Images API)이 담당하며 `OPENAI_API_KEY`(`.env`)가 필요하다. 키가 없으면 이미지 단계만 사람이 직접 드롭하도록 안내하고 나머지는 진행한다.
 

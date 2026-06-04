@@ -19,10 +19,11 @@ model: inherit
 
 ## 다운스트림 (핵심 이후 — 주체·구현 상태)
 
-designer가 직접 실행하는 건 (재작성 후) page-image뿐이고, 나머지는 다른 주체 몫이며 일부는 미구현이라 호출하지 않는다.
+designer가 자기 몫으로 실행하는 건 design-image-web·design-image-mobile이고, 나머지는 다른 주체 몫이며 일부는 미구현이라 호출하지 않는다.
 
 - **design-component-export** (front-developer · 미구현) — `ui-kit.css`·`tokens.css` → 컴포넌트 세트.
-- **design-page-image** (designer · 미구현·재작성 예정) — `DESIGN.md` 시드, 선택.
+- **design-image-web** (designer) — `DESIGN.md`를 시드로 웹 페이지의 섹션별 가로 이미지를 만드는 *선택* 단계.
+- **design-image-mobile** (designer) — `DESIGN.md`를 시드로 모바일 앱 화면·플로우 세로 이미지를 만드는 *선택* 단계(화면 플로우는 사용자 협업 확정).
 - **design-html-prototype** (web-publisher) — 풀페이지 프로토타입 빌드+QA.
 - **generate-code** (front-developer · 미구현) — 프로토타입+컴포넌트 → 실제 코드.
 
