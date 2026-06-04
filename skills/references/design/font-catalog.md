@@ -74,6 +74,21 @@ gpt-image는 **폰트 파일을 로드하지 않는다.** "Pretendard"라고 적
 
 ---
 
+## Logotype (워드마크용)
+
+큰 크기에서 개성·균형이 사는 로고타입급 페이스. **워드마크가 폰트 모드일 때 전용 로고타입 폰트로 우선 고른다**(brand-tokens.json `wordmark.font`). display 폰트로 충분하면 비워 display를 재사용한다. 과용 금지 — 워드마크 한 곳에만 쓴다.
+
+- **Gugi** — logotype/display · 붓 기운 도는 굵은 단일 웨이트, 강한 개성의 한글 로고타입 · 한글 Y · OFL · https://fonts.google.com/specimen/Gugi · `"Gugi", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+- **Gasoek One** — logotype/display · 초굵은 임팩트 산세리프, 포스터·로고용 · 한글 Y · OFL · https://fonts.google.com/specimen/Gasoek+One · `"Gasoek One", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+- **Jua** — logotype/display · 둥글고 친근한 손글씨풍 굵은 마크, 캐주얼 브랜드 · 한글 Y · OFL · https://fonts.google.com/specimen/Jua · `"Jua", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+- **Do Hyeon** — logotype/display · 각진 고딕 단일 웨이트, 견고한 산업·테크 워드마크 · 한글 Y · OFL · https://fonts.google.com/specimen/Do+Hyeon · `"Do Hyeon", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif`
+- **Song Myung** — logotype/editorial · 가는 명조 로고타입, 문학·럭셔리·에디토리얼 워드마크 · 한글 Y · OFL · https://fonts.google.com/specimen/Song+Myung · `"Song Myung", "Nanum Myeongjo", Georgia, serif`
+- **Diphylleia** — logotype/editorial · 고대비 세리프, 우아한 프리미엄 워드마크 · 한글 Y · OFL · https://fonts.google.com/specimen/Diphylleia · `"Diphylleia", "Nanum Myeongjo", Georgia, serif`
+
+> 라틴 전용 브랜드라면 기존 Display/Serif 섹션의 페이스(예: 임팩트 sans, 고대비 세리프)를 로고타입으로 그대로 쓸 수 있다 — 별도 추가 불필요. 이 섹션은 한글 로고타입 공백을 메우는 용도.
+
+---
+
 ## Serif / 명조 (editorial)
 
 - **Noto Serif KR** — serif · 고대비 명조, 균형 잡힌 세리프 삐침, 전통 편집 인쇄 느낌 · 한글 Y · OFL · https://fonts.google.com/specimen/Noto+Serif+KR · `"Noto Serif KR", "Apple SD Gothic Neo", Georgia, serif`
