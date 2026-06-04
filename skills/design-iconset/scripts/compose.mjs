@@ -7,7 +7,9 @@ export function compose({ mode, baseSvg, overlaySvg, idSuffix = 'a' }) {
   const over = overlaySvg ? innerSvg(overlaySvg) : ''
 
   switch (mode) {
-    case 'M1-affix':   return wrap24(affix(base, over, idSuffix))
+    case 'M1-affix':     return wrap24(affix(base, over, idSuffix))
+    case 'M2-container': return wrap24(container(base, over))
+    case 'M3-depth':     return wrap24(depthPair(base, over))
     default:
       throw new ComposeModeError(mode)
   }
@@ -21,6 +23,16 @@ function affix(baseInner, overInner, idSuffix) {
     `<g mask="url(#${id})">${baseInner}</g>`,
     `<g transform="translate(13.92,13.92) scale(0.42)">${overInner}</g>`,
   ].join('')
+}
+
+// M2: base는 컨테이너 그대로, overlay를 중앙 50%로.
+function container(baseInner, overInner) {
+  return `${baseInner}<g transform="translate(6,6) scale(0.5)">${overInner}</g>`
+}
+
+// M3: base를 뒤(opacity 0.2·1.2배), overlay를 앞에 풀사이즈. 깊이는 색이 아니라 opacity.
+function depthPair(backInner, frontInner) {
+  return `<g opacity="0.2" transform="translate(-2.4,-2.4) scale(1.2)">${backInner}</g>${frontInner}`
 }
 
 export class ComposeModeError extends Error {

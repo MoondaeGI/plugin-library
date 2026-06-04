@@ -19,3 +19,17 @@ test('M1-affix: knockout mask + 우하단 배지', () => {
 test('알 수 없는 모드는 에러', () => {
   assert.throws(() => compose({ mode: 'M9', baseSvg: BASE }), /Unknown compose mode/)
 })
+
+test('M2-container: 내부 글리프 중앙 50%', () => {
+  const out = compose({ mode: 'M2-container', baseSvg: BASE, overlaySvg: OVER })
+  assert.match(out, /id="base"/)
+  assert.match(out, /id="over"/)
+  assert.match(out, /translate\(6,6\) scale\(0\.5\)/)
+})
+
+test('M3-depth: 뒤 글리프 opacity 0.2, 앞 글리프 풀', () => {
+  const out = compose({ mode: 'M3-depth', baseSvg: BASE, overlaySvg: OVER })
+  assert.match(out, /opacity="0\.2"/)
+  assert.match(out, /id="base"/)  // 뒤
+  assert.match(out, /id="over"/)  // 앞
+})
