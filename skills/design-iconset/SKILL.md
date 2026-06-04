@@ -9,9 +9,9 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 
 ## 목적
 
-`design-brand-kit`(과 보통 `design-logo`)이 확정된 뒤 사용한다. brand kit의 §11 아이코노그래피는 스타일·폼 규칙·메타포·상태 규칙을 한 줄씩 박아둔 결정이므로, 여기서 그 결정을 따라 **제품에서 실제로 쓸 아이콘 세트를 개별 SVG 파일로 직접 저작**한다. 각 SVG는 `viewBox="0 0 24 24"`·`currentColor`로 recolor·무한 scale 된다. 품질 기준은 "랜덤 AI 아이콘"이 아니라 **하나의 가족(one family)으로 읽히는 제품 아이콘 세트**다 — cross-icon 일관성이 전부다.
+`design-brand-kit`(과 보통 `design-logo`)이 확정된 뒤 사용한다. brand kit의 §11 아이코노그래피는 스타일·폼 규칙·메타포·상태 규칙을 한 줄씩 박아둔 결정이므로, 여기서 그 결정을 따라 **Iconify 단일 세트에서 fetch해 `viewBox="0 0 24 24"`·`currentColor`로 정규화**하고, 세트에 없는 gap(도메인 전용) 아이콘만 §11 폼 규칙을 따라 합성·저작한다(처음부터 전량 저작은 이제 fallback이 아닌 gap에 한정). 각 SVG는 `viewBox="0 0 24 24"`·`currentColor`로 recolor·무한 scale 된다. 품질 기준은 "랜덤 AI 아이콘"이 아니라 **하나의 가족(one family)으로 읽히는 제품 아이콘 세트**다 — cross-icon 일관성이 전부다.
 
-**역할 분리:** brand-kit의 `assets/brand-kit/icon/*.png`는 **브랜드 컨셉/정체성 전시용**(overview에만)이라 제품에 안 나간다. iconset은 그것을 시드로도 읽지 않는다 — 스타일 근거는 **§11 규칙 + tokens만**이며, 제품용 SVG 가족을 처음부터 직접 저작한다.
+**역할 분리:** brand-kit의 `assets/brand-kit/icon/*.png`는 **브랜드 컨셉/정체성 전시용**(overview에만)이라 제품에 안 나간다. iconset은 그것을 시드로도 읽지 않는다 — 스타일 근거는 **§11 규칙 + tokens만**이며, 제품용 SVG 가족은 Iconify 세트 fetch(적중분)와 gap 합성/저작(미적중분)으로 완성한다.
 
 > **파이프라인 비대칭(의도):** 로고는 확정 시 캐노니컬 파일(`assets/logo/logo.png`)을 덮어써 overview에서 base를 갈아치우지만, 아이콘은 이 역할 분리 때문에 컨셉 PNG(브랜드 전시)와 확정 SVG(제품)가 overview §11에 **병존**한다. lock 때 `<!-- design-iconset:slot -->` 사이를 확정 SVG로 치환하되 컨셉 PNG는 남긴다(아래 흐름 9). 이 비대칭은 빠뜨린 게 아니라 의도다.
 
@@ -50,7 +50,7 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 
 ## SVG 저작 방식
 
-- **fetch+정규화(@iconify/tools·`scripts/`) + 부족분만 저작**: 세트에서 가져온 아이콘은 `normalize.mjs`로 24그리드·currentColor 정규화해 사용. gap(세트에 없는 아이콘)만 §11 폼 규칙 + tokens를 따라 LLM이 SVG로 직접 저작한다. 가족 계약(스타일·viewBox·stroke/fill·join/cap·코너·색)은 `references/iconset-sheet.md §1`, 형태·일관성·메타포·회피의 권위는 `../references/design/icon/`(`icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`)다. **`icon-rules.md §6` 이미지 청크는 쓰지 않는다.**
+- **fetch+정규화(@iconify/tools·`scripts/`) + 부족분만 저작**: 세트에서 가져온 아이콘은 `scripts/normalize.mjs`로 24그리드·currentColor 정규화해 사용. gap(세트에 없는 아이콘)만 §11 폼 규칙 + tokens를 따라 LLM이 SVG로 직접 저작한다. 가족 계약(스타일·viewBox·stroke/fill·join/cap·코너·색)은 `references/iconset-sheet.md §1`, 형태·일관성·메타포·회피의 권위는 `../references/design/icon/`(`icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`)다. **`icon-rules.md §6` 이미지 청크는 쓰지 않는다.**
 - **검수 시트는 결정적 스크립트**: `scripts/build-iconset-sheet.mjs`가 `candidate/icon/*.svg`를 글롭→번호+kebab 라벨 HTML 그리드 렌더. `references/iconset-sheet.md §3`.
 - **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`. 처음 제시할 때 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
 - **image-gen·OPENAI_API_KEY 불필요.** **저작 시 네트워크 필요**(api.iconify.design, 키 불필요).
@@ -72,7 +72,7 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 5. **게이트3 — 조건부 메타포**: `fetched`는 자동(생략), `ambiguous`는 가벼운 확인, `gap`만 concept→metaphor(→mode) 합의.
 
 ### Phase 2 — fetch+정규화 → (부족분 처리) → 시트 검수 → lock
-6. **fetch+정규화**: `scripts/fetch-icons.mjs`가 `fetched`/확정된 `ambiguous`를 가져와 `normalize.mjs`로 24그리드·currentColor 정규화해 `candidate/icon/*.svg`로 기록.
+6. **fetch+정규화**: `scripts/fetch-icons.mjs`가 `fetched`/확정된 `ambiguous`를 가져와 `scripts/normalize.mjs`로 24그리드·currentColor 정규화해 `candidate/icon/*.svg`로 기록.
 7. **부족분(gap) 처리 — cascade**:
    - ① 세트에 있음 → fetch (위)
    - ② **없으면 합성(M1~M5)** — *자동 합성 엔진은 Plan 2 예정.* 그전까지는 ③/④로 처리.
