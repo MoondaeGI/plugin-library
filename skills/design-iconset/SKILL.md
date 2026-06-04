@@ -1,6 +1,6 @@
 ---
 name: design-iconset
-description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 아이콘 세트를 SVG 코드로 직접 저작하는 스킬. BRAND_KIT.md §11(아이콘 스타일·폼 규칙·메타포·상태 규칙)·brand-tokens.json을 권위 근거로(brand-kit의 PNG 아이콘은 안 읽음 — 그건 브랜드 컨셉용), 아이콘 목록을 코어/도메인/상태 3분류로 제안·확정하고(게이트1), 각 아이콘의 concept→metaphor를 승인받은 뒤(게이트2), viewBox 0 0 24 24·currentColor 개별 .svg를 candidate/icon/에 저작한다. 폴더를 HTML 그리드로 결정적 렌더해 번호·라벨로 검수·외과 편집하고, 확정 세트를 .design/assets/icon/으로 lock한다. image-gen·OPENAI_API_KEY 불필요.
+description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Iconify 단일 세트에서 fetch해 만든다. §11 스타일로 후보 세트를 점수화해 1개 lock하고(게이트2), 리스트 적중률을 측정한 뒤(게이트2.5), 적중분은 viewBox 0 0 24 24·currentColor로 정규화해 가져오고 부족분만 합성/저작한다(게이트3은 부족분 메타포만 합의). 모든 아이콘을 icon-map.json에 기록하고 .design/assets/icon/으로 lock한다. 저작 시 네트워크 필요(api.iconify.design, 키 불필요), OPENAI_API_KEY 불필요.
 ---
 
 # Design Iconset
@@ -20,7 +20,7 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
 ## 전제
 
 - `design-brand-kit` 산출물 중 `.design/BRAND_KIT.md`·`.design/brand-tokens.json`이 있으면 그걸 쓴다. **없으면 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 / 아이콘용 최소 Q&A로 진행).
-- **이미지 생성·`OPENAI_API_KEY` 불필요** — 아이콘은 LLM이 SVG 코드를 직접 저작한다. 검수 시트만 결정적 스크립트로 HTML 렌더한다.
+- **이미지 생성·`OPENAI_API_KEY` 불필요** — 아이콘은 Iconify 세트에서 fetch+정규화하고, gap(세트 미수록)만 LLM이 SVG 코드로 직접 저작한다. 검수 시트는 결정적 스크립트로 HTML 렌더한다. 네트워크 필요(api.iconify.design, 키 불필요).
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
@@ -41,6 +41,7 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
     iconset-sheet.html        # 검수 시트(candidate/icon에서 결정적 렌더, SVG 인라인 임베드)
   assets/icon/                # 확정 — 순수 복사, 다운스트림이 읽음
     <name>.svg
+    icon-map.json             # provenance/recipe 캐시, lock이 재생성
 ```
 
 - 작업본 `candidate/icon/` → 확정 `assets/icon/` **순수 복사**. 버전 이력은 git.
@@ -49,9 +50,10 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
 
 ## SVG 저작 방식
 
-- **LLM이 §11 폼 규칙 + tokens를 따라 각 아이콘을 깨끗한 SVG로 직접 작성**한다. 가족 계약(스타일·viewBox·stroke/fill·join/cap·코너·색)은 `references/iconset-sheet.md §1`, 형태·일관성·메타포·회피의 권위는 `../references/design/icon/`(`icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`)다. **`icon-rules.md §6` 이미지 청크는 쓰지 않는다.**
+- **fetch+정규화(@iconify/tools·`scripts/`) + 부족분만 저작**: 세트에서 가져온 아이콘은 `normalize.mjs`로 24그리드·currentColor 정규화해 사용. gap(세트에 없는 아이콘)만 §11 폼 규칙 + tokens를 따라 LLM이 SVG로 직접 저작한다. 가족 계약(스타일·viewBox·stroke/fill·join/cap·코너·색)은 `references/iconset-sheet.md §1`, 형태·일관성·메타포·회피의 권위는 `../references/design/icon/`(`icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`)다. **`icon-rules.md §6` 이미지 청크는 쓰지 않는다.**
 - **검수 시트는 결정적 스크립트**: `scripts/build-iconset-sheet.mjs`가 `candidate/icon/*.svg`를 글롭→번호+kebab 라벨 HTML 그리드 렌더. `references/iconset-sheet.md §3`.
 - **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`. 처음 제시할 때 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
+- **image-gen·OPENAI_API_KEY 불필요.** **저작 시 네트워크 필요**(api.iconify.design, 키 불필요).
 
 ## 흐름 (디자이너 협업 루프)
 
@@ -62,23 +64,22 @@ description: 확정된 brand kit를 바탕으로 제품에서 실제로 쓰는 �
   - **(1) 브랜드 킷 먼저**(권장) — design-brand-kit 안내 후 종료.
   - **(2) 아이콘용 최소 Q&A** — 한 번에 하나씩: 제품명·한 줄 소개 / 분야 / 아이콘 스타일 방향(`../references/design/icon/icon-style-catalog.md`) / 도메인 메타포 모티프 / 색(HEX 또는 방향) / 상태 아이콘 필요 여부 / 아이콘 목록 초안 / 피할 클리셰. 추측 금지. 수집분을 `iconset-briefs.md`에 기록(가짜 `BRAND_KIT.md` 만들지 않음). 끝에 design-brand-kit 안내.
 
-### Phase 1 — 흡수 → 목록 게이트 → 메타포 게이트
-1. **md/tokens 흡수 + art direction 백본 고정**: §11(스타일·폼 규칙·모티프·상태 규칙)·§6·§1/에센스·§3·§4·§10·금지패턴 + tokens 색을 읽어 **SVG 가족 계약**을 확정(`references/iconset-sheet.md §1`). 권위는 `icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`.
-2. **게이트 1 — 목록**: 아이콘 목록을 3분류로 유도해 제시하고 "더 받을 거?"를 묻는다.
-   - **① 코어/시스템**(거의 모든 앱; 근거 §1 사용 맥락): 예 `search`·`settings`·`add`·`edit`·`delete`·`close`·`menu`·`filter`·`sort`·`chevron`·`check`·`more`.
-   - **② 도메인/기능**(이 제품만; 근거 §1·§2·§3·§4·§11 + `icon-domain-examples.md` 해당 도메인): 제품이 하는 일을 동사/명사로 분해해 매핑.
-   - **③ 상태**(근거 §11 상태 규칙): `status-success`·`status-warning`·`status-danger`·`status-info`. 구성 동일, 색만 분기.
-   - 규율: **추측 금지**(근거 약하면 임의 추가 말고 물어서 넣음), **과다 생성 방지**(기본은 실제 쓸 것만; ~28개 초과 시 기능 그룹 분할 안내).
-   - 사용자가 추가/제거/직접지정(영어 kebab-case)으로 편집 → **라벨 목록 확정(잠금)**.
-3. **게이트 2 — 메타포 (저작 전 필수)**: 확정 라벨마다 **concept → metaphor(shape)** 매핑을 표(`# | label | concept | metaphor(shape) | category`)로 제시해 승인받는다. 직역(`icon-rules.md §4 Avoid`)·메타포 언어 불일치(`§3` 전부 기하/전부 흐름)를 여기서 검수한다. *단순 라벨이 아니라 "왜 이 형태인가"를 먼저 합의.* 짚인 행만 고쳐 재승인.
-4. `iconset-briefs.md` 작성(읽은 md 근거·확정 목록·메타포 매핑·가족 계약·색·제약).
+### Phase 1 — 리스트 → 세트 선택 → 적중률 → 조건부 메타포
+1. **md/tokens 흡수**: §11·§6·§3·§4·§10·금지패턴 + tokens 색을 읽어 art direction 백본 고정.
+2. **게이트1 — 목록**: 코어/도메인/상태 3분류로 아이콘 목록 확정(기존 유지).
+3. **게이트2 — 세트 선택**: §11 스타일 → `../references/design/icon/icon-style-catalog.md`·`icon-reference-vendors.md`로 후보 set-id 2~3개 → 후보의 동일 대표 아이콘을 `scripts/fetch-icons.mjs`로 가져와 비교 시트로 제시 → 스타일/라이선스/밀도로 점수화해 **단일 세트 lock**. backbone 합성 문법 1개 합의.
+4. **게이트2.5 — 적중률 측정**: `scripts/probe-set.mjs`로 리스트를 세트에 대조 → 분류별 카운트 제시(코어/도메인/상태). 도메인 적중률이 낮으면 분기 제시: (a) 다른 세트 (b) 합성 진행 (c) 도메인 손저작 유지. **세트 go/no-go.**
+5. **게이트3 — 조건부 메타포**: `fetched`는 자동(생략), `ambiguous`는 가벼운 확인, `gap`만 concept→metaphor(→mode) 합의.
 
-### Phase 2 — SVG 저작 → 시트 검수 → 편집 → lock
-5. **SVG 저작**: 확정 목록을 가족 계약에 따라 개별 `.svg`로 작성(`.design/candidate/icon/<name>.svg`). 모든 SVG가 공통 불변 + 스타일별 분기(`references/iconset-sheet.md §1`)를 따른다. 모호하면 `icon-rules.md §1–§5`로 해소.
-6. **시트 렌더**: `build-iconset-sheet.mjs`로 `.design/view/iconset-sheet.html` 생성 → `serve-design.mjs` 라이브 프리뷰로 검수.
-7. **편집 루프**: 번호/이름 지목 → **해당 `.svg`만 외과 편집**(`references/iconset-sheet.md §4`) → 자동 새로고침. 목록 변경이면 파일 추가/삭제 후 재렌더.
-8. **일관성 검사**: 구조 린트(viewBox·스타일 앵커 균일) + 시각 자가 검수(One-Color/Small UI/cross-icon, `icon-rules.md §5`).
-9. **lock (승격 + overview 주입)**: 확정 `*.svg`를 `.design/assets/icon/`로 순수 복사. `iconset-briefs.md`는 작업 참조용이라 복사하지 않는다(`candidate/icon/`에만 두고 git 추적). 이어 `view/overview.html`의 `<!-- design-iconset:slot -->…<!-- /design-iconset:slot -->` 사이를 `assets/icon/*.svg`를 인라인한 그리드(`<div>`에 각 SVG를 currentColor로, 토큰색 배경)로 **외과 치환**한다(멱등 — 재실행 안전; 마커 없으면 §11 끝에 삽입). 라이브 서버가 떠 있으면 자동 새로고침. 다운스트림(`design-ui-kit`·`design-md-compiler`)은 `.design/assets/icon/`를 읽는다. 산출 경로 제시 후 안내: **"다음 단계: `design-ui-kit`"**. 라이브 프리뷰 서버가 떠 있으면 종료.
+### Phase 2 — fetch+정규화 → (부족분 처리) → 시트 검수 → lock
+6. **fetch+정규화**: `scripts/fetch-icons.mjs`가 `fetched`/확정된 `ambiguous`를 가져와 `normalize.mjs`로 24그리드·currentColor 정규화해 `candidate/icon/*.svg`로 기록.
+7. **부족분(gap) 처리 — cascade**:
+   - ① 세트에 있음 → fetch (위)
+   - ② **없으면 합성(M1~M5)** — *자동 합성 엔진은 Plan 2 예정.* 그전까지는 ③/④로 처리.
+   - ③ 단일 새 개념/hero → 세트를 레퍼런스로 손저작(`viewBox 0 0 24 24`·`currentColor`, 24그리드).
+   - ④ 안 읽힘 → 가장 가까운 세트 아이콘 대체 + 플래그.
+8. **시트 검수·편집**: `build-iconset-sheet.mjs`로 렌더 → `serve-design.mjs` 라이브 프리뷰 → 번호/이름 지목 외과 편집(기존). One-Color·Small UI·cross-icon 검사.
+9. **lock**: `candidate/icon/*.svg` → `assets/icon/*.svg` 순수 복사. `scripts/build-icon-map.mjs`로 `assets/icon/icon-map.json` **재생성** + `validateMap`로 1:1 정합 확인(어긋나면 경고). overview 슬롯 주입(기존). 다운스트림(`design-ui-kit` 등)은 `assets/icon/*.svg`를 읽음. 라이브 서버 종료.
 
 ## 품질 기준 / 금지 사항
 
