@@ -208,7 +208,8 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
   "radius": { "sm": "6px", "md": "10px", "lg": "16px", "xl": "24px" },
   "shadow": { "sm": "", "md": "", "lg": "" },
   "spacing": { "sectionY": "", "containerX": "", "cardPadding": "" },
-  "wordmark": { "font": "", "tracking": "", "weight": "700", "case": "none", "color": "primary" }
+  "wordmark": { "font": "", "tracking": "", "weight": "700", "case": "none", "color": "primary" },
+  "lockup": { "markScale": "1.8", "gap": "0.5em", "taglineSize": "0.42em", "taglineTracking": "0.22em", "taglineColor": "textMuted" }
 }
 ```
 
@@ -217,6 +218,8 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 > **타이포(§8)·`typography` 토큰의 폰트는 형제 공유 ref `../references/design/font-catalog.md`에서만 고른다 — 모델이 폰트명을 지어내지 않는다.** (선택) 인용/액센트 폰트가 필요하면 카탈로그 Serif/Script에서 골라 `accent` 토큰에 박는다 — 안 쓰면 빈 문자열. 각 역할(`display`/`heading`/`body`/`caption`/`label`/`mono`/`accent`)에 카탈로그의 **실존 font-family + 폴백 스택**을 그대로 토큰에 박는다 (폰트명 단독 금지; 예: `"body": "Pretendard, -apple-system, \"Apple SD Gothic Neo\", sans-serif"`). 후보 폰트는 **글자·URL이 아니라 실렌더로** 보고 고른다 — 분위기 **열림**이면 후보 폰트가 컨택트 시트(`directions.html`)에서 실폰트로 적용돼 게이트에서 보고 고르고, 분위기 **고정**이면 data-only `overview.html`의 §8 스펙시먼으로 확인한다. gpt-image는 폰트 파일을 로드하지 않으므로, 자산 프롬프트엔 폰트명이 아니라 카탈로그의 **성격 한 줄(타입 스타일)**을 묘사한다. HTML 오버뷰는 실폰트 CDN `<link>`로 실렌더한다. 워드마크가 폰트 모드이고 전용 로고타입 폰트를 쓰면 `font-catalog.md`의 **Logotype 서브셋**에서 고른다(없으면 display 재사용).
 
 > `wordmark`(선택)는 **폰트 모드 워드마크**의 스타일이다. `font`는 비우면 `display` 재사용, 채우면 `font-catalog.md`의 **Logotype 서브셋**에서 고른 전용 폰트(폴백 스택 포함). `tracking`/`weight`/`case`(none|uppercase|lowercase)/`color`(color 토큰 키)는 `tokens.css`의 `.wordmark` 클래스로 emit된다 — 이게 워드마크 레터링의 단일 권위이며 §6 산문에 중복하지 않는다. 이미지 모드면 이 블록은 무시된다.
+
+> `lockup`(선택)은 **심볼+워드마크 락업**의 비율·간격이다. `markScale`(마크 높이 = 워드마크 font-size의 배수, 기본 1.8)·`gap`(심볼-워드마크 간격)·`tagline*`(소제목 크기·자간·색 토큰 키)는 `tokens.css`의 `.lockup*` 클래스로 emit된다 — 락업 관계의 단일 권위다. 비우면 기본값. **마크 모양마다 균형이 달라 `markScale`은 프리뷰에서 에이전트가 조정**한다(사용자는 승인만).
 
 ## brand-briefs.md 구조
 
