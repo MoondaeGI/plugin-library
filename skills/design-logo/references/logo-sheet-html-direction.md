@@ -18,9 +18,9 @@
 
 ## 2. 카드 구성
 
-각 카드 = **투명 로고 PNG**(충분히 크게 — autocrop으로 마크가 캔버스를 꽉 채운 상태라 `height:Npx`가 곧 마크 크기) + **인덱스 번호**(`01`–`04`) + **한 줄 방향 라벨** + **컨셉 방법/유형 태그**(예: "negative-space / symbol").
+각 카드 = **투명 로고 PNG**(제시용 — autocrop 없이 여백 포함) + **인덱스 번호**(`01`–`04`) + **한 줄 방향 라벨** + **컨셉 방법/유형 태그**(예: "negative-space / symbol"). 카드 이미지는 `max-height:Npx; width:auto; object-fit:contain`으로 받아 여백 포함 마크도 균일하게 보이게 한다.
 - `logo-base.png` = **베이스라인 타일(#0 "brand-kit 기준")** 고정. 비교·즉시 선택용.
-- 비정사각 마크는 `object-fit:contain`.
+- 모든 마크 `object-fit:contain`(여백 정규화).
 
 ## 3. 발산 모드 (A / B / C)
 
@@ -68,4 +68,4 @@ Avoid: shield/lock/globe/gear/speech-bubble cliches, meaningless gradient/3D bev
 - 모드 A·C: 위 청크 + `logo-base.png`(A) 또는 `seed-user.png`(C)를 `--image`로 첨부, "이 마크를 모티브로 한 새 해석" 문구 추가. 호출에 `--input-fidelity high` 를 더한다.
 - 수렴: 고른 #N PNG를 `--image --input-fidelity high`로 첨부 + "이 방향을 유지하며 서로 조금씩 다른 변주, 단일 마크, 투명 배경".
 
-위 [브래킷]은 `BRAND_KIT.md`/tokens/Q&A에서 채운다. 한 라운드 3~4콜은 **병렬 백그라운드**로 호출하고, `--model gpt-image-1.5 --background transparent --autocrop --auto-version`. 앵커(A·C·수렴)는 여기에 `--input-fidelity high` 추가.
+위 [브래킷]은 `BRAND_KIT.md`/tokens/Q&A에서 채운다. 한 라운드 3~4콜은 **병렬 백그라운드**로 호출하고, `--model gpt-image-1.5 --background transparent --quality high --auto-version`. 앵커(A·C·수렴)는 여기에 `--input-fidelity high` 추가.
