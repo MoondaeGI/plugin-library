@@ -33,7 +33,7 @@
 - `--quality low` → **`--quality high`**.
 - **`--autocrop` 제거**(여백 유지 — 마크가 캔버스를 꽉 채우지 않게).
 - 프롬프트 프레이밍 추가: `premium, intentional, flat, no gradient, looks like a real shipped logo` + 브랜드 메타포 바인딩(BRAND_KIT §6).
-- 모델·배경: **gpt-image-1.5 유지.** 배경(투명 vs 불투명 브랜드 캔버스)은 *둘 다 1.5로 가능* — **플랜에서 1~2장 비교로 확정**(투명 유지 시 보드 호환↑, 불투명 시 엠블럼 풍부함↑). 본 스펙은 "autocrop off + high"가 핵심임을 고정하고 배경은 플랜 검증으로 남긴다.
+- 모델·배경: **gpt-image-1.5 유지.** **배경 확정 = 투명 + "self-contained" 프롬프트 보강**(filled badge/mark가 투명 위에서 안 비게). 보드·다운스트림이 투명 컷아웃 전제라 정합적. **검증 PASS(2026-06-05)**: 새 레시피로 SugarLoop 엠블럼·콤비네이션·심볼 3장 생성 → 전부 풍부 + 투명 self-contained(속 안 빔) 확인(`design-test/SugarLoop/.design/candidate/logo/recipeA-test/`). 본 스펙은 "autocrop off + high + 투명 self-contained"를 핵심으로 고정.
 - 발산/다듬기 루프·시드 앵커·`--auto-version` 등 나머지 흐름은 현행 유지.
 
 ### 3.2 보드/다운스트림 공존
@@ -72,6 +72,7 @@ A 출하 후 별도 스펙으로 다룬다. **착수 전 선검증 필요 항목
 - 다크 변형(풍부한 로고 light/dark 2장).
 - brand-kit/design-logo 책임 경계(brand-kit 과적재 주의 — design-logo가 로고 시스템 소유 유지).
 - PNG→SVG 트레이서: 거의 안 쓰이는 폴백 → 넣을지 자체 재검토.
+- **design-logo `logo.png` = 심볼만(워드마크 안 구움) — 분리성 보장.** A에서 갱신한 `logo-art-direction.md §7`의 "Wordmark (if shown)" 줄이 심볼 자산에 글자를 굽도록 유인할 수 있으니, B에서 "기본 심볼만, 워드마크는 락업에서 별도"로 제약한다. production 콤비네이션 = 심볼(글자 없음) + 별도 워드마크(HTML `.wordmark` 또는 `wordmark-base.png`) + 락업 조합. 통째로 baked 콤비네이션은 "진짜 융합"일 때만(그때도 단독 워드마크 별도 emit). 근거: 2026-06-05 테스트에서 #2 콤비네이션이 baked 워드마크라 분리 불가 확인.
 
 ## 7. 비범위 재확인
 A는 *생성 레시피 파라미터*만 바꾼다. 자산 토폴로지·HTML 계약·타입 게이트·자산 분류·락업·favicon은 전부 스펙 B.
