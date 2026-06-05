@@ -69,7 +69,7 @@ npm run codex:reinstall   # sync(번들 재생성) → codex plugin remove → a
 
 **핵심 파이프라인**: `design-brand-kit`(브랜드 정체성·base 자산·HTML 오버뷰·공유 `tokens.css`) → `design-logo` / `design-iconset` → `design-ui-kit`(토큰 기반 UI 컴포넌트 라이브러리 HTML/CSS) → `design-md-compiler`(→ `DESIGN.md`). 여기까지가 designer 핵심.
 
-**다운스트림** (주체·구현 상태): `design-component-export`(front-developer·미구현) → (선택) `design-image-web`·`design-image-mobile`(designer, `DESIGN.md` 시드) → `design-html-prototype`(web-publisher) → `design-generate-code`(front-developer·미구현).
+**다운스트림** (주체·구현 상태): `design-component-export`(front-developer·미구현) → (선택) `design-image-web`·`design-image-mobile`(designer, `DESIGN.md` 시드 — 풀페이지 목업, html-prototype 직전 탐색) → `design-html-prototype`(web-publisher) → `design-generate-code`(front-developer·미구현).
 
 `designer`가 핵심 파이프라인을 협업 루프로 운전하고, 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받는다. `tokens.css`는 brand-kit이 만들어 모든 view HTML이 공유하는 토큰 토대다.
 

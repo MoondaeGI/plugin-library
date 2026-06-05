@@ -91,6 +91,7 @@ breakpoint 표·터치타깃·collapsing 전략. (breakpoint 토큰 없으면 "�
 ## 8. 이미지 에셋 사용 규칙
 DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·컨셉 전시물 제외).
 - 로고: `assets/logo/logo.png`(brand-kit lock 후 항상 존재 — design-logo 덮어쓰기 또는 base 시드) / 배경: / 제품 목업: / 아이콘셋: `assets/icon/*.svg`(없으면 §12 Gap; 컨셉 아이콘 `brand-kit/icon/*`는 제품 아이코노그래피로 쓰지 않음) / UI 킷 레퍼런스: / 사용하지 말아야 할 방식: candidate 시안을 확정처럼 참조하는 것.
+- `assets/page/`의 풀페이지 목업(`design-image-web`·`design-image-mobile` 산출)은 **탐색 레퍼런스**로 참조한다 — 텍스트·UI가 이미지에 박혀 있어도 무방하며, 최종 텍스트와 컴포넌트는 HTML/코드에 둔다.
 
 ## 9. Do's & Don'ts
 토큰 참조로 박은 강제·금지(예: "모든 인터랙티브는 {colors.primary} — 2번째 accent 금지").
@@ -100,7 +101,7 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
 
 ## 11. Anti-slop checklist
 - Hero가 2~3줄 안에 들어오는가? / 버튼 대비가 충분한가? / 의미 없는 blob·glow가 없는가?
-- 섹션 간 레이아웃이 반복되지 않는가? / UI 텍스트가 이미지에 박혀 있지 않은가? / 컴포넌트가 재사용 가능한 구조인가?
+- 섹션 간 레이아웃이 반복되지 않는가? / UI 텍스트가 이미지에 박혀 있지 않은가?(단, `assets/page/`의 풀페이지 목업은 *탐색 레퍼런스*이므로 텍스트가 박혀도 위반이 아니다 — 최종 텍스트는 HTML/코드에 둔다) / 컴포넌트가 재사용 가능한 구조인가?
 
 ## 12. Provenance & Known Gaps
 - 읽은 입력 파일 목록 / 추측한 값(표시) / 누락 입력(어떤 이전 단계가 필요한지) / 근거 부족 항목 / frontmatter는 tokens.css에서 재생성됨을 명시.
@@ -136,5 +137,5 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
 3. 사람이 DESIGN.md를 검토한다.
 4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다 — **여기까지가 designer 핵심 파이프라인**이다:
    - 핵심 다음 단계: **`design-component-export`** (front-developer 몫 · **미구현** placeholder)로 대상 프로젝트에 컴포넌트를 export.
-   - 페이지 디자인이 필요하면 웹은 **`design-image-web`**, 앱은 **`design-image-mobile`** — `DESIGN.md`를 시드로 하는 선택 단계. 페이지 이미지는 `assets/page/<slug>-<platform>-<section>.png`(평면)로 저장되며, md-compiler는 파일명을 파싱하지 않고 `candidate/page/page-briefs.md` 산문에서 의미(섹션·순서·캡션)를 읽는다.
+   - 페이지 디자인이 필요하면 웹은 **`design-image-web`**, 앱은 **`design-image-mobile`** — `DESIGN.md`를 시드로 하는 선택 단계. **`design-html-prototype` 직전 단계.** 페이지 이미지는 풀페이지 목업으로 `assets/page/<slug>-<platform>.png`(웹, 선택 `-<zone>`)·`assets/page/<slug>-mobile-<screen>.png`(모바일)로 저장되며, md-compiler는 파일명을 파싱하지 않고 `candidate/page/page-briefs.md` 산문에서 의미(화면·순서·캡션)를 읽는다.
    - 풀페이지 HTML 프로토타입은 **web-publisher**가 `design-html-prototype`으로 빌드+QA한다.
