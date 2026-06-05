@@ -20,6 +20,7 @@
 
 - **§1** `../assets/brand-kit/key-visual.png` 배경 `<img>` + `../assets/brand-kit/wordmark-base.png` `<img>`(크게) + 한 줄 설명·포지셔닝(텍스트) + CSS 스크림으로 가독성. — **폰트 모드면** 워드마크는 `<img>` 대신 `<span class="wordmark">브랜드명</span>`(크게). `.wordmark`는 tokens.css가 정의.
 - **§6** `../assets/logo/logo.png`(심볼 — **캐노니컬 로고 경로**; brand-kit이 `logo-base.png`에서 시드, design-logo가 덮어씀)·`../assets/brand-kit/wordmark-base.png`(락업) + 변형(심볼 단독 · 앱아이콘[브랜드색 라운드 타일, `filter:brightness(0) invert(1)`로 흰 마크] · 파비콘) + 구성·의미 텍스트. 로고 자리는 `max-height`+`object-fit:contain`으로 저작해 확정 마크 종횡비가 base와 달라도 graceful하게 degrade한다(고정 height 강제 금지). **`<!-- design-logo:slot -->` 마커는 쓰지 않는다** — design-logo는 이 경로 파일을 덮어쓰는 방식이라 HTML 편집이 없다. — **폰트 모드면** 락업의 워드마크 부분을 `<span class="wordmark">`로 대체(심볼은 그대로 이미지).
+  - **락업 렌더(신규)**: §6에 실제 `.lockup`을 1개 이상 렌더한다 — `<div class="lockup"><img class="lockup__mark" src="../assets/logo/logo.png"><div class="lockup__body"><span class="wordmark">브랜드명</span></div></div>`(가로) 와 `.lockup.lockup--stacked`(세로). 태그라인이 있으면 `.lockup__body` 안에 `<span class="lockup__tagline">태그라인</span>` 추가. `.lockup*`·`.wordmark`는 tokens.css가 정의(재구현 금지). 이미지 모드 워드마크면 `<span class="wordmark">` 대신 `<img class="wordmark-img" src="../assets/brand-kit/wordmark-base.png">`(워드마크 자체가 이미지). 심볼이 없으면 락업 생략하고 워드마크만.
 - **§7** tokens 색 → 스와치 + HEX + 용도.
 - **§8** font-catalog 폰트 → Display/H1/H2/Body/Caption/Mono 스펙시먼. accent 폰트가 있으면 그 스펙시먼도 한 줄 보여준다.
 - **§10** `../assets/brand-kit/ui-base.png` 크게(목업이 주인공) + UI 방향 노트.
