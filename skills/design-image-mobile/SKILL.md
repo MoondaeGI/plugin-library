@@ -1,6 +1,6 @@
 ---
 name: design-image-mobile
-description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로스플랫폼)의 화면·플로우 디자인 이미지를 세로 폰 목업 포맷으로 만드는 designer 소유의 선택 다운스트림 단계. DESIGN.md엔 앱 화면 정의가 없어 화면 플로우는 사용자와 협업 확정(게이트1)하되 색·폰트·자산 값은 DESIGN.md 토큰에 바인딩한다. image-gen(gpt-image-2)으로 한 화면씩 생성, 게이트 리뷰 시트로 검수·외과 편집해 assets/page/로 lock. DESIGN.md가 없으면 design.md 요청 또는 진도 감지 후 design-md-compiler/brand-kit로 유도. OPENAI_API_KEY 필요. 아트디렉션은 references/art-direction-mobile.md.
+description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로스플랫폼)의 화면·플로우 디자인 이미지를 세로 폰 목업 포맷으로 만드는 designer 소유의 선택 다운스트림 단계. DESIGN.md엔 앱 화면 정의가 없어 화면 플로우는 사용자와 협업 확정(게이트1)하되 색·폰트·자산 값은 DESIGN.md 토큰에 바인딩한다. image-gen(gpt-image-2)으로 화면 방향을 발산(저품질)→확정(고품질)하고, 게이트 리뷰 시트로 검수·외과 편집해 assets/page/로 lock. DESIGN.md가 없으면 design.md 요청 또는 진도 감지 후 design-md-compiler/brand-kit로 유도. HTML 구현(design-html-prototype) 전 룩 탐색용. OPENAI_API_KEY 필요. 아트디렉션은 references/art-direction-mobile.md.
 ---
 
 # Design Image Mobile
@@ -9,7 +9,7 @@ description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로
 
 ## 목적 / 위치
 
-이 스킬은 **designer 핵심 파이프라인(`design-md-compiler`)이 끝난 뒤 실행되는 선택 다운스트림**이다. DESIGN.md가 확정되면 "모바일 앱 화면 이미지를 만들까요?"로 제안하고 사용자 동의 시 실행한다.
+이 스킬은 **designer 핵심 파이프라인(`design-md-compiler`)이 끝난 뒤, `design-html-prototype` 직전** 탐색 단계다. DESIGN.md가 확정되면 "모바일 앱 화면 이미지를 만들까요?"로 제안하고 사용자 동의 시 실행한다. 확정 화면 이미지는 **`design-html-prototype`의 비주얼 타깃**이 된다 — 픽셀 정밀본은 HTML이 만든다.
 
 대상은 iOS·Android·크로스플랫폼 앱의 **화면·플로우별 세로 이미지**로, 각 화면(온보딩·인증·홈·상세 등)에 1장씩 생성한다. 모든 소통은 한국어로 하며, 이미지 안에 들어가는 텍스트도 한국어로 렌더한다.
 
@@ -39,10 +39,9 @@ description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로
     page-mobile-<slug>.html                       # 타깃별 라이브 시트 (LLM 저작)
   candidate/page/
     page-briefs.md                                # 공통 출처 로그 (산문)
-    <slug>-mobile-<screen>.png                    # 시안 (평면)
-    <slug>-mobile-<screen>-v2.png                 # 재생성 누적 (--auto-version)
+    <slug>-mobile-<screen>-r<N>-<NN>.png          # 발산 시안 (low, --auto-version)
   assets/page/
-    <slug>-mobile-<screen>.png                    # 확정 deliverable (평면)
+    <slug>-mobile-<screen>.png                    # 확정 deliverable (high)
 ```
 
 파일명(`<slug>-mobile-<screen>`)은 사람이 알아보는 식별자일 뿐이다. 화면의 의미·순서·캡션·확정 컨셉은 `candidate/page/page-briefs.md` 산문에 기록한다. `design-md-compiler`는 파일명을 파싱하지 않고 이 산문을 읽는다.
@@ -56,29 +55,32 @@ description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로
 - **디바이스 프레임**: 기본 **on** — 프롬프트에 폰 프레임·목업 렌더를 명시한다.
 - **확정 자산 앵커**: `logo.png`·`icon/*.svg`·`ui-base.png`·`key-visual.png`를 `--image`로 첨부해 브랜드 바인딩한다. 원본 보존이냐 참고냐는 프롬프트 문구로 표현한다(예: "이 로고 마크를 상단 앱바에 그대로 배치하라" vs "이 비주얼 분위기를 참고해 새 화면을 구성하라"). `gpt-image-2`는 `input_fidelity` 파라미터를 지원하지 않으므로 fidelity 제어는 프롬프트 문구에 의존한다.
 - **재생성**: `--auto-version`으로 시안을 누적하고 기존 파일을 덮지 않는다.
-- **개별 호출**: 서로 다른 화면은 각각 독립 호출한다. 동시 생성이 필요하면 병렬 백그라운드로 실행 가능하나, 수정 루프(다듬기)는 순차로 진행한다.
+- **발산·수렴**: `--quality low`로 빠르게 방향을 탐색한다. **확정 직전 1장만 `--quality high`**로 최종 생성해 잔글씨 품질을 끌어올린다.
+- **병렬 발산**: 발산 라운드에서 방향 3~4개를 백그라운드 병렬 호출로 동시 생성 가능하다. 수렴·다듬기 루프는 순차로 진행한다.
 - **프롬프트**: 긴 프롬프트는 임시 파일에 써서 `--prompt-file`로 넘긴다. **프롬프트의 색·폰트·카피·브랜드명은 반드시 DESIGN.md에서 가져온다. 지어내지 않는다.**
-- **초안 품질**: `--quality low`로 빠르게 탐색하고, 확정 lock 직전에 `--quality high`로 최종 생성한다.
 
-호출 예시(신규 화면 시안 — 자산 앵커 첨부):
+**비용 규율**: 발산은 `--quality low`, 확정만 `--quality high`.
+
+호출 예시(발산 방향 시안 — 저품질·자산 앵커 첨부):
 
 ```bash
 node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
-  --prompt-file /tmp/onboarding-welcome-prompt.txt \
+  --prompt-file /tmp/onboarding-dir1-prompt.txt \
   --image "<cwd>/.design/assets/logo/logo.png" \
   --image "<cwd>/.design/assets/brand-kit/ui-base.png" \
-  --out "<cwd>/.design/candidate/page/onboarding-mobile-welcome.png" \
+  --out "<cwd>/.design/candidate/page/onboarding-mobile-welcome-r1-01.png" \
   --auto-version --model gpt-image-2 --size 1024x1536 --quality low
 ```
 
-호출 예시(직전 시안을 앵커로 한 가지만 외과 편집):
+호출 예시(확정 직전 고품질 최종 생성):
 
 ```bash
 node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
-  --prompt-file /tmp/onboarding-welcome-edit-prompt.txt \
-  --image "<cwd>/.design/candidate/page/onboarding-mobile-welcome.png" \
-  --out "<cwd>/.design/candidate/page/onboarding-mobile-welcome.png" \
-  --auto-version --model gpt-image-2 --size 1024x1536 --quality low
+  --prompt-file /tmp/onboarding-final-prompt.txt \
+  --image "<cwd>/.design/assets/logo/logo.png" \
+  --image "<cwd>/.design/assets/brand-kit/ui-base.png" \
+  --out "<cwd>/.design/assets/page/onboarding-mobile-welcome.png" \
+  --auto-version --model gpt-image-2 --size 1024x1536 --quality high
 ```
 
 ## 아트디렉션 인용
@@ -121,23 +123,24 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 `references/art-direction-mobile.md`에 정의된 조합형 변주 요소(플랫폼 모드·목업 프레임 스타일·컬러 테마·화면 구성 등)를 기반으로 이번 타깃의 방향을 2~3가지 제시한다. 사용자가 선택·합의한 방향이 이후 모든 화면 프롬프트의 기준이 된다.
 
-### 화면별 생성 루프
+### 발산 라운드 (화면별)
 
-**한 장씩** 진행한다. 자율 일괄 생성 금지.
+**화면 하나씩** 진행한다. 자율 일괄 생성 금지.
 
-1. **생성**: 합의된 방향 + DESIGN.md 토큰을 바인딩해 화면 1개를 `image-gen`으로 생성.
-2. **라이브 렌더**: 시트(`page-mobile-<slug>.html`)에 추가하고 라이브 서버로 보여준다(최초 1회 서버 기동 확인).
-3. **수정 루프** — 한 번에 한 가지만:
-   - "다시" / "다르게" → `--auto-version`으로 재생성. 이전 시안은 candidate에 보존.
-   - 세부 수정 → 직전 시안을 `--image`로 첨부하고 바꿀 부분 한 가지만 프롬프트에 명시해 외과 편집.
-   - "좋다" / "다음" → lock 단계로 이동.
+1. **발산**: 합의된 방향에서 방향 변주 3~4개를 `--quality low` 병렬 호출로 동시 생성. 발산 네이밍 `-r<N>-<NN>` 접미 사용(예: `onboarding-mobile-welcome-r1-01.png`).
+2. **라이브 렌더**: 시트(`page-mobile-<slug>.html`)에 번호로 나열하고 라이브 서버로 보여준다(최초 1회 서버 기동 확인).
+3. **선택·수렴**:
+   - "#N 좋다" → 해당 시안을 `--image` 앵커로 수렴 다듬기 진행하거나 바로 확정.
+   - "더 다르게" → 발산 재생성(시트 번호 교체).
+4. **다듬기** — 한 번에 한 가지만: 직전 시안을 `--image`로 첨부하고 바꿀 부분 한 가지만 프롬프트에 명시해 외과 편집(`--auto-version`, `--quality low`).
+5. "좋다" / "다음" → lock 단계로 이동.
 
 ### Lock
 
-- 확정본을 `assets/page/<slug>-mobile-<screen>.png`에 복사(평면, 확정 deliverable).
-- 시안은 `candidate/page/`에 보존한다. 덮지 않는다.
+- 확정 직전 `--quality high`로 최종 1장 생성해 `assets/page/<slug>-mobile-<screen>.png`에 저장(확정 deliverable).
+- 발산·다듬기 시안은 `candidate/page/`에 보존한다. 덮지 않는다.
 - `candidate/page/page-briefs.md`에 타깃·화면·순서·캡션·확정 컨셉을 산문으로 기록한다(`design-md-compiler`가 이 파일을 읽는다).
-- 서버를 종료하고 다음 단계를 안내한다.
+- 서버를 종료하고 **"확정 화면 이미지가 `design-html-prototype`의 비주얼 타깃"** 임을 안내한다.
 
 ## Phase 0 — DESIGN.md 부재 폴백
 
