@@ -136,3 +136,34 @@ test("하위호환: 문자열 typography는 --font-<role>만 emit (--text-* 없�
   assert.match(css, /--font-display:\s*"Gowun Batang"/);
   assert.doesNotMatch(css, /--text-display-size/);
 });
+
+test("lockup 블록 없으면 기본 --logo-* 토큰 emit", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /--logo-mark-scale:\s*1\.8/);
+  assert.match(css, /--logo-gap:\s*0\.5em/);
+  assert.match(css, /--logo-tagline-size:\s*0\.42em/);
+  assert.match(css, /--logo-tagline-tracking:\s*0\.22em/);
+});
+
+test("lockup 기본 .lockup 클래스 emit", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /\.lockup\s*\{[^}]*display:\s*inline-flex/);
+  assert.match(css, /\.lockup--stacked\s*\{[^}]*flex-direction:\s*column/);
+  assert.match(css, /\.lockup__mark\s*\{[^}]*height:\s*calc\(var\(--logo-mark-scale\)\s*\*\s*1em\)/);
+  assert.match(css, /\.lockup__mark\s*\{[^}]*object-fit:\s*contain/);
+  assert.match(css, /\.lockup__tagline\s*\{/);
+});
+
+test("lockup override 값 적용", () => {
+  const css = generateTokensCss({ ...SAMPLE, lockup: { markScale: "2.0", gap: "0.7em", taglineTracking: "0.3em" } });
+  assert.match(css, /--logo-mark-scale:\s*2\.0/);
+  assert.match(css, /--logo-gap:\s*0\.7em/);
+  assert.match(css, /--logo-tagline-tracking:\s*0\.3em/);
+});
+
+test("lockup tagline 색은 토큰 키, 없으면 text 폴백", () => {
+  const css1 = generateTokensCss({ ...SAMPLE, lockup: { taglineColor: "primary" } });
+  assert.match(css1, /\.lockup__tagline\s*\{[^}]*color:\s*var\(--color-primary\)/);
+  const css2 = generateTokensCss({ ...SAMPLE, lockup: { taglineColor: "nonexistent" } });
+  assert.match(css2, /\.lockup__tagline\s*\{[^}]*color:\s*var\(--color-text\)/);
+});

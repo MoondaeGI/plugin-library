@@ -8,6 +8,31 @@ const TINT_ALPHA = { primary:0.08, accent:0.10, success:0.14, warning:0.16, dang
 
 const WORDMARK_DEFAULTS = { tracking: "normal", weight: "700", case: "none", color: "text" };
 
+const LOCKUP_DEFAULTS = { markScale: "1.8", gap: "0.5em", taglineSize: "0.42em", taglineTracking: "0.22em", taglineColor: "textMuted" };
+
+function generateLockupVars(lockup = {}) {
+  return [
+    `  --logo-mark-scale: ${pick(lockup.markScale, LOCKUP_DEFAULTS.markScale)};`,
+    `  --logo-gap: ${pick(lockup.gap, LOCKUP_DEFAULTS.gap)};`,
+    `  --logo-tagline-size: ${pick(lockup.taglineSize, LOCKUP_DEFAULTS.taglineSize)};`,
+    `  --logo-tagline-tracking: ${pick(lockup.taglineTracking, LOCKUP_DEFAULTS.taglineTracking)};`,
+  ];
+}
+
+function generateLockupClass(lockup = {}, color = {}) {
+  const wanted = pick(lockup.taglineColor, LOCKUP_DEFAULTS.taglineColor);
+  const tagColor = color[wanted] ? wanted : "text";
+  return [
+    ".lockup { display: inline-flex; align-items: center; gap: var(--logo-gap); }",
+    ".lockup--stacked { flex-direction: column; text-align: center; }",
+    ".lockup__mark { height: calc(var(--logo-mark-scale) * 1em); width: auto; object-fit: contain; flex: none; }",
+    ".lockup__body { display: flex; flex-direction: column; }",
+    ".lockup--stacked .lockup__body { align-items: center; }",
+    `.lockup__tagline { font-family: var(--font-body, var(--font-display)); font-size: var(--logo-tagline-size); letter-spacing: var(--logo-tagline-tracking); text-transform: uppercase; color: var(--color-${kebab(tagColor)}); }`,
+    "",
+  ].join("\n");
+}
+
 const pick = (v, d) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : d);
 
 function generateWordmarkClass(wordmark = {}, color = {}) {
@@ -50,12 +75,13 @@ export function hexToRgba(hex, alpha) {
 }
 
 export function generateTokensCss(tokens) {
-  const { color = {}, typography = {}, radius = {}, shadow = {}, spacing = {}, wordmark = {} } = tokens;
+  const { color = {}, typography = {}, radius = {}, shadow = {}, spacing = {}, wordmark = {}, lockup = {} } = tokens;
   const L = ["/* tokens.css — brand-tokens.json + 고정 관례 레이어 (tokens-to-css.mjs 생성, 직접 수정 금지) */", ":root {"];
 
   for (const [k, v] of Object.entries(color)) L.push(`  --color-${kebab(k)}: ${v};`);
   pushTypography(L, typography);
   if (wordmark.font) L.push(`  --font-wordmark: ${wordmark.font};`);
+  L.push(...generateLockupVars(lockup));
   for (const [k, v] of Object.entries(radius)) L.push(`  --radius-${k}: ${v};`);
   L.push(`  --radius-pill: 999px;`);
   for (const [k, v] of Object.entries(shadow)) L.push(`  --shadow-${k}: ${v};`);
@@ -68,7 +94,7 @@ export function generateTokensCss(tokens) {
   }
 
   L.push("}", "");
-  return L.join("\n") + generateWordmarkClass(wordmark, color);
+  return L.join("\n") + generateWordmarkClass(wordmark, color) + generateLockupClass(lockup, color);
 }
 
 // CLI: node tokens-to-css.mjs <brand-tokens.json> <out tokens.css>
