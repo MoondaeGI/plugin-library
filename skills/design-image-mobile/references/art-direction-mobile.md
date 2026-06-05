@@ -177,6 +177,7 @@
 - **필러 카피**: 영어 elevate·unlock·revolutionize·seamless·powerful·next-level, 한국어 "혁신적인·강력한·원활한·차세대·압도적인". **카피는 DESIGN.md §1 제품 설명에서 실제 가치를 끌어낸다.**
 - **가짜 브랜드명**: NovaCore·TechFlow·BuildFast·Nexus·Acme 등 자리 채우기 브랜드명. **브랜드명은 DESIGN.md §1에서.**
 - **pill/badge 남발**: 화면 곳곳에 알림 뱃지·태그·pill이 과하게 붙어 있는 패턴.
+- **장식용 status dot**: 리스트 셀·탭·라벨마다 앞에 붙는 의미 없는 컬러 점. 실제 상태(온라인·읽지 않음·진행 상태)를 나타낼 때만 허용.
 
 ---
 
