@@ -7,6 +7,7 @@
 권위 원본(정확한 색·문구·폰트 스펙)은 `BRAND_KIT.md`/`brand-tokens.json`이고, 이 문서는 **형태·생성 방향**을 정의한다. 둘이 어긋나면 md/tokens가 정답이다. 사용법: §1에서 카테고리 의미를 형태로 끌어내고 → §2에서 컨셉 방법을 고르고 → §3 기하 언어와 §4 유형/락업으로 다듬고 → §6 Avoid를 네거티브로 붙이고 → 독립 로고는 §7 풀 청크를, 종합 보드의 로고 섹션은 §7.1 압축 블록을 떠넣어 [브래킷]을 채운다 → 생성물은 §8 품질 테스트·§9 체크리스트로 판정한다.
 
 > **투명 배경 주의**: gpt-image-2는 투명 배경을 지원하지 않는다(API 에러). 투명 컷아웃(로고 마크·워드마크·아이콘)은 `--model gpt-image-1.5 --background transparent --output-format png`로 생성한다. 불투명 사진/목업은 gpt-image-2.
+> **제시용 레시피(중요)**: 로고는 favicon급 축약이 아니라 *완성된 제시용 마크*다. 컷아웃 생성 시 **`--autocrop`을 쓰지 않고**(여백 유지) **`--quality high`**로 굽는다. 배경은 **투명 유지**하되, 마크/엠블럼은 **self-contained**(배지·심볼이 자기완결 — 투명 배경 위에 얹어도 속이 비지 않게)로 그린다. 작은 favicon·축소 마크는 별도(스펙 B).
 
 ## 1. 전략 → 마크 로직
 
@@ -42,7 +43,7 @@
 이미지 모델이 실제로 그릴 수 있는 기하 시스템 어휘 — 마크를 이 위에 세운다:
 circle / arc / concentric rings · square frame / rounded square · diagonal 45° cut · module grid (3×3, 4×4) · stacked blocks · single continuous stroke · orbit path / ellipse · crosshair / center dot · corner bracket · chevron / arrow notch · interlock / overlap · hairline keyline · measured tick marks.
 
-품질을 끌어올리는 표현(프롬프트에 그대로 붙임): "precise, intentional, balanced; built on a grid/keyline; geometrically constructed; optically balanced; consistent stroke weight; strong, instantly recognizable silhouette; reads clearly at favicon size (16px); looks researched and reduced, not decorative; reduced to its essential form; high contrast against background."
+품질을 끌어올리는 표현(프롬프트에 그대로 붙임): "precise, intentional, balanced; built on a grid/keyline; geometrically constructed; optically balanced; consistent stroke weight; strong, recognizable silhouette; premium, finished, looks like a real shipped logo, not a wireframe glyph; flat, no gradient; high contrast against background."
 
 ## 4. 로고 유형 / 락업 / 단색·반전
 
@@ -76,18 +77,19 @@ shield / lock / globe / gear / speech-bubble 클리셰 · 정당화 없는 랜�
 ## 7. 프롬프트 청크 (그대로 떠넣기)
 
 ```text
-Create a single, clean, standalone logo for "[BRAND NAME]" on a plain [near-black/white] background.
+Create a single, finished, premium logo for "[BRAND NAME]", presented centered with generous padding — looks like a real, shipped brand logo, not a sketch or a wireframe glyph.
 
-Mark concept: [logo idea — monogram/symbol + metaphor, e.g. "monogram F fused with a scaffold/frame corner using negative space"].
-Construction: built from clear geometry — [circle/grid/diagonal cut/module/frame/orbit] — precise, intentional, balanced. Looks researched and reduced, not decorative.
-Form language: [geometric/organic, angular/rounded], consistent stroke weight, strong silhouette, recognizable at favicon size.
-Wordmark (if shown): [geometric/humanist/serif/mono] character, tight kerning, one custom detail (cut/ligature/terminal).
-Color: single brand color [HEX] on clean background; also valid as solid monochrome (pure black, pure white).
-Presentation: large centered mark, generous clearspace, no mockup, no busy background, no extra UI.
-Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxury crest, copying famous marks, meaningless gradient/3D bevel/drop shadow/sparkle, clip-art icon feel, inconsistent variants, tiny illegible detail.
+Mark concept: [logo idea — monogram/symbol + metaphor].
+Construction: built from clear geometry — [circle/grid/diagonal cut/module/frame/orbit] — precise, intentional, optically balanced.
+Form language: [geometric/organic, angular/rounded], consistent stroke weight, strong silhouette. May be a richer emblem/badge if the direction calls for it (still clean and intentional).
+Wordmark (if shown): [geometric/humanist/serif/mono] character, tight kerning, one custom detail.
+Color: brand palette [HEX...] — flat, no gradient; tasteful 1-3 tones.
+Presentation: large centered mark, generous clearspace, NOT autocropped to the edges; self-contained (a filled badge/mark that reads on its own on a transparent background); no mockup, no busy scenery behind, no extra UI.
+Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxury crest, copying famous marks, meaningless gradient/3D bevel/drop shadow/sparkle, clip-art feel, inconsistent variants, tiny illegible detail.
 ```
 
 위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·near-black/white·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
+제시용 로고는 **autocrop 없이 high quality**로 굽는다(§0 제시용 레시피). 단색·favicon 가독 판정은 이 단계가 아니라 축소 마크(스펙 B)에서 한다.
 
 ### 7.1 보드 주입용 압축 블록 (3줄 고정)
 
