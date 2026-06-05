@@ -53,10 +53,11 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
 
 스크립트 경로(형제 스킬): `../image-gen/scripts/image-gen.mjs`.
 
-- **모델·배경**: 로고 마크는 `gpt-image-1.5` + `--background transparent --autocrop`(투명 PNG, 여백 제거). **투명 컷아웃은 `--autocrop`을 붙여 마크가 캔버스를 꽉 채우게 한다.**
+- **모델·배경**: 로고 마크는 `gpt-image-1.5 --background transparent`(투명 PNG). **제시용 로고는 autocrop 옵션을 쓰지 않는다**(여백 유지 — favicon급 꽉참 금지). 작은 축소 마크·favicon은 별도(스펙 B).
 - **개별 PNG, 그리드 아님**: 40칸 그리드 합성은 더 안 쓴다. 컨셉마다 단독 마크 PNG 1장씩 생성한다.
 - **한 라운드 3~4콜 = 병렬 백그라운드**: 서로 다른 컨셉은 `image-gen`을 동시(백그라운드) 호출해 병렬 생성(순차는 느림). 다듬기 루프는 순차.
 - **충실도**: 컷아웃은 `gpt-image-1.5`다. 앵커(모드 A·C·수렴·다듬기)는 `--image --input-fidelity high`로 첨부해야 입력 마크에 단단히 묶인다(미지정이면 기본 low로 느슨하게 참조). 발산 모드 B는 미첨부(완전 발산). "보존이냐 새로냐"는 **시드 첨부 여부 + input-fidelity**로 표현한다.
+- **품질**: 제시용 로고는 `--quality high`로 굽는다(과거 `low`가 유치함의 원인 중 하나였다). 발산·다듬기 모두 high.
 - **버전 보존**: 모든 재생성은 `--auto-version`으로 누적, 기존 시안을 덮지 않는다.
 - 프롬프트는 임시 파일에 써서 `--prompt-file`로 넘긴다. 컷아웃 청크는 `references/logo-sheet-html-direction.md` §8, 단독 로고 품질 프레이밍은 `../references/design/logo-art-direction.md` §7.
 - 호출 예(발산 컨셉 1개 — 모드 B, 시드 미첨부):
@@ -64,7 +65,7 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
   node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
     --prompt-file <컨셉 프롬프트 파일> \
     --out "<cwd>/.design/candidate/logo/concepts/round-1/01.png" \
-    --auto-version --model gpt-image-1.5 --background transparent --autocrop --quality low
+    --auto-version --model gpt-image-1.5 --background transparent --quality high
   ```
 - 호출 예(모드 A/C·수렴 — 앵커 첨부, **high fidelity로 묶음**):
   ```bash
@@ -72,7 +73,7 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
     --prompt-file <컨셉 프롬프트 파일> \
     --image "<cwd>/.design/candidate/logo/seed.png" --input-fidelity high \
     --out "<cwd>/.design/candidate/logo/concepts/round-2/01.png" \
-    --auto-version --model gpt-image-1.5 --background transparent --autocrop --quality low
+    --auto-version --model gpt-image-1.5 --background transparent --quality high
   ```
 
 ### logos.html 저작 (이미지 아님)
@@ -119,7 +120,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 **탐색은 opt-in.** `logo-base`가 만족스러우면 탐색을 건너뛰고 바로 단독 확정(8)·복사(10)로 간다. "다른 방향도 보고 싶다"일 때만 탐색을 시작한다.
 
 5. **발산 모드 선택**: A(기준·logo-base 앵커) / B(제로베이스 완전 발산·미첨부) / C(첨부 이미지 앵커). 라운드마다 다시 고를 수 있다. (Phase 0 최소 Q&A 경로는 B 고정.)
-6. **발산 라운드 생성**: 컨셉 3~4개를 `references/logo-sheet-html-direction.md` §8 청크로 **병렬 백그라운드** 생성(`gpt-image-1.5 --background transparent --autocrop --quality low`) → `candidate/logo/concepts/round-N/01..04.png`. `logos.html`을 저작해 번호·방향 라벨·베이스라인 타일(#0)로 보여준다. 처음 제시 시 라이브 서버 1회 기동.
+6. **발산 라운드 생성**: 컨셉 3~4개를 `references/logo-sheet-html-direction.md` §8 청크로 **병렬 백그라운드** 생성(`gpt-image-1.5 --background transparent --quality high`, autocrop 없음) → `candidate/logo/concepts/round-N/01..04.png`. `logos.html`을 저작해 번호·방향 라벨·베이스라인 타일(#0)로 보여준다. 처음 제시 시 라이브 서버 1회 기동.
 7. **수정 루프**:
    - **"다시, 더 다르게"** → 발산 라운드 재생성(모드 재선택 가능), `logos.html` **교체**.
    - **"#N 좋다"** → 사용자에게 묻는다: **(a) 수렴 라운드** — 그 PNG를 `--image --input-fidelity high`로 첨부해 같은 방향 3~4 변주를 만들고 시트 교체(반복 가능), 또는 **(b) 바로 단독 확정**.
@@ -134,5 +135,5 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 - 시트의 3~4개는 **또렷이 구별되는 큰 방향**이어야 한다 — 미세 변주 반복 금지. 레이아웃·카드 규칙은 `references/logo-sheet-html-direction.md`.
 - 단독 로고는 `../references/design/logo-art-direction.md` §8 품질 테스트(실루엣·작은 크기·무텍스트·단색·시스템·의미)를 통과해야 한다.
-- 로고 마크 배경은 투명(gpt-image-1.5 `--background transparent --autocrop`).
+- 로고 마크 배경은 투명(gpt-image-1.5 `--background transparent`, autocrop 없음).
 - 금지: 방패·자물쇠·지구본·기어·말풍선 클리셰, 의미 없는 그라데이션·3D 베벨·드롭섀도·sparkle, 글자만 있는 로고, 카드마다 스타일 난립, 시트에 가짜 본문 텍스트, 유명 마크 모방 (§6·§9).
