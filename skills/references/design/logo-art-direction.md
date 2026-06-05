@@ -88,12 +88,13 @@ Presentation: large centered mark, generous clearspace, NOT autocropped to the e
 Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxury crest, copying famous marks, meaningless gradient/3D bevel/drop shadow/sparkle, clip-art feel, inconsistent variants, tiny illegible detail.
 ```
 
-위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·near-black/white·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
+위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
 제시용 로고는 **autocrop 없이 high quality**로 굽는다(§0 제시용 레시피). 단색·favicon 가독 판정은 이 단계가 아니라 축소 마크(스펙 B)에서 한다.
 
 ### 7.1 보드 주입용 압축 블록 (3줄 고정)
 
 위 풀 청크는 **독립 단색 로고용**이다. 종합 보드의 "Logo Direction" 섹션은 로고가 12섹션 중 1칸이라 풀 청크를 떠넣으면 과대표집돼 보드가 일그러진다. 보드 프롬프트에는 아래 **3줄만** `BRAND_KIT.md §6`(구성·의미)로 채워 넣는다 — 빈 generic 줄로 두지 않는다.
+> 주의: 이 블록은 **brand-kit 오버뷰 보드 §6용**(작은 로고 칸 — favicon·app-icon 타일 포함)이다. **design-logo의 제시용 로고 레시피는 이 블록이 아니라 §0 제시용 레시피·§7 청크를 따른다**(autocrop off·high·favicon 가독 비요구).
 
 ```text
 Logo Direction section: show ONE well-crafted mark in a few clean placements only — (1) symbol + wordmark lockup, (2) the standalone symbol on its own, (3) favicon + app-icon tile (small size), (4) a one-line construction/meaning note. Restrained — NOT an exploration sheet, NOT a row of many logo variants.
@@ -106,7 +107,7 @@ Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, l
 생성된 로고를 사용자에게 보여주기 전 아래로 자가 판정한다. 떨어지면 §1·§2·§7을 한 가지씩 보강해 재생성한다.
 
 - **Silhouette** — 단색 실루엣으로도 형태가 기억되나? (실패: 그라데이션 사라지면 무너짐, 내부 디테일 과다)
-- **Small-Size** — 16·24·32px에서 핵심 형태가 읽히나? (실패: favicon에서 뭉개짐, 얇은 선 소실)
+- **Small-Size** — 16·24·32px에서 핵심 형태가 읽히나? **(이 테스트는 축소 마크·favicon 단계(스펙 B)용 — 제시용 로고 생성 라운드의 합격 기준이 아니다. 풍부한 엠블럼이 16px에서 안 읽힌다고 제시용 로고를 탈락시키지 말 것.)**
 - **No-Text** — 브랜드명을 지워도 심볼만으로 작동하나? (실패: 글자 없으면 의미 없음, 심볼이 일반 도형)
 - **One-Color** — 그라데이션·그림자·질감 없이 작동하나? (실패: 단색 버전이 복잡, 음영 없이 형태 구분 불가)
 - **System** — UI 헤더·사이드바·파비콘·앱 아이콘·문서·배지에 반복 적용되나?
@@ -116,7 +117,7 @@ Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, l
 
 - [ ] 워드마크만 있는 게 아니라 독립 심볼이 있나?
 - [ ] 심볼만으로도 브랜드 방향이 느껴지나?
-- [ ] 작은 크기(16px)에서 읽히나?
+- [ ] 작은 크기(16px)에서 읽히나? *(축소 마크·스펙 B 단계의 체크 — 제시용 로고엔 적용 안 함)*
 - [ ] 단색(흑/백)으로 작동하나?
 - [ ] UI·문서·앱 아이콘에 반복 사용 가능하나?
 - [ ] 브랜드 전략/핵심 메타포와 연결되나?
