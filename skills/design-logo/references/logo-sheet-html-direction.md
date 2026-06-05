@@ -15,6 +15,7 @@
 - **푸터**: 태그라인 + 작은 스튜디오 라벨.
 - 캔버스 라이트/다크는 브랜드 비주얼 모드(BRAND_KIT)에 맞춘다. **실색**은 `brand-tokens.json`, **실폰트**는 `../../references/design/font-catalog.md`의 실존 family를 CDN `<link>`로 로드.
 - 콘텐츠(브랜드명·태그라인·라벨)는 지어내지 않는다 — `BRAND_KIT.md`/tokens에서, 라벨은 그 라운드에서 실제 만든 컨셉 방향을 가리킨다.
+- **락업 프리뷰 섹션(신규)**: 시트 하단에 lock 후보 심볼 + 워드마크를 합친 `.lockup`(가로)·`.lockup.lockup--stacked`(세로)을 렌더한다 — `<img class="lockup__mark" src="../candidate/logo/concepts/round-N/0X.png">` + `<span class="wordmark">브랜드명</span>`. `.lockup*`·`.wordmark`는 `../assets/tokens.css`가 정의(없으면 brand-tokens.json 값/폴백 인라인). 이게 "실제 로고가 어떻게 보일지"를 보여주는 자리다(스펙 B-🅰 프리뷰 게이트).
 
 ## 2. 카드 구성
 

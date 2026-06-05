@@ -82,14 +82,14 @@ Create a single, finished, premium logo for "[BRAND NAME]", presented centered w
 Mark concept: [logo idea — monogram/symbol + metaphor].
 Construction: built from clear geometry — [circle/grid/diagonal cut/module/frame/orbit] — precise, intentional, optically balanced.
 Form language: [geometric/organic, angular/rounded], consistent stroke weight, strong silhouette. May be a richer emblem/badge if the direction calls for it (still clean and intentional).
-Wordmark (if shown): [geometric/humanist/serif/mono] character, tight kerning, one custom detail.
+Wordmark: by default DO NOT render the brand name inside the symbol — this is a standalone symbol asset. The wordmark is composed separately in the lockup (spec B). Only render letters if the chosen type is itself a wordmark/lettermark.
 Color: brand palette [HEX...] — flat, no gradient; tasteful 1-3 tones.
 Presentation: large centered mark, generous clearspace, NOT autocropped to the edges; self-contained (a filled badge/mark that reads on its own on a transparent background); no mockup, no busy scenery behind, no extra UI.
 Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxury crest, copying famous marks, meaningless gradient/3D bevel/drop shadow/sparkle, clip-art feel, inconsistent variants, tiny illegible detail.
 ```
 
 위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
-제시용 로고는 **autocrop 없이 high quality**로 굽는다(§0 제시용 레시피). 단색·favicon 가독 판정은 이 단계가 아니라 축소 마크(스펙 B)에서 한다.
+제시용 로고는 **autocrop 없이 high quality**로 굽는다(§0 제시용 레시피). 단색·favicon 가독 판정은 이 단계가 아니라 축소 마크(스펙 B)에서 한다. **심볼-only 원칙**: design-logo의 `logo.png`는 심볼이다(워드마크 안 구움) — 워드마크는 `.lockup`에서 별도 조합한다(분리성 보장).
 
 ### 7.1 보드 주입용 압축 블록 (3줄 고정)
 
