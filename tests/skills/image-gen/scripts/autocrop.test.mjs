@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { autocropBuffer, encodePNG, decodePNG } from '../skills/image-gen/scripts/autocrop.mjs';
+import { autocropBuffer, encodePNG, decodePNG } from '../../../../skills/image-gen/scripts/autocrop.mjs';
 
 function rgba(w, h) { return Buffer.alloc(w * h * 4); } // 전부 투명
 

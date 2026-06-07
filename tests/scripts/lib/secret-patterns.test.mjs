@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyValue } from '../scripts/lib/secret-patterns.mjs';
+import { classifyValue } from '../../../scripts/lib/secret-patterns.mjs';
 
 test('placeholder is OK', () => {
   assert.equal(classifyValue('${GITHUB_TOKEN}').level, 'ok');

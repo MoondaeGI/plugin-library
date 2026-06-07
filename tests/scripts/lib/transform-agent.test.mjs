@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseAgentMd, toCodexToml } from '../scripts/lib/transform-agent.mjs';
+import { parseAgentMd, toCodexToml } from '../../../scripts/lib/transform-agent.mjs';
 
 const sampleMd = `---
 name: designer

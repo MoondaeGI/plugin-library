@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { generateTokensCss, hexToRgba } from "../skills/design-brand-kit/scripts/tokens-to-css.mjs";
+import { generateTokensCss, hexToRgba } from "../../../../skills/design-brand-kit/scripts/tokens-to-css.mjs";
 
 const SAMPLE = {
   color: { primary:"#36495F", accent:"#8C5A6F", background:"#F4EEE4",

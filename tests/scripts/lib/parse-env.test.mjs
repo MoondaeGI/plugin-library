@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseEnv } from '../scripts/lib/parse-env.mjs';
+import { parseEnv } from '../../../scripts/lib/parse-env.mjs';
 
 test('parses simple KEY=VALUE', () => {
   assert.deepEqual(parseEnv('FOO=bar'), { FOO: 'bar' });

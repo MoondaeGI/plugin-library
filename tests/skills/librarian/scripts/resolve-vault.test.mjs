@@ -5,10 +5,10 @@ import { mkdtempSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from 'nod
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { resolveVaultPath } from '../skills/librarian/scripts/resolve-vault.mjs';
+import { resolveVaultPath } from '../../../../skills/librarian/scripts/resolve-vault.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PLUGIN_ROOT = path.resolve(__dirname, '..');
+const PLUGIN_ROOT = path.resolve(__dirname, '..', '..', '..', '..');
 const RESOLVER = path.join(PLUGIN_ROOT, 'skills', 'librarian', 'scripts', 'resolve-vault.mjs');
 const PARSE_ENV = path.join(PLUGIN_ROOT, 'scripts', 'lib', 'parse-env.mjs');
 const LOAD_ENV = path.join(PLUGIN_ROOT, 'scripts', 'lib', 'load-env.mjs');

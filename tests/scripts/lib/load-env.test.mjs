@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { loadEnv } from '../scripts/lib/load-env.mjs';
+import { loadEnv } from '../../../scripts/lib/load-env.mjs';
 
 function tmpEnv(content) {
   const dir = mkdtempSync(path.join(tmpdir(), 'load-env-'));

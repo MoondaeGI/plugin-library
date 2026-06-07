@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PLUGIN_ROOT = path.resolve(__dirname, '..');
+const PLUGIN_ROOT = path.resolve(__dirname, '..', '..', '..', '..');
 const SCRIPT = path.join(PLUGIN_ROOT, 'skills', 'image-gen', 'scripts', 'image-gen.mjs');
 
 function run(args) {

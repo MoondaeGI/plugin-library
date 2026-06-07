@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SCRIPT = path.resolve(__dirname, '..', 'skills', 'design-brand-kit', 'scripts', 'build-contact-sheet.mjs');
+const SCRIPT = path.resolve(__dirname, '..', '..', '..', '..', 'skills', 'design-brand-kit', 'scripts', 'build-contact-sheet.mjs');
 
 function validData() {
   return {

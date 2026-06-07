@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { buildIconMap, validateMap } from '../../skills/design-iconset/scripts/build-icon-map.mjs'
+import { buildIconMap, validateMap } from '../../../../skills/design-iconset/scripts/build-icon-map.mjs'
 
 const setInfo = { id: 'ph', license: 'MIT' }
 const decisions = {

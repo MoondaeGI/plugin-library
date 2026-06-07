@@ -5,9 +5,9 @@ import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { defaultBrowserCandidates, resolveBrowser, parseWidths, buildScreenshotArgs, planCaptures } from '../skills/web-publisher-qa/scripts/screenshot.mjs';
+import { defaultBrowserCandidates, resolveBrowser, parseWidths, buildScreenshotArgs, planCaptures } from '../../../../skills/web-publisher-qa/scripts/screenshot.mjs';
 
-const SCRIPT = fileURLToPath(new URL('../skills/web-publisher-qa/scripts/screenshot.mjs', import.meta.url));
+const SCRIPT = fileURLToPath(new URL('../../../../skills/web-publisher-qa/scripts/screenshot.mjs', import.meta.url));
 
 function runCli(args) {
   return spawnSync('node', [SCRIPT, ...args], { encoding: 'utf8' });

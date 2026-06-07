@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { toClaudeFormat, toCodexFormat, extractPlaceholders, renderEnvExample } from '../scripts/lib/transform-mcp.mjs';
+import { toClaudeFormat, toCodexFormat, extractPlaceholders, renderEnvExample } from '../../../scripts/lib/transform-mcp.mjs';
 
 const sample = {
   github: {

@@ -9,7 +9,7 @@ import {
   collectFiles,
   buildBundle,
   syncBundle,
-} from '../scripts/sync-codex-plugin.mjs';
+} from '../../scripts/sync-codex-plugin.mjs';
 
 const quiet = { log() {}, error() {} };
 

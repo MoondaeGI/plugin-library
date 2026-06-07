@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { fetchAndWrite } from '../../skills/design-iconset/scripts/fetch-icons.mjs'
+import { fetchAndWrite } from '../../../../skills/design-iconset/scripts/fetch-icons.mjs'
 
 test('각 아이콘을 정규화해 <name>.svg로 기록', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'iconset-'))

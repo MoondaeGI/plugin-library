@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { classifyIcons } from '../../skills/design-iconset/scripts/probe-set.mjs'
+import { classifyIcons } from '../../../../skills/design-iconset/scripts/probe-set.mjs'
 
 // 존재하는 (set,name) 집합을 가진 가짜 iconExists
 const fakeExists = (present) => async (setId, name) => present.has(name)

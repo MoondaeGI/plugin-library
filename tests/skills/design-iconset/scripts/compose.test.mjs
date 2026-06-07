@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { compose } from '../../skills/design-iconset/scripts/compose.mjs'
+import { compose } from '../../../../skills/design-iconset/scripts/compose.mjs'
 
 const BASE = '<svg viewBox="0 0 24 24"><path id="base" d="M4 3h12v18H4z"/></svg>'
 const OVER = '<svg viewBox="0 0 24 24"><path id="over" d="M12 7v6"/></svg>'

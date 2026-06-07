@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { srgbToOklab, oklabToSrgb, hexToRgb, remapLogoDark } from "../skills/design-logo/scripts/remap-logo-dark.mjs";
-import { encodePNG, decodePNG } from "../skills/image-gen/scripts/autocrop.mjs";
+import { srgbToOklab, oklabToSrgb, hexToRgb, remapLogoDark } from "../../../../skills/design-logo/scripts/remap-logo-dark.mjs";
+import { encodePNG, decodePNG } from "../../../../skills/image-gen/scripts/autocrop.mjs";
 
 test("OKLab round-trip: sRGB→OKLab→sRGB 가 원본과 ±2 이내", () => {
   for (const c of [[110,74,46],[201,116,59],[237,224,204],[0,0,0],[255,255,255],[221,110,146]]) {

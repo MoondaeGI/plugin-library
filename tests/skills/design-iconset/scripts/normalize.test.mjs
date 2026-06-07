@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { normalizeSvg } from '../../skills/design-iconset/scripts/normalize.mjs'
+import { normalizeSvg } from '../../../../skills/design-iconset/scripts/normalize.mjs'
 
 test('256 viewBox를 0 0 24 24로 재스케일', () => {
   const input = '<svg viewBox="0 0 256 256"><path d="M0 0h256v256H0z" fill="#000"/></svg>'

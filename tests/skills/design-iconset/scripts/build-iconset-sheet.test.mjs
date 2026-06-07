@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SCRIPT = path.resolve(__dirname, '..', 'skills', 'design-iconset', 'scripts', 'build-iconset-sheet.mjs');
+const SCRIPT = path.resolve(__dirname, '..', '..', '..', '..', 'skills', 'design-iconset', 'scripts', 'build-iconset-sheet.mjs');
 
 // 아이콘 폴더를 tmp 에 만들고 스크립트 실행 (색은 공유 tokens.css 가 보유 — 시트는 var(--token) 참조)
 function setup(svgs) {

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const SCRIPT = path.resolve(__dirname, '..', 'skills', 'image-gen', 'scripts', 'image-gen.mjs');
+const SCRIPT = path.resolve(__dirname, '..', '..', '..', '..', 'skills', 'image-gen', 'scripts', 'image-gen.mjs');
 
 function run(args) {
   return spawnSync('node', [SCRIPT, ...args], { encoding: 'utf8' });

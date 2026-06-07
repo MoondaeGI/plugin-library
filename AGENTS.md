@@ -40,6 +40,25 @@
   읽습니다 (gitignore된 머신별 로컬 값 — `.env.example`에는 없음). 설정이 없거나
   잘못되면 `skills/librarian/scripts/resolve-vault.mjs`가 안내와 함께 실패합니다.
 
+## 테스트 레이아웃
+
+- **테스트 파일은 대상 소스의 위치를 `tests/` 아래에 그대로 미러링합니다.**
+  소스가 `scripts/lib/load-env.mjs`면 테스트는 `tests/scripts/lib/load-env.test.mjs`,
+  소스가 `skills/<name>/scripts/foo.mjs`면 테스트는
+  `tests/skills/<name>/scripts/foo.test.mjs`에 둡니다. 새 테스트를 추가하거나
+  소스를 옮길 때 이 규칙을 따라 같은 트리를 유지하세요.
+- 파일명은 대상 소스 파일명에 `.test.mjs`를 붙입니다(`resolve-vault.mjs` →
+  `resolve-vault.test.mjs`). 한 소스를 측면별로 나눠 테스트할 때만 구분용
+  접미사를 붙입니다(예: `image-gen.mjs` → `image-gen-autocrop.test.mjs`,
+  `image-gen-background.test.mjs`).
+- 상대 경로는 미러링 깊이에 맞춰 루트까지 거슬러 올라갑니다. 예:
+  `tests/skills/<name>/scripts/foo.test.mjs`는 루트가 `../../../../`,
+  `tests/scripts/lib/foo.test.mjs`는 `../../../`입니다. import 문뿐 아니라
+  `path.resolve(__dirname, …)`·`PLUGIN_ROOT`·`new URL(…, import.meta.url)`도
+  같은 깊이로 맞추세요.
+- 러너 글롭 `tests/**/*.test.mjs`는 재귀라 깊이가 늘어도 그대로 동작합니다 —
+  `package.json`을 손댈 필요 없습니다.
+
 ## 로컬 테스트
 
 - Claude Code: 이 디렉터리 안에서 `claude --plugin-dir .` 실행.

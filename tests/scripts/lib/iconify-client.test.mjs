@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { fetchIconSvg, iconExists, fetchSetInfo } from '../scripts/lib/iconify-client.mjs'
+import { fetchIconSvg, iconExists, fetchSetInfo } from '../../../scripts/lib/iconify-client.mjs'
 
 const okFetch = (body, status = 200) => async () => ({
   status, ok: status >= 200 && status < 300,

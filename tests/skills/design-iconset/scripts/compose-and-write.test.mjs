@@ -3,8 +3,8 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { composeAndWrite } from '../../skills/design-iconset/scripts/compose-and-write.mjs'
-import { compose } from '../../skills/design-iconset/scripts/compose.mjs'
+import { composeAndWrite } from '../../../../skills/design-iconset/scripts/compose-and-write.mjs'
+import { compose } from '../../../../skills/design-iconset/scripts/compose.mjs'
 
 test('여러 아이템 합성 시 mask id가 충돌하지 않음', async () => {
   const dir = await mkdtemp(join(tmpdir(), 'compose-uniq-'))

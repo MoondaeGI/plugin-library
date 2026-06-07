@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { recolorMark, compositeAppIcon, bakeAll } from "../skills/design-logo/scripts/bake-logo-assets.mjs";
-import { encodePNG, decodePNG } from "../skills/image-gen/scripts/autocrop.mjs";
+import { recolorMark, compositeAppIcon, bakeAll } from "../../../../skills/design-logo/scripts/bake-logo-assets.mjs";
+import { encodePNG, decodePNG } from "../../../../skills/image-gen/scripts/autocrop.mjs";
 
 // 2x2 RGBA 픽스처: [불투명 검정, 투명, 반투명 회색, 불투명 흰]
 function fixture() {

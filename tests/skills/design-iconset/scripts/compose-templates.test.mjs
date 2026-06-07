@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { innerSvg, wrap24, knockoutMask, reticleCorners } from '../../skills/design-iconset/scripts/compose-templates/index.mjs'
+import { innerSvg, wrap24, knockoutMask, reticleCorners } from '../../../../skills/design-iconset/scripts/compose-templates/index.mjs'
 
 test('innerSvg는 루트 사이 콘텐츠만 반환', () => {
   assert.equal(innerSvg('<svg viewBox="0 0 24 24"><path d="M1 1"/></svg>'), '<path d="M1 1"/>')
