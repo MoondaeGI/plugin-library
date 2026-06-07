@@ -33,6 +33,23 @@ function generateLockupClass(lockup = {}, color = {}) {
   ].join("\n");
 }
 
+function generateMarkMonoClass(color = {}) {
+  const mods = Object.keys(color)
+    .filter((k) => k !== "text")
+    .map((k) => `.mark-mono--${kebab(k)} { background-color: var(--color-${kebab(k)}); }`);
+  return [
+    ".mark-mono {",
+    "  display: inline-block; width: 1em; height: 1em;",
+    "  background-color: var(--color-text);",
+    "  -webkit-mask-size: contain; mask-size: contain;",
+    "  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;",
+    "  -webkit-mask-position: center; mask-position: center;",
+    "}",
+    ...mods,
+    "",
+  ].join("\n");
+}
+
 const pick = (v, d) => (v !== undefined && v !== null && String(v).trim() !== "" ? v : d);
 
 function generateWordmarkClass(wordmark = {}, color = {}) {
@@ -94,7 +111,7 @@ export function generateTokensCss(tokens) {
   }
 
   L.push("}", "");
-  return L.join("\n") + generateWordmarkClass(wordmark, color) + generateLockupClass(lockup, color);
+  return L.join("\n") + generateWordmarkClass(wordmark, color) + generateLockupClass(lockup, color) + generateMarkMonoClass(color);
 }
 
 // CLI: node tokens-to-css.mjs <brand-tokens.json> <out tokens.css>

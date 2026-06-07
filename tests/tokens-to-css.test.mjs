@@ -167,3 +167,17 @@ test("lockup tagline 색은 토큰 키, 없으면 text 폴백", () => {
   const css2 = generateTokensCss({ ...SAMPLE, lockup: { taglineColor: "nonexistent" } });
   assert.match(css2, /\.lockup__tagline\s*\{[^}]*color:\s*var\(--color-text\)/);
 });
+
+test("mark-mono 기본 클래스 emit (mask + 기본 text 색)", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /\.mark-mono\s*\{[^}]*mask-size:\s*contain/);
+  assert.match(css, /\.mark-mono\s*\{[^}]*background-color:\s*var\(--color-text\)/);
+  assert.match(css, /\.mark-mono\s*\{[^}]*display:\s*inline-block/);
+});
+
+test("mark-mono 색 토큰별 modifier emit (text 제외)", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /\.mark-mono--primary\s*\{[^}]*background-color:\s*var\(--color-primary\)/);
+  assert.match(css, /\.mark-mono--surface-alt\s*\{[^}]*background-color:\s*var\(--color-surface-alt\)/);
+  assert.doesNotMatch(css, /\.mark-mono--text\s*\{/);
+});
