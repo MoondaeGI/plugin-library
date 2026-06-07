@@ -1,100 +1,95 @@
-# 로고 자산 suite(결정적 favicon·단색) + §6 락업 패밀리 + 이미지-모드 락업 사이징 Design
+# §6 로고 섹션: 락업 패밀리 6종 + 이미지-모드 락업 사이징 + 전용 favicon/app-icon 마크 Design
 
-> brand-kit 단계에서 확정 로고 하나로부터 favicon·단색·app-icon을 **결정적으로** 굽고, §6에 락업 패밀리 6종을 렌더하며, 이미지-모드 워드마크의 락업 사이징을 토큰으로 잡는다. design-logo는 로고 lock 후 같은 베이크로 갱신한다.
+> brand-kit overview §6에 락업 패밀리 6종을 렌더하고, 이미지-모드 워드마크의 락업 사이징을 토큰으로 잡으며, favicon·app-icon을 **로고 재사용/생성이 아니라 전용 단순 마크로 저작**한다(한 마크 통일). brand-kit이 저작해 overview에 표시하고 design-logo가 로고 lock 후 정제한다.
 
 ## 1. 배경 / 문제
 
-1. **brand-kit overview에 favicon이 안 뜬다.** §6는 wordmark·logo·lockup은 보여주지만 favicon·app-icon·단색은 **design-logo가 굽기 전까지 생략**된다(`brand-kit-html-direction.md` §6 "단색 자산이 아직 없으면 … 생략"). design-logo는 온디맨드라 안 돌리면 §6가 빈다 → "favicon 적용 안 됨"으로 보임.
-2. **gpt-image 단색 생성은 흔들린다.** design-logo 흐름 11ⓐ가 gpt-image로 단색 실루엣(mark-mono)을 새로 생성하는데, 같은 마크가 재현되지 않는다(사용자 실증). 단, 이 흔들림은 *메인 로고 정체성* 문제이며 — favicon은 **로고 lock 후의 다운스트림**이라 별개로 다룰 수 있다.
-3. **결정적 대안이 이미 있다.** `bake-logo-assets.mjs`의 `recolorMark`(alpha 보존, RGB만 교체)·`compositeAppIcon`은 **결정적 변환**이다 — 확정 로고(투명 컷아웃)만 있으면 gpt-image 없이 favicon-light/dark·app-icon·단색 마크를 항상 동일하게 만든다.
-4. **락업이 이미지 모드 워드마크에서 안 맞는다.** 락업 CSS는 `.lockup__mark`만 토큰(`--logo-mark-scale`)으로 크기를 잡고 **이미지 워드마크(`wordmark-base.png`) 높이를 묶는 토큰이 없다** — 폰트 모드(`.wordmark` span, font-size 상속)를 전제했다. 이미지-모드 브랜드(예: Pixel Carnival: 심볼 716×578 vs 워드마크 1178×512 2줄)에선 심볼↔워드마크 균형이 안 잡혀 락업이 "제대로 안 맞는" 느낌(데모 실증·수정 확인).
-5. **락업을 한 곳에서 다 보고 싶다.** 현재 §6는 가로·세로 2종만. 사용자는 6종 패밀리(가로·세로·심볼단독·워드마크단독 + 가로/세로+태그라인)를 §6에 모아 보고 싶다.
+1. **§6에 favicon이 안 뜬다.** favicon·app-icon은 design-logo가 굽기 전까지 §6에서 생략 → 온디맨드인 design-logo를 안 돌리면 빈다.
+2. **favicon은 로고에서 만들면 안 된다.** 풀로고를 단색으로 눌러 만들면 16px에서 뭉개지고(데모 실증), gpt-image로 새로 생성하면 마크가 흔들린다. → favicon은 **로고를 재사용·재생성하지 않고, 16px 가독을 우선한 전용 단순 마크를 저작**해야 한다. 브랜드 §6 심볼 방향이 이미 단순(예: 아케이드 플레이 버튼)이라 벡터로 직접 저작 가능 — iconset이 gap 아이콘을 SVG로 저작하는 것과 같은 결.
+3. **락업이 이미지-모드 워드마크에서 안 맞는다.** 락업 CSS는 `.lockup__mark`만 토큰(`--logo-mark-scale`)으로 잡고 이미지 워드마크(`wordmark-base.png`) 높이를 묶는 토큰이 없다 — 폰트 모드 전제. 이미지-모드 브랜드(심볼 716×578 vs 워드마크 1178×512 2줄)에서 균형이 안 잡힌다(데모 실증·수정 확인).
+4. **락업을 한 곳에서 다 보고 싶다.** 현재 §6는 가로·세로 2종 → 6종 패밀리를 원함.
 
 ## 2. 목표 / 비목표
 
 **목표**
-- **단일 원칙(결정적)**: 로고가 정해지는 곳마다 그 투명 컷아웃에서 favicon·단색·app-icon을 결정적으로 굽는다. gpt-image 없음.
-- **brand-kit 자동 베이크(임시 등급)** → overview §6의 favicon/단색/app-icon 타일 + `<head>` favicon `<link>`를 **무조건** 렌더(design-logo 미실행이어도 채워짐).
-- **design-logo 갱신(확정 등급)**: 로고 lock 후 확정 로고에서 같은 결정적 베이크로 brand-kit 임시본을 덮어쓴다. gpt-image 단색 생성(11ⓐ) 제거.
-- **락업 이미지-모드 사이징**: `--logo-wm-img-scale` 토큰 + `.wordmark-img` 규칙 추가. 에이전트가 프리뷰 게이트에서 심볼·워드마크 둘 다 튜닝(사용자는 승인만).
-- **§6 락업 패밀리 6종** 렌더(1·2·5·6 항상, 3·4 태그라인 있을 때만). 기존 `.lockup*`/`.wordmark` 재사용 — 새 락업 레이아웃 CSS 없음.
-- **bake 스크립트 공유 승격**: `scripts/lib/`로(두 스킬 공유, iconify-client 선례).
-- **다크 테마 favicon ink 규칙**(결정적 대비 선택).
+- **§6 락업 패밀리 6종**: 1 가로 · 2 세로 · 5 심볼단독 · 6 워드마크단독(항상) + 3 가로+태그라인 · 4 세로+태그라인(태그라인 있을 때). 기존 `.lockup*`/`.wordmark` 재사용, 새 락업 레이아웃 CSS 없음.
+- **락업 이미지-모드 사이징 토큰**(`--logo-wm-img-scale` + `.wordmark-img`). 에이전트가 프리뷰 게이트에서 심볼·워드마크 둘 다 튜닝(사용자는 승인만).
+- **전용 favicon/app-icon 마크(한 마크 통일)**: 에이전트가 브랜드 §6 심볼 방향 + 토큰 색으로 **SVG를 직접 저작**. 로고 재사용·gpt-image 없음. **brand-kit이 저작해 overview에 표시**, **design-logo가 로고 lock 후 정제**.
+- §6에 favicon/app-icon 마크 + `<head>` favicon `<link>`를 **무조건** 표시(design-logo 미실행이어도 채워짐).
+- **로고 단색 변형 표시 유지**: 기존 `tokens.css` `.mark-mono` 마스크(로고 alpha 재색)로 §6에 로고의 단색 변형을 보여준다 — 파일 생성 없음.
 
 **비목표 (YAGNI / 사용자 결정)**
-- **favicon 단순화 마크 폴백 없음.** 16px 가독이 부족해도 단순화 마크를 따로 만들지 않는다 — 가독은 로고 디자인 단계의 책임. 가독 프리뷰는 *인지용*만(재생성·폴백 없음). (사용자: "단순한 쪽으로.")
-- **풀컬러 다크 리맵 변경 없음.** design-logo 흐름 12(`remap-logo-dark.mjs`, 결정적 OKLab)는 그대로 유지.
-- PNG→SVG 트레이서, 진짜 융합 베이크 락업.
+- **로고에서 favicon 베이크 폐기.** `recolorMark`/`compositeAppIcon`로 favicon·app-icon을 굽는 경로 제거. `bake-logo-assets.mjs`는 고아가 되므로 제거(아래 D7).
+- favicon 자동 단순화·gpt-image 생성 없음(저작은 에이전트 벡터 저작).
+- 풀컬러 다크 로고 리맵(design-logo 흐름 12, `remap-logo-dark.mjs`)은 그대로 유지.
+- apple-touch/PWA용 PNG 래스터 세트는 범위 밖(SVG favicon으로 브라우저 탭 충분, 필요 시 후속).
 
-## 3. 핵심 모델 결정
+## 3. 핵심 결정
 
-- **D1 — 결정적 단일 원칙.** favicon·단색·app-icon은 언제나 확정 로고의 투명 컷아웃에서 `recolorMark`/`compositeAppIcon`으로 파생. gpt-image 없음. favicon은 메인 로고 lock 후 다운스트림이라 정체성 위험 0.
-- **D2 — brand-kit 임시 베이크 + non-clobber.** 자산 생산 시 자동 베이크하되, `candidate/logo/logo-briefs.md`가 있으면(design-logo 확정본 존재) 베이크를 건너뛴다(기존 logo.png 미러 규칙과 동일).
-- **D3 — design-logo 확정 베이크.** 흐름 11ⓐ gpt-image 단색 생성 제거 → 확정 `logo.png`에서 같은 베이크(임시본 덮어씀). 16px 가독 프리뷰는 인지용(폴백/재생성 없음).
-- **D4 — 락업 이미지-모드 사이징.** 심볼=`--logo-mark-scale`, 이미지 워드마크=`--logo-wm-img-scale`. 폰트 모드 `.wordmark`는 현행(font-size 상속). 에이전트가 게이트에서 둘 다 튜닝.
-- **D5 — §6 락업 6종.** 1 가로 · 2 세로 · 5 심볼단독 · 6 워드마크단독 = 항상. 3 가로+태그라인 · 4 세로+태그라인 = 태그라인 있을 때만. 심볼단독=`<img>`(logo.png), 워드마크단독=`<img>`(이미지 모드) | `<span class="wordmark">`(폰트 모드). 새 CSS 없음.
-- **D6 — mark-mono 마스터 = 확정 로고 투명 컷아웃.** 별도 단순화 생성 없음. bake suite가 `mark-mono.png`(passthrough = 마스크 소스)도 출력.
-- **D7 — bake 스크립트 `scripts/lib/`로 승격.**
-- **D8 — favicon ink 규칙(결정적 대비).** favicon-light ink = `{text, background}` 중 **더 어두운** 색(흰 탭에서 보이게), favicon-dark = 더 **밝은** 색(어두운 탭). app-icon 타일=`primary`(또는 §6 앱아이콘 방향색), 마크색=타일 대비 더 밝은/어두운 쪽 자동. 다크 테마(예: `text`가 거의 흰색)에서 favicon-light가 안 보이는 문제를 막는다. (호출 측이 토큰에서 hex를 산출해 스크립트에 넘긴다 — 스크립트는 범용 유지.)
+- **D1 — favicon/app-icon = 전용 저작 마크(SVG).** 로고 비파생, gpt-image 없음. 권위 = 브랜드 §6 심볼 방향 + `brand-tokens.json` 색. 좌표·색이 명시된 벡터라 재현 가능(흔들림 0).
+- **D2 — 통일(한 마크).** 같은 마크가 favicon과 app-icon 양쪽. 산출 `assets/logo/favicon.svg`.
+- **D3 — 저작 단계: brand-kit 저작 + design-logo 정제.** brand-kit이 §6 자산 생산에서 `favicon.svg`를 저작해 overview에 표시(임시 등급) → design-logo가 로고 lock 후 확정 심볼에 맞게 정제(덮어씀). `candidate/logo/logo-briefs.md` non-clobber 동일.
+- **D4 — §6 락업 6종**(위 목표).
+- **D5 — 락업 이미지-모드 사이징.** 심볼=`--logo-mark-scale`, 이미지 워드마크=`--logo-wm-img-scale`. 폰트 모드 `.wordmark`는 현행(변경 없음).
+- **D6 — 로고 단색 변형 = `.mark-mono` 마스크**(로고 alpha, 파일 생성 없음). 기존 tokens.css 재사용.
+- **D7 — `bake-logo-assets.mjs` + 테스트 제거.** favicon/app-icon 베이크가 폐기되어 소비자가 없다(다크 리맵은 별도 `remap-logo-dark.mjs`라 무관, mark-mono는 마스크라 파일 불요). `2026-06-07/design-logo-favicon-monochrome-design.md`(B-🅱-ii)의 베이크 흐름을 본 스펙이 대체 — 해당 SKILL 흐름·스펙 문구를 "전용 마크 저작"으로 갱신. (plan에서 잔존 소비자 0 재확인 후 제거.)
 
-## 4. 자산 suite (결정적 베이크)
+## 4. 전용 favicon/app-icon 마크 (저작)
 
-- **입력**: 확정 로고(투명 RGBA PNG) + brand-tokens 색.
-- **출력(`assets/logo/`)**: `favicon-light.png`(D8 ink) · `favicon-dark.png`(D8 밝은색) · `app-icon.png`(타일+마크) · `mark-mono.png`(투명 passthrough = `.mark-mono` 마스크 소스).
-- `bakeAll` 확장: 기존 faviconLight/faviconDark/appIcon에 **markMono(입력 passthrough)** 추가. CLI도 `mark-mono.png` 출력.
-- autocrop PNG 코덱(`decodePNG`/`encodePNG`) 의존 유지(현행 cross-skill import 선례대로 `scripts/lib/`에서도 `skills/image-gen/scripts/autocrop.mjs` 참조).
+- **형태**: 브랜드 §6 심볼 방향을 16px 가독 우선으로 단순화한 벡터. Pixel Carnival 확정안 = **B 스퀘어클 버튼**(미드나잇 남색 라운드 타일 + 라임 둥근사각 캡 + 바이올렛 베이스 + 음각 플레이 삼각형).
+- **산출**: `assets/logo/favicon.svg`(단일 마크). overview §6 favicon/app-icon 자리 + `<head><link rel="icon" href="../assets/logo/favicon.svg">`가 이 파일을 가리킨다.
+- **저작 주체**: 에이전트. 좌표·`brand-tokens.json` 색(HEX)으로 결정적 저작, gpt-image 없음. 16px 프리뷰로 가독 자가판정(라이브 http).
+- **일반화**: §6 심볼이 기하/단순하면 직접 저작. 회화적이면 핵심 요소만 추상화해 저작(품질은 에이전트 프리뷰 자가판정). 단순화 자동 폴백은 만들지 않는다(사용자: 단순 쪽).
 
 ## 5. brand-kit 흐름
 
-- **자산 생산(흐름 5)**: `logo-base.png`→`logo/logo.png` 미러 직후, `logo-briefs.md`가 없으면 bake suite 실행(임시 등급).
-- **lock(흐름 8)**: 동일 non-clobber 보장(`logo-briefs.md` 있으면 confirmed 자산 보존).
-- **§6 지침**: 락업 패밀리 6종 + favicon/단색/app-icon 타일 + head favicon **무조건** 렌더(현재 "design-logo 미실행이면 생략" 조건 제거).
-- **SKILL.md line 224 수정**: "단색 자산 베이크는 design-logo 소관" → "로고 확정 위치가 결정적으로 굽는다(brand-kit=임시, design-logo=확정)".
-- brand-tokens.json `lockup` 블록에 선택 키 `wmImgScale` 추가(이미지-모드 워드마크 스케일).
+- **§6 자산 생산(흐름 5)**: `logo-briefs.md`가 없으면 `favicon.svg`를 저작(임시 등급). overview §6에 favicon/app-icon 마크 + head favicon `<link>` **무조건** + 락업 6종.
+- **non-clobber(흐름 8)**: `logo-briefs.md`가 있으면 favicon.svg를 건드리지 않는다(design-logo 정제본 보존).
+- `brand-tokens.json` `lockup` 블록에 선택 키 `wmImgScale` 추가.
+- SKILL.md line 224("단색 자산 베이크는 design-logo 소관") → "favicon/app-icon은 전용 마크 저작(brand-kit 임시 / design-logo 정제), 단색 자산 베이크 없음"으로 교체.
 
 ## 6. design-logo 흐름
 
-- **흐름 11 재작성**: gpt-image 단색 생성(ⓐ) 제거. 확정 `logo.png`에서 §4 bake suite 호출(brand-kit 임시본 덮어씀). 16px 가독 프리뷰는 인지용(폴백·재생성·단순화 마크 없음).
-- **흐름 12(다크 리맵) 유지**.
-- 락업 프리뷰 게이트: 심볼(`--logo-mark-scale`) + 이미지 워드마크(`--logo-wm-img-scale`) 둘 다 튜닝.
-- 비대칭 노트·스펙 B-🅱-ii 참조를 새 원칙(결정적, 단순화 폴백 없음)으로 갱신. bake import 경로를 `scripts/lib/`로.
+- **흐름 11 재작성**: gpt-image 단색 생성·`bake-logo-assets` 호출 제거 → 로고 lock 후 `favicon.svg`를 확정 심볼에 맞게 **정제 저작**(brand-kit 임시본 덮어씀). 16px 가독 프리뷰는 인지용(폴백·재생성 없음). app-icon은 같은 마크.
+- **흐름 12(다크 리맵) 유지.**
+- bake import·참조 제거. 비대칭 노트·B-🅱-ii 참조를 새 모델로 갱신.
 
 ## 7. 락업 시스템 (이미지-모드 사이징)
 
 - `tokens-to-css.mjs`: `--logo-wm-img-scale` var emit + `.lockup .wordmark-img { height: calc(var(--logo-wm-img-scale) * 1em); width: auto; display: block; }` emit. 기본값 합리값(예: 1.5).
-- 폰트 모드 `.wordmark`는 현행(font-size 상속, 변경 없음). 이미지 모드만 새 규칙 추가.
-- brand-tokens `lockup.wmImgScale`(선택) → var. 비면 기본값.
+- 폰트 모드 `.wordmark`는 현행(변경 없음). `brand-tokens.json` `lockup.wmImgScale`(선택)→var, 비면 기본값.
 
 ## 8. overview §6 렌더 (참조 가이드)
 
-- 락업 6종(D5). 폰트/이미지 워드마크 모드 분기 유지(이미지 모드=`<img class="wordmark-img">`, 폰트 모드=`<span class="wordmark">`).
-- 자산 타일: favicon-light(밝은 카드 위)·favicon-dark(어두운 카드 위)·app-icon(라운드 타일) + 단색 마스크 행(`.mark-mono`, 라이브 http에서 렌더).
-- `<head>`: `favicon-light/dark` `<link media="(prefers-color-scheme: …)">` 무조건.
+- 락업 6종(D4). 폰트/이미지 워드마크 모드 분기 유지(이미지=`<img class="wordmark-img">`, 폰트=`<span class="wordmark">`).
+- favicon/app-icon = `favicon.svg`(같은 마크) 타일 + 16px/32px 가독 미리보기. `<head>` favicon `<link>` 무조건.
+- 로고 단색 변형 행 = `.mark-mono` 마스크(로고 alpha, 토큰 색).
 
 ## 9. 영향 파일
 
 | 파일 | 변경 |
 |---|---|
-| `scripts/lib/bake-logo-assets.mjs` | **이동**(design-logo/scripts → lib) + `bakeAll`/CLI에 `markMono` 추가 |
-| `tests/scripts/lib/bake-logo-assets.test.mjs` | **이동** + `markMono` 테스트 |
 | `skills/design-brand-kit/scripts/tokens-to-css.mjs` | `--logo-wm-img-scale` + `.lockup .wordmark-img` emit |
 | `tests/skills/design-brand-kit/scripts/tokens-to-css.test.mjs` | 새 var·클래스·기본값 테스트 |
-| `skills/design-brand-kit/SKILL.md` | 흐름 5·8 bake suite + non-clobber, §6 락업 6종·favicon 무조건, `lockup.wmImgScale` 스키마, line 224, D8 ink 규칙 |
-| `skills/design-brand-kit/references/brand-kit-html-direction.md` | §6 락업 6종 + favicon/단색 무조건 + `.wordmark-img` |
-| `skills/design-logo/SKILL.md` | 흐름 11 재작성(gpt-image 단색 제거·결정적 베이크), 락업 프리뷰 워드마크 튜닝, 비대칭/스펙 참조, bake import 경로 |
-| `skills/design-logo/references/logo-sheet-html-direction.md` | 단색/락업 프리뷰 갱신(결정적·워드마크 사이징) |
-| `docs/superpowers/specs/2026-06-07/design-logo-favicon-monochrome-design.md` | B-🅱-ii 갱신: gpt-image 단색 → 결정적, 단순화 폴백 없음 명시 |
+| `skills/design-brand-kit/SKILL.md` | §6 `favicon.svg` 저작 + 락업 6종, `lockup.wmImgScale` 스키마, line 224 교체, favicon/app-icon `<head>`·타일 무조건 |
+| `skills/design-brand-kit/references/brand-kit-html-direction.md` | §6 락업 6종 + `favicon.svg`(head link·타일) 무조건 + `.wordmark-img` + 단색 마스크 행 |
+| `skills/design-logo/SKILL.md` | 흐름 11 재작성(favicon.svg 정제 저작, bake 제거), 락업 프리뷰 워드마크 튜닝, 비대칭/B-🅱-ii 참조 갱신 |
+| `skills/design-logo/references/logo-sheet-html-direction.md` | 단색/락업·favicon 프리뷰 갱신(저작 마크·워드마크 사이징) |
+| `skills/design-logo/scripts/bake-logo-assets.mjs` | **삭제**(고아 — favicon/app-icon 베이크 폐기) |
+| `tests/skills/design-logo/scripts/bake-logo-assets.test.mjs` | **삭제** |
+| `docs/superpowers/specs/2026-06-07/design-logo-favicon-monochrome-design.md` | B-🅱-ii: 베이크 → 전용 마크 저작으로 대체됨 표기 |
+
+> `tokens.css` `.mark-mono`는 **유지**(로고 단색 변형 표시용). `remap-logo-dark.mjs`·흐름 12는 **무변경**.
 
 ## 10. 검증
 
-- `npm test`: bake `markMono` + tokens-to-css 새 var/클래스/기본값 테스트 + 전체 회귀(무회귀).
+- `npm test`: `tokens-to-css` 새 var/클래스/기본값 테스트 통과 + bake 테스트 제거 후 전체 PASS(무회귀).
 - `npm run validate`: 생성물 일치.
-- 수동(더미 `.design`): brand-kit 베이크 → `assets/logo/`에 favicon-light/dark·app-icon·mark-mono 생성 확인. `logo-briefs.md` 두면 스킵 확인. overview §6를 http로 서빙해 락업 6종(태그라인 유/무)·favicon 타일·head link·**이미지-모드 워드마크 균형**·단색 마스크 렌더 확인.
+- 수동(더미 `.design` over http): brand-kit이 `favicon.svg` 저작 → overview §6 표시·`<head>` 적용 확인. `logo-briefs.md` 두면 non-clobber. 락업 6종(태그라인 유/무)·**이미지-모드 워드마크 균형**·favicon 16px 가독·로고 단색 마스크 렌더 확인.
 - `npm run sync` 후 `/reload-plugins`(Claude)·`npm run codex:reinstall`(Codex) 안내.
 
 ## 11. 범위 밖 / 파킹
 
-- favicon 단순화 마크 폴백(사용자 결정: 단순하게).
+- favicon 자동 단순화/gpt-image, apple-touch·PWA PNG 세트.
 - 풀컬러 다크 리맵(흐름 12) 변경.
 - PNG→SVG 트레이서, 진짜 융합 베이크 락업.
-- component-export·page-image 등 다른 다운스트림.
