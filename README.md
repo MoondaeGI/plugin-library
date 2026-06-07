@@ -11,7 +11,7 @@ Claude Code + Codex CLI 양쪽에서 쓰는 개인용 플러그인. 저장소 �
 ### 1. 공통 준비 (어느 도구든 먼저)
 
 ```powershell
-git clone <이 저장소 URL> plugin
+git clone https://github.com/MoondaeGI/plugin-library.git plugin
 cd plugin
 npm install                 # prepare 훅이 sync를 자동 실행
 cp .env.example .env
@@ -27,7 +27,8 @@ claude --plugin-dir .
 
 ```text
 # B. 마켓플레이스 설치 (Claude 세션 안에서, 최초 1회)
-/plugin marketplace add <이 저장소 경로 또는 git URL>
+/plugin marketplace add https://github.com/MoondaeGI/plugin-library.git
+#   (로컬 경로로도 가능) /plugin marketplace add C:\Users\ansgu\work\plugin
 /plugin install personal
 ```
 
@@ -123,8 +124,9 @@ npm run sync                # 생성 파일 갱신
 | **devils-advocate** | 의견·결정·설계를 압박 검증하는 악마의 변호인. 모든 허점을 빠짐없이 들추되 심각도 등급을 붙인다. |
 | **front-developer** | *(미구현 — 호출 금지)* 확정 디자인 산출물을 대상 프로젝트의 컴포넌트 세트·페이지 코드로 변환할 프론트엔드 에이전트. |
 
-> **Claude**: 플러그인이 `agents/`를 번들하므로 자동 노출(`@agent-personal:designer`). 수정 후 `/reload-plugins`.
-> **Codex**: 에이전트를 번들하지 못해 `npm run codex:reinstall`이 생성 TOML을 `~/.codex/agents/`로 복사한다. (`model`/`tools`는 Claude 전용 frontmatter라 옮기지 않음.)
+> **호출**: Claude는 `agents/`를 직접 읽어 `@agent-personal:designer`로 자동 노출한다. Codex는 에이전트를 플러그인 번들에 못 넣어, `agents/*.md`에서 생성한 TOML이 `~/.codex/agents/`로 들어간다(스킬은 번들로, 에이전트는 여기로 — 위치만 다름). `model`/`tools`는 Claude 전용 frontmatter라 Codex로 옮기지 않는다.
+>
+> **갱신은 스킬·에이전트 공통**으로 위 [설치](#설치)의 "수정 후 갱신"과 같다 — Claude `/reload-plugins`, Codex `npm run codex:reinstall` 후 세션 재시작.
 
 ---
 
