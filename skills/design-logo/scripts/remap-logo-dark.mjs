@@ -78,3 +78,23 @@ export function remapLogoDark(buf, mappings) {
   }
   return encodePNG(out, width, height, 6);
 }
+
+// ---- CLI ----
+function isMain(){ return process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url); }
+if (isMain()) {
+  const args = process.argv.slice(2); const o = { maps: [] };
+  for (let i=0;i<args.length;i++){ const a=args[i]; const n=()=>args[++i];
+    if (a==='--in') o.in=n();
+    else if (a==='--out') o.out=n();
+    else if (a==='--map') o.maps.push(n());
+    else if (a==='--help'||a==='-h'){ console.log('node remap-logo-dark.mjs --in <png> --out <png> --map "#SRC:#DST" [--map ...]'); process.exit(0); }
+    else { console.error('오류: 알 수 없는 인자 ' + a); process.exit(2); } }
+  if (!o.in || !o.out || !o.maps.length) { console.error('오류: --in, --out, 그리고 --map 한 개 이상이 필요합니다'); process.exit(2); }
+  if (!existsSync(o.in)) { console.error('오류: 파일 없음: ' + o.in); process.exit(2); }
+  try {
+    const mappings = o.maps.map(m => { const [s,d]=m.split(':'); if(!s||!d) throw new Error('--map 형식은 "#SRC:#DST": ' + m); return { src: hexToRgb(s), dst: hexToRgb(d) }; });
+    mkdirSync(path.dirname(path.resolve(o.out)), { recursive: true });
+    writeFileSync(o.out, remapLogoDark(readFileSync(o.in), mappings));
+    console.log(`다크 변형 생성 → ${o.out} (${mappings.length}색 매핑)`);
+  } catch (e) { console.error('오류: ' + e.message); process.exit(2); }
+}
