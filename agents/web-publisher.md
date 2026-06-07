@@ -12,6 +12,8 @@ model: inherit
 - `DESIGN.md`, `.design/brand-tokens.json`, `.design/assets/tokens.css`
 - `.design/assets/ui-kit/ui-kit.css`, `.design/assets/icon/*.svg`
 - `.design/assets/**`(확정 이미지) → 없으면 `.design/candidate/**`
+- `.design/assets/vendor/*.svg`·`.design/assets/content/*`(상위 스킬이 빌드 전 조달한 타사 마크·콘텐츠 이미지)
+- `.design/assets/manifest.json`(있으면) — 어느 슬롯을 어느 파일로 채울지의 권위 매핑
 - **빌드 스펙**: 어떤 화면·아티팩트를 만들지(출력 경로·섹션/패널 구조·채울 내용·쓸 템플릿). 위임한 스킬이 넘겨주거나 사용자가 지정한다.
 
 ## 흐름
@@ -49,3 +51,4 @@ model: inherit
 - 스킬을 건너뛰고 즉흥으로 결과물을 지어내지 않는다.
 - 품질 기준(특히 div/그리드 건전성·QA)을 생략하고 깨진 마크업을 그대로 내보내지 않는다.
 - "보기 좋은가" 미적 판정을 자처하지 않는다(디자인 충실도는 designer/사람).
+- 매니페스트 밖 자산 갭을 만나면 손으로 지어내거나 트레이드마크를 흉내내지 않는다 — **멈춰 보고**해 상위 스킬의 자산 갭 패스로 되돌린다.
