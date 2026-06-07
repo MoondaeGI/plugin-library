@@ -89,7 +89,7 @@ Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxur
 ```
 
 위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
-제시용 로고는 **autocrop 없이 high quality**로 굽는다(§0 제시용 레시피). 단색·favicon 가독 판정은 이 단계가 아니라 축소 마크(스펙 B)에서 한다. **심볼-only 원칙**: design-logo의 `logo.png`는 심볼이다(워드마크 안 구움) — 워드마크는 `.lockup`에서 별도 조합한다(분리성 보장). **단색 마크 축약(스펙 B-🅱-ii)**: favicon·app-icon·다크용 `mark-mono.png`는 확정 `logo.png`를 첨부(`--image --input-fidelity high`)해 "single flat color, bold thick strokes, simplest silhouette, drop the frame/text/accents, must read at 16px"로 축약 생성한다(하이브리드). 충실도가 부족하면 더 굵게·단순하게 재생성한다. 단색 마스터의 색은 무관하다 — 재색은 alpha 기반이다.
+제시용 로고는 **autocrop 없이 high quality**로 굽는다(§0 제시용 레시피). 단색·favicon 가독 판정은 이 단계가 아니라 축소 마크(스펙 B)에서 한다. **심볼-only 원칙**: design-logo의 `logo.png`는 심볼이다(워드마크 안 구움) — 워드마크는 `.lockup`에서 별도 조합한다(분리성 보장). **단색 마크 축약(스펙 B-🅱-ii)**: favicon·app-icon·다크용 `mark-mono.png`는 확정 `logo.png`를 첨부(`--image --input-fidelity high`)해 "single flat color, bold thick strokes, simplest silhouette, drop the frame/text/accents, must read at 16px"로 축약 생성한다(하이브리드). 충실도가 부족하면 더 굵게·단순하게 재생성한다. 단색 마스터의 색은 무관하다 — 재색은 alpha 기반이다. **다크모드 변형(스펙 B-🅱-i)**: 큰 풀로고의 다크 변형은 생성이 아니라 **결정론 팔레트 리맵**으로 만든다 — 라이트 로고의 소스색을 브랜드 다크 팔레트 hex로 영역별 치환(OKLab 매칭, 2앵커 엣지 보간; `remap-logo-dark.mjs`). 정확한 브랜드색·재현성·드리프트 0. 리맵은 *색 교체*라, 다크에서 *구조 변경*(배지 제거·아웃라인화)이 필요한 소수 로고만 어댑트 생성으로 폴백한다.
 
 ### 7.1 보드 주입용 압축 블록 (3줄 고정)
 

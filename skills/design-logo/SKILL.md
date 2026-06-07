@@ -43,12 +43,14 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
       concepts/round-N/01..04.png    # 라운드별 개별 투명 PNG (--auto-version)
       logo-candidate.png (+v2…)      # 고른 #N 단독 다듬기
       mark-mono-candidate.png (+v2…) # 단색 마크 축약 시안(프리뷰 게이트)
+      logo-dark-candidate.png (+v2…) # 다크 변형 시안(프리뷰 게이트)
   assets/
     logo/  logo.png                  # 확정 심볼 (풍부한 마크)
            mark-mono.png             # 단색 마스터 (favicon·app-icon·페이지내 재색의 소스)
            favicon-light.png         # 라이트 탭용(ink 마크) — bake-logo-assets 생성
            favicon-dark.png          # 다크 탭용(흰 마크) — bake-logo-assets 생성
            app-icon.png              # 브랜드색 타일 + 흰 마크 — bake-logo-assets 생성
+           logo-dark.png             # 다크모드 변형 (remap-logo-dark 또는 생성 폴백)
 ```
 
 - `logos.html`(view/)의 모든 `<img>`는 `../candidate/logo/concepts/round-N/01.png`·`../candidate/logo/seed.png` 상대경로.
@@ -134,7 +136,8 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 9. **다듬기 루프**: 직전 후보를 `--image --input-fidelity high`로 첨부해 한 번에 한 가지만 증분 편집(나머지 보존), `--auto-version`. lock까지.
 10. **확정(덮어쓰기 — HTML 무수정)**: 확정본을 `.design/assets/logo/logo.png`에 **덮어쓴다**(brand-kit이 시드해 둔 base 복사본을 교체). 시안은 `candidate/logo/`에 보존. `view/overview.html` §6의 로고 자리(심볼·락업 심볼·앱아이콘·파비콘)가 이미 `../assets/logo/logo.png`를 가리키므로 **HTML을 편집하지 않는다** — 라이브 서버가 파일 교체를 감지해 자동 새로고침한다. 시드 `assets/brand-kit/logo-base.png`는 불변이다(작업 시드는 `candidate/logo/seed.png`에 이미 복사됨). `candidate/logo/logo-briefs.md`에 확정 컨셉을 기록한다 — 이 파일은 brand-kit의 non-clobber 표식이자 md-compiler의 출처 표식이다(design-brand-kit 흐름 8·design-md-compiler §12).
 11. **단색 자산 suite(스펙 B-🅱-ii)**: 심볼 lock 직후 — ⓐ 확정 `logo.png`를 첨부(`--image --input-fidelity high`)해 "single flat color, bold thick strokes, simplest silhouette, drop frame/text/accents, legible at 16px"로 `candidate/logo/mark-mono-candidate.png`를 축약 생성한다(하이브리드, `logo-art-direction.md` §7 단색 프레이밍). ⓑ **프리뷰 게이트**: `logos.html` 단색 프리뷰 섹션에 16/24/32px·light/dark로 렌더하고, **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독 자가판정 → 부족하면 더 굵게·단순하게 재생성 → 결과를 사용자에게 제시(평이한 승인만). ⓒ 승인 후 `assets/logo/mark-mono.png`로 lock하고, brand-tokens.json 색을 읽어 베이크한다: `node "<이 스킬 디렉터리>/scripts/bake-logo-assets.mjs" --mark <.design>/assets/logo/mark-mono.png --out-dir <.design>/assets/logo --ink "<brand text/ink HEX>" --tile "<brand primary HEX>"` → `favicon-light.png`·`favicon-dark.png`·`app-icon.png` 생성. **HTML은 편집하지 않는다**(overview §6이 이 경로들을 가리킴).
-12. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
+12. **다크모드 변형(스펙 B-🅱-i)**: 큰 풀로고의 다크모드용 변형을 **결정론 리맵**으로 만든다 — ⓐ 라이트 `logo.png`의 소스색(= 로고에 쓰인 brand-tokens 색)과 각 색의 **다크 타깃**(브랜드 다크 팔레트)을 `#SRC:#DST` 매핑으로 구성한다. ⓑ `node scripts/remap-logo-dark.mjs --in <.design>/assets/logo/logo.png --out <.design>/candidate/logo/logo-dark-candidate.png --map "#SRC:#DST" …`(색마다 --map). OKLab·엣지 보간은 스크립트가 처리. ⓒ **프리뷰 게이트**: **큰 사이즈**로 다크 배경(+ 라이트 원본 나란히)에 렌더하고 **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독·정체성 자가판정 → 부족하면 매핑 조정·재리맵 → 사용자에게 제시(평이한 승인만). ⓓ 승인 → `assets/logo/logo-dark.png` lock, 매핑을 `candidate/logo/logo-briefs.md`에 기록(재현성). **HTML 무편집**. ⓔ **생성 폴백**: 다크에서 구조 재설계(배지 채움 제거·아웃라인 추가 등)가 필요해 리맵으론 룩이 안 살면, `logo.png`를 첨부(`--image --input-fidelity high`)해 "다크 배경용 재설계, 구성·정체성 유지"로 생성한다(색 hex는 부정확함을 감수).
+13. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
 
 > 워드마크는 이 스킬에서 굽지 않는다 — 락업에서 `.wordmark`로 별도 조합한다(스펙 B-🅰). 파비콘·앱 아이콘은 흐름 11(단색 자산 suite)에서 단색 마스터 `mark-mono.png`로부터 `bake-logo-assets.mjs`로 베이크한다(스펙 B-🅱-ii). 확정 심볼 + 단색 자산 suite를 산출한다.
 
@@ -142,6 +145,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 - **심볼-only**: `logo.png`는 심볼이다(워드마크 안 구움). 워드마크 결합은 `.lockup`이 담당(스펙 B-🅰).
 - **단색 자산(스펙 B-🅱-ii)**: `mark-mono.png`는 16px에서 읽히는 단색 축약 마크다. favicon(light/dark)·app-icon은 `bake-logo-assets.mjs`로 마스터에서 베이크한다(손편집 금지 — 마스터만 고치고 재베이크). 풍부한 다색 로고의 다크 2장은 본 단계 비범위(🅱-i 이연).
+- **다크 변형(스펙 B-🅱-i)**: 큰 풀로고 다크모드는 `remap-logo-dark.mjs`로 라이트 로고에서 결정론 리맵(브랜드 다크 hex·OKLab·엣지 보간)한다 — 정확·재현·무비용. 손편집·임의 생성 금지(라이트가 진실, 다크는 그 함수). 구조 재설계가 필요한 로고만 생성 폴백.
 - 시트의 3~4개는 **또렷이 구별되는 큰 방향**이어야 한다 — 미세 변주 반복 금지. 레이아웃·카드 규칙은 `references/logo-sheet-html-direction.md`.
 - 단독 로고는 `../references/design/logo-art-direction.md` §8 품질 테스트(실루엣·작은 크기·무텍스트·단색·시스템·의미)를 통과해야 한다.
 - 로고 마크 배경은 투명(gpt-image-1.5 `--background transparent`, autocrop 없음).
