@@ -42,8 +42,13 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
       seed-user.png                  # (선택) 사용자 첨부 이미지
       concepts/round-N/01..04.png    # 라운드별 개별 투명 PNG (--auto-version)
       logo-candidate.png (+v2…)      # 고른 #N 단독 다듬기
+      mark-mono-candidate.png (+v2…) # 단색 마크 축약 시안(프리뷰 게이트)
   assets/
-    logo/  logo.png                  # 확정 (단일 로고)
+    logo/  logo.png                  # 확정 심볼 (풍부한 마크)
+           mark-mono.png             # 단색 마스터 (favicon·app-icon·페이지내 재색의 소스)
+           favicon-light.png         # 라이트 탭용(ink 마크) — bake-logo-assets 생성
+           favicon-dark.png          # 다크 탭용(흰 마크) — bake-logo-assets 생성
+           app-icon.png              # 브랜드색 타일 + 흰 마크 — bake-logo-assets 생성
 ```
 
 - `logos.html`(view/)의 모든 `<img>`는 `../candidate/logo/concepts/round-N/01.png`·`../candidate/logo/seed.png` 상대경로.
@@ -128,13 +133,15 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 8. **단독 로고**: 고른 PNG는 이미 투명 단독 컷아웃이므로 **재추출 없이** `candidate/logo/logo-candidate.png`로 승격한다. 더 다듬고 싶으면 그 PNG를 `--image --input-fidelity high`로 첨부해 "중앙 정렬, 형태·기하 유지, 단일 마크만"으로 다듬는다(`logo-art-direction.md` §7 품질 프레이밍, §8 품질 테스트로 자가 판정).
 9. **다듬기 루프**: 직전 후보를 `--image --input-fidelity high`로 첨부해 한 번에 한 가지만 증분 편집(나머지 보존), `--auto-version`. lock까지.
 10. **확정(덮어쓰기 — HTML 무수정)**: 확정본을 `.design/assets/logo/logo.png`에 **덮어쓴다**(brand-kit이 시드해 둔 base 복사본을 교체). 시안은 `candidate/logo/`에 보존. `view/overview.html` §6의 로고 자리(심볼·락업 심볼·앱아이콘·파비콘)가 이미 `../assets/logo/logo.png`를 가리키므로 **HTML을 편집하지 않는다** — 라이브 서버가 파일 교체를 감지해 자동 새로고침한다. 시드 `assets/brand-kit/logo-base.png`는 불변이다(작업 시드는 `candidate/logo/seed.png`에 이미 복사됨). `candidate/logo/logo-briefs.md`에 확정 컨셉을 기록한다 — 이 파일은 brand-kit의 non-clobber 표식이자 md-compiler의 출처 표식이다(design-brand-kit 흐름 8·design-md-compiler §12).
-11. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
+11. **단색 자산 suite(스펙 B-🅱-ii)**: 심볼 lock 직후 — ⓐ 확정 `logo.png`를 첨부(`--image --input-fidelity high`)해 "single flat color, bold thick strokes, simplest silhouette, drop frame/text/accents, legible at 16px"로 `candidate/logo/mark-mono-candidate.png`를 축약 생성한다(하이브리드, `logo-art-direction.md` §7 단색 프레이밍). ⓑ **프리뷰 게이트**: `logos.html` 단색 프리뷰 섹션에 16/24/32px·light/dark로 렌더하고, **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독 자가판정 → 부족하면 더 굵게·단순하게 재생성 → 결과를 사용자에게 제시(평이한 승인만). ⓒ 승인 후 `assets/logo/mark-mono.png`로 lock하고, brand-tokens.json 색을 읽어 베이크한다: `node "<이 스킬 디렉터리>/scripts/bake-logo-assets.mjs" --mark <.design>/assets/logo/mark-mono.png --out-dir <.design>/assets/logo --ink "<brand text/ink HEX>" --tile "<brand primary HEX>"` → `favicon-light.png`·`favicon-dark.png`·`app-icon.png` 생성. **HTML은 편집하지 않는다**(overview §6이 이 경로들을 가리킴).
+12. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
 
 > 워드마크·파비콘·앱 아이콘 같은 로고 시스템은 이 스킬에서 만들지 않는다(현재 불필요). 확정 단일 로고만 산출한다.
 
 ## 품질 기준 / 금지 사항
 
 - **심볼-only**: `logo.png`는 심볼이다(워드마크 안 구움). 워드마크 결합은 `.lockup`이 담당(스펙 B-🅰).
+- **단색 자산(스펙 B-🅱-ii)**: `mark-mono.png`는 16px에서 읽히는 단색 축약 마크다. favicon(light/dark)·app-icon은 `bake-logo-assets.mjs`로 마스터에서 베이크한다(손편집 금지 — 마스터만 고치고 재베이크). 풍부한 다색 로고의 다크 2장은 본 단계 비범위(🅱-i 이연).
 - 시트의 3~4개는 **또렷이 구별되는 큰 방향**이어야 한다 — 미세 변주 반복 금지. 레이아웃·카드 규칙은 `references/logo-sheet-html-direction.md`.
 - 단독 로고는 `../references/design/logo-art-direction.md` §8 품질 테스트(실루엣·작은 크기·무텍스트·단색·시스템·의미)를 통과해야 한다.
 - 로고 마크 배경은 투명(gpt-image-1.5 `--background transparent`, autocrop 없음).
