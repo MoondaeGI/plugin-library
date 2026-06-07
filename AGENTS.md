@@ -40,6 +40,21 @@
   읽습니다 (gitignore된 머신별 로컬 값 — `.env.example`에는 없음). 설정이 없거나
   잘못되면 `skills/librarian/scripts/resolve-vault.mjs`가 안내와 함께 실패합니다.
 
+## 계획·스펙 문서 (superpowers)
+
+- **spec·plan은 날짜별 폴더로 분리합니다.** superpowers 워크플로(`writing-plans`·
+  brainstorming 등)가 만드는 설계/계획 문서는 다음 경로에 저장하세요:
+  - 스펙: `docs/superpowers/specs/<yyyy-mm-dd>/<주제>-design.md`
+  - 계획: `docs/superpowers/plans/<yyyy-mm-dd>/<주제>.md`
+- **날짜는 폴더로만** 표현하고 파일명에는 중복해서 넣지 않습니다(폴더가 이미
+  `2026-06-04`면 파일명은 `design-wordmark-font-vs-image-design.md` — 앞에 날짜
+  접두사 금지). 한 날짜에 여러 문서가 생기면 같은 날짜 폴더 안에 나란히 둡니다.
+- 짝이 되는 spec과 plan은 **같은 날짜·같은 주제명**을 공유합니다(plan은 접미사
+  없음, spec은 `-design` 접미사). plan 상단 `**Spec:**` 줄은 새 경로
+  (`docs/superpowers/specs/<yyyy-mm-dd>/<주제>-design.md`)를 가리킵니다.
+- 도구 기본값이 평평한 `docs/superpowers/specs/<yyyy-mm-dd>-<주제>.md`로
+  저장하더라도, 저장 후 위 날짜 폴더 구조로 옮기고 상호 참조 경로를 갱신하세요.
+
 ## 테스트 레이아웃
 
 - **테스트 파일은 대상 소스의 위치를 `tests/` 아래에 그대로 미러링합니다.**
