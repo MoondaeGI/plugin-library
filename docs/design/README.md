@@ -41,6 +41,46 @@ design-brand-kit  (+ 공유 assets/tokens.css)
 
 ---
 
+## 핵심 파이프라인 스킬별 소개
+
+`design-brand-kit`부터 `design-md-compiler`까지 designer 핵심 파이프라인의 다섯 단계. 각 스킬의 산출물 예시 이미지는 추후 추가한다.
+
+### design-brand-kit
+
+제품 설명 한 줄에서 브랜드 성격·시각 방향·색·타이포·로고 방향·UI 분위기·금지 패턴을 정리하고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 **HTML 오버뷰(`overview.html`)**를 협업으로 만든다. lock 시 `brand-tokens.json`을 공유 `assets/tokens.css`로 물질화한다. (아래 [심화](#design-brand-kit-심화) 참고.)
+
+![design-brand-kit 산출물 — Nooknote 브랜드 킷 오버뷰](assets/brand-kit-nooknote.png)
+
+### design-logo
+
+brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 만들 때 쓰는 온디맨드 단계. `assets/brand-kit/logo-base.png`(투명)를 시드로, 한 라운드에 3~4개 방향을 개별 투명 PNG로 만들어 `logos.html` 탐색 시트(번호·라벨·실색·실폰트)로 보여주고 단독 로고를 확정해 `assets/logo/`로 lock한다.
+
+<!-- ![design-logo 산출물 — 로고 탐색 시트](assets/logo-example.png) -->
+> 🖼️ _산출물 이미지 추가 예정_
+
+### design-iconset
+
+확정 brand kit를 바탕으로 제품 아이콘 세트를 **Iconify 단일 세트에서 fetch**해 만든다. 후보 세트를 §11 스타일로 점수화해 1개 lock하고, 리스트 적중률을 측정한 뒤, 적중분은 `viewBox 0 0 24 24`·`currentColor`로 정규화해 가져오고 부족분만 합성·저작한다. 모든 아이콘을 `icon-map.json`에 기록하고 `assets/icon/`으로 lock한다. (네트워크 필요, 키 불필요.)
+
+<!-- ![design-iconset 산출물 — 아이콘 세트 시트](assets/iconset-example.png) -->
+> 🖼️ _산출물 이미지 추가 예정_
+
+### design-ui-kit
+
+확정 brand kit 위에 제품에서 바로 쓰는 **UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작**한다(이미지 아님). 컴포넌트를 4그룹(Foundations/Core Interactive/Informational/Structural)으로 확정하고 스타일 방향을 합의한 뒤, 토큰 변수만 참조하는 `assets/ui-kit/ui-kit.css`를 저작한다. 쇼케이스 `view/ui-kit.html` 마크업·QA는 web-publisher에 위임. lock 후 design-md-compiler를 호출한다.
+
+<!-- ![design-ui-kit 산출물 — UI 킷 쇼케이스](assets/ui-kit-example.png) -->
+> 🖼️ _산출물 이미지 추가 예정_
+
+### design-md-compiler
+
+브랜드 킷·UI 킷·(있으면) 페이지 이미지 브리프를 바탕으로 외부 도구에서도 단독 활용 가능한 **`DESIGN.md`**를 만든다. 토큰 frontmatter(§4 = `tokens.css` 권위) + 컴포넌트 산문(§5 = `ui-kit.css` 권위)으로, 실제 구현자가 그대로 따를 수 있는 규칙으로 컴파일한다. **designer 핵심 파이프라인의 종착.**
+
+<!-- ![design-md-compiler 산출물 — DESIGN.md](assets/design-md-example.png) -->
+> 🖼️ _산출물 이미지 추가 예정_
+
+---
+
 ## design-brand-kit (심화)
 
 ### 목적
