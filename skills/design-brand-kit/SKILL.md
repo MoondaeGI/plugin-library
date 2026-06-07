@@ -221,6 +221,8 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 > `lockup`(선택)은 **심볼+워드마크 락업**의 비율·간격이다. `markScale`(마크 높이 = 워드마크 font-size의 배수, 기본 1.8)·`gap`(심볼-워드마크 간격)·`tagline*`(소제목 크기·자간·색 토큰 키)는 `tokens.css`의 `.lockup*` 클래스로 emit된다 — 락업 관계의 단일 권위다. 비우면 기본값. **마크 모양마다 균형이 달라 `markScale`은 프리뷰에서 에이전트가 조정**한다(사용자는 승인만).
 
+> 단색 자산(favicon·app-icon)은 design-logo가 `mark-mono.png`에서 `bake-logo-assets.mjs`로 베이크하며, 입력 색은 brand-tokens.json의 `text`(ink)·`primary`(tile)를 쓴다. brand-kit은 토큰만 제공하고 베이크는 design-logo 소관이다(스펙 B-🅱-ii).
+
 ## brand-briefs.md 구조
 
 ```md
