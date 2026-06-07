@@ -46,3 +46,35 @@ export function oklabToSrgb([L,A,B]) {
     linearToSrgb(-0.0041960863*l-0.7034186147*m+1.7076147010*s),
   ];
 }
+
+// 라이트 풀로고를 다크 팔레트로 영역 리맵. mappings: [{src:[r,g,b], dst:[r,g,b]}].
+// 각 불투명 픽셀을 OKLab 1·2위 앵커 선분에 투영(t)해 타깃색을 OKLab 보간. alpha 보존.
+export function remapLogoDark(buf, mappings) {
+  if (!mappings || !mappings.length) throw new Error('매핑이 비었습니다');
+  const { width, height, colorType, px } = decodePNG(buf);
+  if (colorType !== 6) throw new Error('RGBA(투명) PNG가 필요합니다 (colorType=' + colorType + ')');
+  const srcLab = mappings.map(m => srgbToOklab(m.src));
+  const dstLab = mappings.map(m => srgbToOklab(m.dst));
+  const out = Buffer.from(px);
+  for (let p=0; p<width*height; p++) {
+    const o = p*4; if (px[o+3] < 8) continue;
+    const c = srgbToOklab([px[o], px[o+1], px[o+2]]);
+    let i0=0,d0=Infinity,i1=-1,d1=Infinity;
+    for (let k=0;k<srcLab.length;k++){ const s=srcLab[k];
+      const dl=c[0]-s[0], da=c[1]-s[1], db=c[2]-s[2]; const d=dl*dl+da*da+db*db;
+      if (d<d0){ d1=d0;i1=i0;d0=d;i0=k; } else if (d<d1){ d1=d;i1=k; } }
+    let lab;
+    if (i1<0 || mappings.length<2) { lab = dstLab[i0]; }
+    else {
+      const si=srcLab[i0], sj=srcLab[i1];
+      const vx=sj[0]-si[0], vy=sj[1]-si[1], vz=sj[2]-si[2];
+      const vv = vx*vx+vy*vy+vz*vz || 1;
+      const t = Math.max(0, Math.min(1, ((c[0]-si[0])*vx+(c[1]-si[1])*vy+(c[2]-si[2])*vz)/vv));
+      const di=dstLab[i0], dj=dstLab[i1];
+      lab = [di[0]+(dj[0]-di[0])*t, di[1]+(dj[1]-di[1])*t, di[2]+(dj[2]-di[2])*t];
+    }
+    const [r,g,b] = oklabToSrgb(lab);
+    out[o]=r; out[o+1]=g; out[o+2]=b;
+  }
+  return encodePNG(out, width, height, 6);
+}
