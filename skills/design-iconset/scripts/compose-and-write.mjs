@@ -1,7 +1,7 @@
 // gap 합성 결정을 실행해 candidate에 기록하고 build-icon-map용 custom 결정을 반환한다.
 import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { fetchIconSvg as realFetch } from './iconify-client.mjs'
+import { fetchIconSvg as realFetch } from '../../../scripts/lib/iconify-client.mjs'
 import { normalizeSvg as realNormalize } from './normalize.mjs'
 import { compose as realCompose } from './compose.mjs'
 
