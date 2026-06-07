@@ -136,7 +136,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 11. **단색 자산 suite(스펙 B-🅱-ii)**: 심볼 lock 직후 — ⓐ 확정 `logo.png`를 첨부(`--image --input-fidelity high`)해 "single flat color, bold thick strokes, simplest silhouette, drop frame/text/accents, legible at 16px"로 `candidate/logo/mark-mono-candidate.png`를 축약 생성한다(하이브리드, `logo-art-direction.md` §7 단색 프레이밍). ⓑ **프리뷰 게이트**: `logos.html` 단색 프리뷰 섹션에 16/24/32px·light/dark로 렌더하고, **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독 자가판정 → 부족하면 더 굵게·단순하게 재생성 → 결과를 사용자에게 제시(평이한 승인만). ⓒ 승인 후 `assets/logo/mark-mono.png`로 lock하고, brand-tokens.json 색을 읽어 베이크한다: `node "<이 스킬 디렉터리>/scripts/bake-logo-assets.mjs" --mark <.design>/assets/logo/mark-mono.png --out-dir <.design>/assets/logo --ink "<brand text/ink HEX>" --tile "<brand primary HEX>"` → `favicon-light.png`·`favicon-dark.png`·`app-icon.png` 생성. **HTML은 편집하지 않는다**(overview §6이 이 경로들을 가리킴).
 12. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
 
-> 워드마크·파비콘·앱 아이콘 같은 로고 시스템은 이 스킬에서 만들지 않는다(현재 불필요). 확정 단일 로고만 산출한다.
+> 워드마크는 이 스킬에서 굽지 않는다 — 락업에서 `.wordmark`로 별도 조합한다(스펙 B-🅰). 파비콘·앱 아이콘은 흐름 11(단색 자산 suite)에서 단색 마스터 `mark-mono.png`로부터 `bake-logo-assets.mjs`로 베이크한다(스펙 B-🅱-ii). 확정 심볼 + 단색 자산 suite를 산출한다.
 
 ## 품질 기준 / 금지 사항
 
