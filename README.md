@@ -134,6 +134,27 @@ npm run sync                # 생성 파일 갱신
 
 자연어로 발동하거나(`/스킬명`으로 명시 호출도 가능) 에이전트가 `Skill` 도구로 호출한다.
 
+<details>
+<summary>예시 프롬프트 — 아래 소개는 이 프롬프트들을 따라가며 읽으면 된다 (펼쳐 보기)</summary>
+
+아래 스킬 소개는 이런 자연어 프롬프트로 발동된다는 가정 아래 쓰였다. 디자인 파이프라인은 위에서 아래로 이어지므로, 한 줄 설명을 읽을 때 짝이 되는 프롬프트를 떠올리면 흐름이 잡힌다.
+
+| 단계 / 스킬 | 이렇게 말하면 발동 |
+|---|---|
+| design-brand-kit | "할 일 관리 SaaS 브랜드 킷 만들어줘" |
+| design-logo | "brand-kit 로고가 밋밋해, 로고만 더 다듬어줘" |
+| design-iconset | "이 브랜드에 맞는 아이콘 세트 뽑아줘" |
+| design-ui-kit | "확정된 토큰으로 UI 컴포넌트 킷 만들어줘" |
+| design-md-compiler | "여기까지 산출물로 DESIGN.md 컴파일해줘" |
+| design-image-web / -mobile | "DESIGN.md로 랜딩 페이지 목업 이미지 뽑아줘" |
+| design-html-prototype | "DESIGN.md로 풀페이지 HTML 프로토타입 만들어줘" |
+| librarian | "이 문서 kb에 정리해줘" / "kb에서 X 찾아줘" |
+| idea | "이 아이디어 brainstorming 전에 같이 따져보자" |
+| discussion | "이 결정에 딴지 좀 걸어줘" |
+| commit | "지금 변경분 커밋해줘" |
+
+</details>
+
 ### 디자인 파이프라인 (designer 소유)
 
 제품 설명 한 줄에서 **브랜드 정체성 → 자산 → UI 킷 → 구현 문서(`DESIGN.md`)**까지 잇는 스킬 묶음. 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받는다.
