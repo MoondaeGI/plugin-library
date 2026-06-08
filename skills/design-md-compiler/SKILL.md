@@ -31,7 +31,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 
 ## 출력 파일
 
-- `DESIGN.md` (대상 프로젝트 cwd 루트)
+- `.design/DESIGN.md`
 
 ## DESIGN.md 구조
 
@@ -46,6 +46,7 @@ meta:          # 제품 에센스 한 문단
 colors:        # 의미키 → HEX                       (--color-*)
 typography:    # 역할 → {family,size,weight,lineHeight,letterSpacing}  (--font-* + --text-*-*)
 spacing:       # (--space-*)
+controls:      # 컨트롤 높이 (--control-h-*)
 radius:        # (--radius-*)
 shadow:        # (--shadow-*)
 border:        # (있으면)
@@ -110,7 +111,7 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
 
 ## 작성 규칙
 
-- **D1 — frontmatter 컴파일(거울)**: frontmatter 값은 `tokens.css`(없으면 `brand-tokens.json`)에서 긁어 채운다. 손으로 쓰지 않으며 `# generated ... do not edit` 주석을 박는다. `tokens.css`가 단일 권위, frontmatter는 거울(projection). typography는 `--font-<role>`(family)와 `--text-<role>-{size,weight,leading,tracking}`를 합쳐 역할 객체로 적는다.
+- **D1 — frontmatter 컴파일(거울)**: frontmatter 값은 `tokens.css`(없으면 `brand-tokens.json`)에서 긁어 채운다. 손으로 쓰지 않으며 `# generated ... do not edit` 주석을 박는다. `tokens.css`가 단일 권위, frontmatter는 거울(projection). typography는 `--font-<role>`(family)와 `--text-<role>-{size,weight,leading,tracking}`를 합쳐 역할 객체로 적는다. 컨트롤 높이 `--control-h-*`도 spacing·radius와 같은 고정 관례 토큰이므로 frontmatter에 거울로 포함한다(`controls:`).
 - **D6 — 재생성 트리거**: 이 스킬은 호출될 때마다 frontmatter를 `tokens.css`에서 **항상 재컴파일**한다(거울을 매번 다시 닦음). 이미 `DESIGN.md`가 있고 `tokens.css`가 더 최신이면 "frontmatter stale — 재생성함"을 §12에 적는다. "한 번 만들고 방치"로 인한 drift를 막는다.
 - **D2 — 컴포넌트는 §5 산문**: 컴포넌트는 frontmatter에 구조화 YAML로 넣지 않는다(임의 CSS→YAML 변환은 깨지기 쉽고 ui-kit.css와 이중 관리). §5에 의미 이름 + 실제 ui-kit class명 + 토큰 참조 스펙 + 상태 + 용도로 산문 기술한다. 포터빌리티는 토큰 frontmatter + 이 산문으로 달성한다.
 - **§5 컴포넌트 권위**: 확정된 `assets/css/ui-kit.css`(있으면)의 **실제 class·variant·강제상태**(`.is-hover`·`.is-checked` 등)에서 뽑아 구현자가 복사해 쓰게 한다 — 이미지 추론이 아니다. 없으면 BRAND_KIT §10·이미지에서 추론(폴백)하되 §12에 폴백임을 표시.
@@ -133,7 +134,7 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
    - `ui-kit.css` 없음 → "§5를 제대로 채우려면 `design-ui-kit`을 먼저 lock하고 다시 호출하세요"를 먼저 안내. 사용자가 그래도 진행하면 폴백(BRAND_KIT §10·이미지 추론) + §12 Known Gaps.
    - `--bp-*` breakpoint 토큰 없음 → "반응형이 필요하면 `design-brand-kit`에서 폼팩터를 정하고 다시 시도하세요" 안내. 진행 시 §7은 "고정폭 데스크톱 전용".
    - `page-briefs.md`/page 이미지 없음 → §6은 가능한 범위만, 누락은 §12.
-2. 존재하는 입력을 읽고 `DESIGN.md`(cwd 루트)를 작성한다 — frontmatter는 tokens.css에서 재컴파일(D1·D6), 본문은 §1–12.
+2. 존재하는 입력을 읽고 `.design/DESIGN.md`를 작성한다 — frontmatter는 tokens.css에서 재컴파일(D1·D6), 본문은 §1–12.
 3. 사람이 DESIGN.md를 검토한다.
 4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다 — **여기까지가 designer 핵심 파이프라인**이다:
    - 핵심 다음 단계: **`design-component-export`** (front-developer 몫 · **미구현** placeholder)로 대상 프로젝트에 컴포넌트를 export.
