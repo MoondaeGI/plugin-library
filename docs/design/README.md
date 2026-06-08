@@ -10,7 +10,7 @@
 핵심 파이프라인 (designer):
 design-brand-kit  (+ 공유 assets/css/tokens.css)
    ├─ (선택) design-logo      ← reference/brand-kit/logo-base.png 시드
-   ├─ (선택) design-iconset   ← BRAND_KIT.md §11 + brand-tokens.json 근거
+   ├─ design-iconset          ← BRAND_KIT.md §11 + brand-tokens.json 근거 (ui-kit·컴포넌트 필수 입력)
    └─ design-ui-kit           ← BRAND_KIT.md §10 + tokens.css + assets/icon/*.svg
           └─ design-md-compiler   → .design/DESIGN.md   (여기까지 designer 핵심)
 
@@ -26,7 +26,7 @@ design-brand-kit  (+ 공유 assets/css/tokens.css)
 |---|---|---|---|
 | **design-brand-kit** | 브랜드 정체성·톤·색·타이포·로고 방향·UI 분위기를 정리하고, 정체성 base 자산(투명 PNG)과 한눈에 보는 HTML 오버뷰를 협업으로 만든다. lock 시 `brand-tokens.json`을 `assets/css/tokens.css`로 물질화(공유 토큰 토대) | 제품 설명 (+ 디스커버리 Q&A) | `reference/{BRAND_KIT.md·brand-tokens.json}` · `view/overview.html` · `assets/css/tokens.css` · `reference/brand-kit/` |
 | **(선택) design-logo** | 라운드 3~4개 탐색 시트 → 단독 로고 확정 | `reference/brand-kit/logo-base.png` | `.design/assets/logo/` |
-| **(선택) design-iconset** | 한 가족으로 읽히는 아이콘 세트를 라벨 그리드 시트로 확정 | `BRAND_KIT.md` §11 · `brand-tokens.json` 근거 | `.design/assets/icon/` |
+| **design-iconset** | 한 가족으로 읽히는 아이콘 세트를 라벨 그리드 시트로 확정. 산출 `assets/icon/*.svg`는 **design-ui-kit·컴포넌트 제작의 필수 입력** | `BRAND_KIT.md` §11 · `brand-tokens.json` 근거 | `.design/assets/icon/` |
 | **design-ui-kit** | 제품 UI 컴포넌트 라이브러리를 토큰 기반 HTML/CSS로 저작(이미지 아님). lock 후 design-md-compiler 호출 | `BRAND_KIT.md` §10 · `tokens.css` · `assets/icon/*.svg` | `.design/assets/css/ui-kit.css` · `view/ui-kit.html` |
 | **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리(§4 토큰=tokens.css, §5 컴포넌트=ui-kit.css 권위). **designer 핵심 파이프라인의 종착** | 브랜드 킷 + tokens.css + ui-kit.css (페이지 이미지 있으면 선택 입력) | `.design/DESIGN.md` |
 | **design-component-export** *(front-developer·미구현)* | 확정 ui-kit.css·tokens.css를 대상 프로젝트 컴포넌트 세트로 export | ui-kit.css·tokens.css | (예정) 컴포넌트 세트 |
@@ -150,6 +150,8 @@ brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 
 ### design-iconset
 
 확정 brand kit를 바탕으로 제품 아이콘 세트를 **Iconify 단일 세트에서 fetch**해 만든다. 후보 세트를 §11 스타일로 점수화해 1개 lock하고, 리스트 적중률을 측정한 뒤, 적중분은 `viewBox 0 0 24 24`·`currentColor`로 정규화해 가져오고 부족분만 합성·저작한다. 모든 아이콘을 `icon-map.json`에 기록하고 `assets/icon/`으로 lock한다. (네트워크 필요, 키 불필요.)
+
+이 세트(`assets/icon/*.svg`)는 이후 **design-ui-kit이 컴포넌트(버튼·인풋·내비 등)를 저작할 때와 다운스트림 컴포넌트 제작(design-component-export)에서 필수로 쓰이므로**, 로고와 달리 **핵심 파이프라인의 필수 단계**다.
 
 ![design-iconset 산출물 — 아이콘 세트 시트](assets/iconset-example.png)
 
