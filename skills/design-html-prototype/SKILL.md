@@ -38,7 +38,7 @@ comp를 충실히 구현하려면 `.design/assets/`에 없는 자산이 필요�
    | 슬롯 종류 | 해소 |
    |---|---|
    | 제품 UI 글리프 | 이미 `.design/assets/icon/*.svg`에 있음 → 그대로 참조 |
-   | 벤더 브랜드 마크 | `scripts/fetch-vendor-logo.mjs --vendor <name> --out <cwd>/.design/assets/vendor/<name>.svg` (필요 시 `--ref <set:name>`). `resolved`면 색 보존 SVG 저장, `escalate`면 **사람에게 직접 제공 요청**(gpt-image로 로고 생성 금지) |
+   | 벤더 브랜드 마크 | `scripts/fetch-vendor-logo.mjs --vendor <name> --out <cwd>/.design/assets/icon/vendor/<name>.svg` (필요 시 `--ref <set:name>`). `resolved`면 색 보존 SVG 저장, `escalate`면 **사람에게 직접 제공 요청**(gpt-image로 로고 생성 금지) |
    | 콘텐츠 이미지 (hero·키비주얼·카드 아트) | `image-gen`으로 생성, 프롬프트 권위 기준은 `DESIGN.md` 토큰(comp는 `--image` 참고로만). `--out <cwd>/.design/assets/content/<slot>.<ext>`. `OPENAI_API_KEY`가 없으면 → 토큰 그라디언트 **라벨 플레이스홀더 + gap 로그** |
 
 3. **매니페스트 기록** — `.design/assets/manifest.json`에 슬롯별 `{ id, type, source, path, status }`를 기록한다.
@@ -47,7 +47,7 @@ comp를 충실히 구현하려면 `.design/assets/`에 없는 자산이 필요�
    - `status`: `resolved` | `placeholder` | `escalate`
 4. **검수 게이트** — 조달된 자산(fetch된 로고·생성 이미지·플레이스홀더·에스컬레이션)을 사람이 확인한다. 미해결(escalate)이 있으면 진행 전에 사람이 자산을 제공한다.
 
-> `.design/assets/`엔 designer가 *저작한* 자산(brand-kit·logo·icon·page)이 있다. 조달분은 `vendor/`·`content/` **전용 하위 폴더에만** 쓰고, 저작 자산을 덮어쓰지 않는다.
+> `.design/assets/`엔 designer가 *저작한* 자산(brand-kit·logo·icon·page)이 있다. 조달분은 `icon/vendor/`·`content/` **전용 하위 폴더에만** 쓰고, 저작 자산을 덮어쓰지 않는다.
 
 ## 완전성 체크리스트 (빌드 전)
 

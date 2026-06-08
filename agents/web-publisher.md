@@ -12,7 +12,7 @@ model: inherit
 - `DESIGN.md`, `.design/brand-tokens.json`, `.design/assets/css/tokens.css`
 - `.design/assets/css/ui-kit.css`(컴포넌트 권위), `.design/view/ui-kit.html`(컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조), `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json`(아이콘 권위 — 인라인 currentColor)
 - `.design/assets/**`(확정 이미지) → 없으면 `.design/candidate/**`
-- `.design/assets/vendor/*.svg`·`.design/assets/content/*`(상위 스킬이 빌드 전 조달한 타사 마크·콘텐츠 이미지)
+- `.design/assets/icon/vendor/*.svg`·`.design/assets/content/*`(상위 스킬이 빌드 전 조달한 타사 마크·콘텐츠 이미지)
 - `.design/assets/manifest.json`(있으면) — 어느 슬롯을 어느 파일로 채울지의 권위 매핑
 - **빌드 스펙**: 어떤 화면·아티팩트를 만들지(출력 경로·섹션/패널 구조·채울 내용·쓸 템플릿). 위임한 스킬이 넘겨주거나 사용자가 지정한다.
 - **완전성 체크리스트**(상위 스킬이 빌드 스펙으로 전달, 있으면) — 빌드 후 Read/Grep으로 대조할 필수 섹션·핵심 문구 앵커·핵심 요소 목록. 권위는 `DESIGN.md`다.
