@@ -8,7 +8,7 @@ const TINT_ALPHA = { primary:0.08, accent:0.10, success:0.14, warning:0.16, dang
 
 const WORDMARK_DEFAULTS = { tracking: "normal", weight: "700", case: "none", color: "text" };
 
-const LOCKUP_DEFAULTS = { markScale: "1.8", gap: "0.5em", taglineSize: "0.42em", taglineTracking: "0.22em", taglineColor: "textMuted" };
+const LOCKUP_DEFAULTS = { markScale: "1.8", gap: "0.5em", taglineSize: "0.42em", taglineTracking: "0.22em", taglineColor: "textMuted", wmImgScale: "1.5" };
 
 function generateLockupVars(lockup = {}) {
   return [
@@ -16,6 +16,7 @@ function generateLockupVars(lockup = {}) {
     `  --logo-gap: ${pick(lockup.gap, LOCKUP_DEFAULTS.gap)};`,
     `  --logo-tagline-size: ${pick(lockup.taglineSize, LOCKUP_DEFAULTS.taglineSize)};`,
     `  --logo-tagline-tracking: ${pick(lockup.taglineTracking, LOCKUP_DEFAULTS.taglineTracking)};`,
+    `  --logo-wm-img-scale: ${pick(lockup.wmImgScale, LOCKUP_DEFAULTS.wmImgScale)};`,
   ];
 }
 
@@ -26,6 +27,7 @@ function generateLockupClass(lockup = {}, color = {}) {
     ".lockup { display: inline-flex; align-items: center; gap: var(--logo-gap); }",
     ".lockup--stacked { flex-direction: column; text-align: center; }",
     ".lockup__mark { height: calc(var(--logo-mark-scale) * 1em); width: auto; object-fit: contain; flex: none; }",
+    ".lockup .wordmark-img { height: calc(var(--logo-wm-img-scale) * 1em); width: auto; display: block; }",
     ".lockup__body { display: flex; flex-direction: column; }",
     ".lockup--stacked .lockup__body { align-items: center; }",
     `.lockup__tagline { font-family: var(--font-body, var(--font-display)); font-size: var(--logo-tagline-size); letter-spacing: var(--logo-tagline-tracking); text-transform: uppercase; color: var(--color-${kebab(tagColor)}); }`,

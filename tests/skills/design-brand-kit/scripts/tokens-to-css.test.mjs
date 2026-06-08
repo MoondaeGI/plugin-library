@@ -181,3 +181,19 @@ test("mark-mono 색 토큰별 modifier emit (text 제외)", () => {
   assert.match(css, /\.mark-mono--surface-alt\s*\{[^}]*background-color:\s*var\(--color-surface-alt\)/);
   assert.doesNotMatch(css, /\.mark-mono--text\s*\{/);
 });
+
+test("lockup wmImgScale 기본 토큰 emit", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /--logo-wm-img-scale:\s*1\.5/);
+});
+
+test("lockup .wordmark-img 규칙 emit (markScale와 분리)", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /\.lockup \.wordmark-img\s*\{[^}]*height:\s*calc\(var\(--logo-wm-img-scale\)\s*\*\s*1em\)/);
+  assert.match(css, /\.lockup \.wordmark-img\s*\{[^}]*width:\s*auto/);
+});
+
+test("lockup wmImgScale override 적용", () => {
+  const css = generateTokensCss({ ...SAMPLE, lockup: { wmImgScale: "1.9" } });
+  assert.match(css, /--logo-wm-img-scale:\s*1\.9/);
+});
