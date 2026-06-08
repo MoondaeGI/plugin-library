@@ -40,18 +40,16 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
   candidate/
     logo/
       logo-briefs.md                 # 시드 출처·발산 모드·라운드 로그·확정 컨셉
+      logo-prompt.txt                # 확정 로고 최종 프롬프트 (favicon 생성 분기 재료)
       seed.png                       # logo-base 복사/참조 (모드 A·C 앵커)
       seed-user.png                  # (선택) 사용자 첨부 이미지
       concepts/round-N/01..04.png    # 라운드별 개별 투명 PNG (--auto-version)
       logo-candidate.png (+v2…)      # 고른 #N 단독 다듬기
-      mark-mono-candidate.png (+v2…) # 단색 마크 축약 시안(프리뷰 게이트)
+      favicon-candidate.png (+v2…)   # favicon 생성 시안(접근 C 프리뷰 게이트)
       logo-dark-candidate.png (+v2…) # 다크 변형 시안(프리뷰 게이트)
   assets/
     logo/  logo.png                  # 확정 심볼 (풍부한 마크)
-           mark-mono.png             # 단색 마스터 (favicon·app-icon·페이지내 재색의 소스)
-           favicon-light.png         # 라이트 탭용(ink 마크) — bake-logo-assets 생성
-           favicon-dark.png          # 다크 탭용(흰 마크) — bake-logo-assets 생성
-           app-icon.png              # 브랜드색 타일 + 흰 마크 — bake-logo-assets 생성
+           favicon.png               # favicon/app-icon 마크 (레터마크/단순=autocrop 재사용, 그 외=접근 C 생성)
            logo-dark.png             # 다크모드 변형 (remap-logo-dark 또는 생성 폴백)
 ```
 
@@ -136,17 +134,17 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 - **락업 프리뷰 게이트(신규, 스펙 B-🅰)**: 심볼을 lock하기 전, 확정 심볼 + 워드마크를 `.lockup`(가로·세로)으로 `logos.html`에 렌더한다. 에이전트가 그 결과를 `web-publisher-qa`로 스크린샷해 균형을 자가판정하고, 어색하면 brand-tokens.json `lockup.markScale`/`gap`을 조정해 재렌더한 뒤 결과를 사용자에게 제시한다(사용자는 "좋다/심볼 더 크게" 같은 평이한 승인만 — 수치 직접 편집 없음). 마크는 심볼이며 워드마크는 굽지 않는다.
 8. **단독 로고**: 고른 PNG는 이미 투명 단독 컷아웃이므로 **재추출 없이** `candidate/logo/logo-candidate.png`로 승격한다. 더 다듬고 싶으면 그 PNG를 `--image --input-fidelity high`로 첨부해 "중앙 정렬, 형태·기하 유지, 단일 마크만"으로 다듬는다(`logo-art-direction.md` §7 품질 프레이밍, §8 품질 테스트로 자가 판정).
 9. **다듬기 루프**: 직전 후보를 `--image --input-fidelity high`로 첨부해 한 번에 한 가지만 증분 편집(나머지 보존), `--auto-version`. lock까지.
-10. **확정(덮어쓰기 — HTML 무수정)**: 확정본을 `.design/assets/logo/logo.png`에 **덮어쓴다**(brand-kit이 시드해 둔 base 복사본을 교체). 시안은 `candidate/logo/`에 보존. `view/overview.html` §6의 로고 자리(심볼·락업 심볼·앱아이콘·파비콘)가 이미 `../assets/logo/logo.png`를 가리키므로 **HTML을 편집하지 않는다** — 라이브 서버가 파일 교체를 감지해 자동 새로고침한다. 시드 `assets/brand-kit/logo-base.png`는 불변이다(작업 시드는 `candidate/logo/seed.png`에 이미 복사됨). `candidate/logo/logo-briefs.md`에 확정 컨셉을 기록한다 — 이 파일은 brand-kit의 non-clobber 표식이자 md-compiler의 출처 표식이다(design-brand-kit 흐름 8·design-md-compiler §12).
-11. **단색 자산 suite(스펙 B-🅱-ii)**: 심볼 lock 직후 — ⓐ 확정 `logo.png`를 첨부(`--image --input-fidelity high`)해 "single flat color, bold thick strokes, simplest silhouette, drop frame/text/accents, legible at 16px"로 `candidate/logo/mark-mono-candidate.png`를 축약 생성한다(하이브리드, `logo-art-direction.md` §7 단색 프레이밍). ⓑ **프리뷰 게이트**: `logos.html` 단색 프리뷰 섹션에 16/24/32px·light/dark로 렌더하고, **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독 자가판정 → 부족하면 더 굵게·단순하게 재생성 → 결과를 사용자에게 제시(평이한 승인만). ⓒ 승인 후 `assets/logo/mark-mono.png`로 lock하고, brand-tokens.json 색을 읽어 베이크한다: `node "<이 스킬 디렉터리>/scripts/bake-logo-assets.mjs" --mark <.design>/assets/logo/mark-mono.png --out-dir <.design>/assets/logo --ink "<brand text/ink HEX>" --tile "<brand primary HEX>"` → `favicon-light.png`·`favicon-dark.png`·`app-icon.png` 생성. **HTML은 편집하지 않는다**(overview §6이 이 경로들을 가리킴).
+10. **확정(덮어쓰기 — HTML 무수정)**: 확정본을 `.design/assets/logo/logo.png`에 **덮어쓴다**(brand-kit이 시드해 둔 base 복사본을 교체). 시안은 `candidate/logo/`에 보존. `view/overview.html` §6의 로고 자리(심볼·락업 심볼·앱아이콘·파비콘)가 이미 `../assets/logo/logo.png`를 가리키므로 **HTML을 편집하지 않는다** — 라이브 서버가 파일 교체를 감지해 자동 새로고침한다. 시드 `assets/brand-kit/logo-base.png`는 불변이다(작업 시드는 `candidate/logo/seed.png`에 이미 복사됨). `candidate/logo/logo-briefs.md`에 확정 컨셉을 기록한다 — 이 파일은 brand-kit의 non-clobber 표식이자 md-compiler의 출처 표식이다(design-brand-kit 흐름 8·design-md-compiler §12). 또한 확정 로고를 생성한 **최종 프롬프트를 `candidate/logo/logo-prompt.txt`에 저장**한다(흐름 11 favicon 생성 분기의 의미 가이드 재료 — 재사용 분기면 불필요).
+11. **favicon/app-icon 마크(스펙 §4 — PNG, 로고 맥락)**: 심볼 lock 직후 — 확정 `logo.png`로 favicon을 만든다. ⓐ **유형 판정**: 레터마크이거나 이미 16px에 읽히는 단순 심볼이면 **재사용** — `node "<이 스킬 디렉터리>/../image-gen/scripts/autocrop.mjs" --in <.design>/assets/logo/logo.png --out <.design>/assets/logo/favicon.png --pad-pct 6`(생성 0). ⓑ 그 외(픽토리얼·엠블럼·콤비네이션·복잡 심볼·워드마크)면 **생성(접근 C)** — `candidate/logo/logo-prompt.txt`(흐름 10 저장본, 없으면 `logo-briefs.md`·`BRAND_KIT.md §6`에서 모티프·실 HEX 재구성)에 favicon 단순화 지시("single bold flat mark of the core motif only, drop text/frame/fine detail, legible at 16px, transparent")를 더해 프롬프트 파일을 쓰고, `--image <.design>/assets/logo/logo.png --input-fidelity high --model gpt-image-1.5 --background transparent --quality high --autocrop`로 `candidate/logo/favicon-candidate.png`를 생성(`--auto-version`). ⓒ **프리뷰 게이트**: `logos.html` favicon 프리뷰 섹션에 16/24/32/48px·light/dark로 렌더하고, **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독 자가판정 → 부족하면 더 굵게·단순하게 재생성 → 사용자에게 제시(평이한 승인만). ⓓ 승인 후 `assets/logo/favicon.png`로 lock. **app-icon은 같은 마크** — overview §6에서 `favicon.png`를 브랜드색 라운드 타일에 얹어 CSS 프리뷰(별도 파일 없음). **HTML은 편집하지 않는다**(overview §6·`<head>`가 `favicon.png`를 가리킴).
 12. **다크모드 변형(스펙 B-🅱-i)**: 큰 풀로고의 다크모드용 변형을 **결정론 리맵**으로 만든다 — ⓐ 라이트 `logo.png`의 소스색(= 로고에 쓰인 brand-tokens 색)과 각 색의 **다크 타깃**(브랜드 다크 팔레트)을 `#SRC:#DST` 매핑으로 구성한다. ⓑ `node scripts/remap-logo-dark.mjs --in <.design>/assets/logo/logo.png --out <.design>/candidate/logo/logo-dark-candidate.png --map "#SRC:#DST" …`(색마다 --map). OKLab·엣지 보간은 스크립트가 처리. ⓒ **프리뷰 게이트**: **큰 사이즈**로 다크 배경(+ 라이트 원본 나란히)에 렌더하고 **라이브 서버(http)** 로 `web-publisher-qa` 스크린샷 → 가독·정체성 자가판정 → 부족하면 매핑 조정·재리맵 → 사용자에게 제시(평이한 승인만). ⓓ 승인 → `assets/logo/logo-dark.png` lock, 매핑을 `candidate/logo/logo-briefs.md`에 기록(재현성). **HTML 무편집**. ⓔ **생성 폴백**: 다크에서 구조 재설계(배지 채움 제거·아웃라인 추가 등)가 필요해 리맵으론 룩이 안 살면, `logo.png`를 첨부(`--image --input-fidelity high`)해 "다크 배경용 재설계, 구성·정체성 유지"로 생성한다(색 hex는 부정확함을 감수).
 13. 산출 경로를 제시하고 안내한다: **"다음 단계: `design-iconset`"**. 라이브 프리뷰 서버가 떠 있으면 종료한다.
 
-> 워드마크는 이 스킬에서 굽지 않는다 — 락업에서 `.wordmark`로 별도 조합한다(스펙 B-🅰). 파비콘·앱 아이콘은 흐름 11(단색 자산 suite)에서 단색 마스터 `mark-mono.png`로부터 `bake-logo-assets.mjs`로 베이크한다(스펙 B-🅱-ii). 풀로고 다크 변형은 흐름 12에서 `remap-logo-dark.mjs`로 리맵한다(스펙 B-🅱-i). 확정 심볼 + 단색 자산 suite + 다크 변형을 산출한다.
+> 워드마크는 이 스킬에서 굽지 않는다 — 락업에서 `.wordmark`로 별도 조합한다(스펙 B-🅰). 파비콘·앱 아이콘은 흐름 11에서 `favicon.png`로 만든다 — 레터마크/단순 심볼은 로고 autocrop 재사용, 그 외는 로고를 `--image`로 주입해 단순화 생성(접근 C). app-icon은 같은 마크(overview CSS 타일). 풀로고 다크 변형은 흐름 12에서 `remap-logo-dark.mjs`로 리맵한다(스펙 B-🅱-i). 확정 심볼 + favicon/app-icon 마크 + 다크 변형을 산출한다.
 
 ## 품질 기준 / 금지 사항
 
 - **심볼-only**: `logo.png`는 심볼이다(워드마크 안 구움). 워드마크 결합은 `.lockup`이 담당(스펙 B-🅰).
-- **단색 자산(스펙 B-🅱-ii)**: `mark-mono.png`는 16px에서 읽히는 단색 축약 마크다. favicon(light/dark)·app-icon은 `bake-logo-assets.mjs`로 마스터에서 베이크한다(손편집 금지 — 마스터만 고치고 재베이크). 풍부한 다색 풀로고의 다크 변형은 흐름 12(🅱-i 결정론 리맵) 참조 — mask 단색 재색과 다른 경로다.
+- **favicon/app-icon(스펙 §4)**: `favicon.png`는 16px에 읽히는 마크다 — 레터마크/단순 심볼은 `logo.png`를 autocrop해 재사용, 그 외는 `logo.png`를 `--image`로 주입 + 캐싱 로고 프롬프트로 단순화 생성(접근 C, gpt-image-1.5). app-icon은 같은 마크(overview에서 브랜드 타일 위 CSS 프리뷰 — 별도 파일 없음). 손편집·맥락 없는 생성 금지(로고가 진실, favicon은 그 함수). 풍부한 다색 풀로고의 다크 변형은 흐름 12(🅱-i 결정론 리맵) 참조.
 - **다크 변형(스펙 B-🅱-i)**: 큰 풀로고 다크모드는 `remap-logo-dark.mjs`로 라이트 로고에서 결정론 리맵(브랜드 다크 hex·OKLab·엣지 보간)한다 — 정확·재현·무비용. 손편집·임의 생성 금지(라이트가 진실, 다크는 그 함수). 구조 재설계가 필요한 로고만 생성 폴백.
 - 시트의 3~4개는 **또렷이 구별되는 큰 방향**이어야 한다 — 미세 변주 반복 금지. 레이아웃·카드 규칙은 `references/logo-sheet-html-direction.md`.
 - 단독 로고는 `../references/design/logo-art-direction.md` §8 품질 테스트(실루엣·작은 크기·무텍스트·단색·시스템·의미)를 통과해야 한다.
