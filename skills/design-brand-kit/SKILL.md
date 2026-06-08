@@ -69,7 +69,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
   assets/
     tokens.css            # brand-tokens.json에서 결정적 생성 (lock 시 tokens-to-css.mjs) — 모든 view/ HTML 공유 토대
     brand-kit/  logo-base.png(로고 시드) · wordmark-base.png · key-visual.png · ui-base.png · icon/<name>.png
-    logo/       logo.png   # 캐노니컬 표시 로고 — brand-kit이 logo-base에서 시드(미러), design-logo가 덮어씀. overview §6이 이 경로를 가리킴(non-clobber: logo-briefs.md 있으면 안 건드림)
+    logo/       logo.png · favicon.png   # 캐노니컬 로고(logo-base 시드 미러) + favicon/app-icon 마크(brand-kit autocrop 임시 · design-logo 재사용/생성 정제). overview §6·<head>가 이 경로를 가리킴(non-clobber: logo-briefs.md 있으면 안 건드림)
   candidate/
     brand-kit/  brief.md(레이아웃 메모) · directions.json · brand-briefs.md(이미지 브리프)   # 탐색 데이터
 ```
@@ -209,7 +209,7 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
   "shadow": { "sm": "", "md": "", "lg": "" },
   "spacing": { "sectionY": "", "containerX": "", "cardPadding": "" },
   "wordmark": { "font": "", "tracking": "", "weight": "700", "case": "none", "color": "primary" },
-  "lockup": { "markScale": "1.8", "gap": "0.5em", "taglineSize": "0.42em", "taglineTracking": "0.22em", "taglineColor": "textMuted" }
+  "lockup": { "markScale": "1.8", "gap": "0.5em", "taglineSize": "0.42em", "taglineTracking": "0.22em", "taglineColor": "textMuted", "wmImgScale": "1.5" }
 }
 ```
 
@@ -219,9 +219,9 @@ description: 제품 설명을 바탕으로 브랜드 정체성·톤·색상·타
 
 > `wordmark`(선택)는 **폰트 모드 워드마크**의 스타일이다. `font`는 비우면 `display` 재사용, 채우면 `font-catalog.md`의 **Logotype 서브셋**에서 고른 전용 폰트(폴백 스택 포함). `tracking`/`weight`/`case`(none|uppercase|lowercase)/`color`(color 토큰 키)는 `tokens.css`의 `.wordmark` 클래스로 emit된다 — 이게 워드마크 레터링의 단일 권위이며 §6 산문에 중복하지 않는다. 이미지 모드면 이 블록은 무시된다.
 
-> `lockup`(선택)은 **심볼+워드마크 락업**의 비율·간격이다. `markScale`(마크 높이 = 워드마크 font-size의 배수, 기본 1.8)·`gap`(심볼-워드마크 간격)·`tagline*`(소제목 크기·자간·색 토큰 키)는 `tokens.css`의 `.lockup*` 클래스로 emit된다 — 락업 관계의 단일 권위다. 비우면 기본값. **마크 모양마다 균형이 달라 `markScale`은 프리뷰에서 에이전트가 조정**한다(사용자는 승인만).
+> `lockup`(선택)은 **심볼+워드마크 락업**의 비율·간격이다. `markScale`(마크 높이 = 워드마크 font-size의 배수, 기본 1.8)·`gap`(심볼-워드마크 간격)·`tagline*`(소제목 크기·자간·색 토큰 키)는 `tokens.css`의 `.lockup*` 클래스로 emit된다 — 락업 관계의 단일 권위다. 비우면 기본값. **마크 모양마다 균형이 달라 `markScale`은 프리뷰에서 에이전트가 조정**한다(사용자는 승인만). **이미지 모드 워드마크**는 `wmImgScale`(워드마크 이미지 높이 = `1em`의 배수, 기본 1.5)로 `.wordmark-img` 높이가 emit된다 — 심볼 `markScale`과 함께 프리뷰에서 조정해 균형을 맞춘다.
 
-> 단색 자산(favicon·app-icon)은 design-logo가 `mark-mono.png`에서 `bake-logo-assets.mjs`로 베이크하며, 입력 색은 brand-tokens.json의 `text`(ink)·`primary`(tile)를 쓴다. brand-kit은 토큰만 제공하고 베이크는 design-logo 소관이다(스펙 B-🅱-ii).
+> **favicon·app-icon은 PNG 마크다(베이크 아님).** brand-kit은 `logo-base.png`를 autocrop해 임시 `assets/logo/favicon.png`를 두고(§6이 안 비게), design-logo가 로고 lock 후 확정 `logo.png`로 정제한다 — 레터마크/단순 심볼은 autocrop 재사용, 그 외는 `--image`로 주입해 단순화 생성(접근 C). app-icon은 같은 마크(overview에서 브랜드 타일 위 CSS). 흐름 5·8 non-clobber 동일.
 
 ## brand-briefs.md 구조
 
@@ -350,9 +350,10 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 4. **발산 → 전개 (분위기 열림일 때만; 고정이면 건너뜀)** — 고른 열의 방향을 캐노니컬 홈(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html`)에 인스턴스화한다. 데이터 섹션(§2·3·4·5·7·8·9)은 그 `brand-tokens.json`/`BRAND_KIT.md`에서 **공짜 HTML 렌더**(이미지 생성 0콜) — 이미지 슬롯은 플레이스홀더로 둔다. (분위기 고정이면 Step 1에서 이미 단일 킷이 있으므로 이 단계를 건너뛴다.)
 5. **자산 생산 (`assets/brand-kit/`)** — `key-visual`·`logo-base`·`wordmark-base`·`ui-base`·`icon/*` 생성(투명 라우팅·앵커 일관성·품질/비용 규율은 "이미지 생성" 참조). 자산별로 보여주고 → 한 번에 한 가지 증분 편집. §11 아이콘 목록(개수·라벨)은 도메인 근거로 제안·확정(과다 생성 주의). 워드마크 **이미지 모드일 때만** `wordmark-base.png` 생성. 폰트 모드면 스킵하고 §1을 `<span class="wordmark">`로 저작.
    - **로고 캐노니컬 미러**: `logo-base.png`를 생성/갱신할 때마다 `assets/logo/logo.png`로 복사한다(§6이 이 경로를 가리킴). 단 `candidate/logo/logo-briefs.md`가 있으면(design-logo가 이미 확정 로고를 만듦) **덮어쓰지 않는다**(non-clobber — 확정 로고 보존).
+   - **favicon 임시 마크**: `candidate/logo/logo-briefs.md`가 **없으면** `logo-base.png`를 autocrop해 `assets/logo/favicon.png`를 둔다(`node "<이 스킬 디렉터리>/../image-gen/scripts/autocrop.mjs" --in <.design>/assets/logo/logo.png --out <.design>/assets/logo/favicon.png --pad-pct 6` — 무API 임시본, overview §6 favicon/app-icon 자리와 `<head>` favicon `<link>`가 이 파일을 가리켜 §6이 안 빈다). **있으면**(design-logo 정제본) 건드리지 않는다(non-clobber).
 6. **overview.html 마무리 (web-publisher 위임)** — `view/overview.html`의 이미지 슬롯 플레이스홀더를 실 자산(`../assets/brand-kit/key-visual.png`·`../assets/brand-kit/ui-base.png`·`../assets/brand-kit/icon/*.png` 등)으로 채운다. **마크업 저작·재저작·외과 편집·레이아웃 QA는 web-publisher**가 수행한다(아키타입 불변은 유지, 자유 존만 조정 — 레이아웃 변경이면 재저작, 데이터·자산 교체만이면 외과 편집). 이 스킬은 채울 자산·데이터·아키타입 스펙을 넘긴다. 보여주고 피드백.
 7. **(선택) 추가 탐색 이미지** — 1개씩 생성→피드백→증분 편집→lock.
 8. **lock (승인)** — 산출물이 이미 캐노니컬 홈에 있다(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`). 별도 복사가 없으므로 lock은 "확정 승인"이다.
-   - **로고 캐노니컬 미러(non-clobber)**: `candidate/logo/logo-briefs.md`가 **없으면** `assets/logo/logo.png`가 최신 `logo-base.png`의 복사본이 되도록 보장한다(없으면 복사). **있으면** design-logo 확정 로고이므로 건드리지 않는다. 이로써 brand-kit 재실행이 확정 로고를 날리지 않는다.
+   - **로고 캐노니컬 미러(non-clobber)**: `candidate/logo/logo-briefs.md`가 **없으면** `assets/logo/logo.png`가 최신 `logo-base.png`의 복사본이 되도록 보장한다(없으면 복사). **있으면** design-logo 확정 로고이므로 건드리지 않는다. 이로써 brand-kit 재실행이 확정 로고를 날리지 않는다. **favicon.png도 동일** — `logo-briefs.md`가 없으면 최신 autocrop 임시본을 보장하고, 있으면 design-logo 정제본을 건드리지 않는다.
    - **tokens.css 생성(필수)**: lock 시 `node "<이 스킬 디렉터리>/scripts/tokens-to-css.mjs" <cwd>/.design/brand-tokens.json <cwd>/.design/assets/tokens.css`를 실행해 `assets/tokens.css`를 만든다(브랜드 토큰이 바뀌면 재실행). 이 파일은 **생성물 — 직접 수정 금지**이며, 토큰을 고치려면 `brand-tokens.json`을 수정하고 재생성한다. overview.html이 `var(--token)`을 쓰므로 생성 후 새로고침하면 실값이 반영된다. (명령 실행이므로 사용자 확인 후 실행.)
    - 탐색물(`candidate/brand-kit/brief.md`·`directions.json`·`brand-briefs.md`)은 그대로 보존. 확정되면 산출 경로를 제시하고 안내: **"다음 단계: `design-logo` → `design-iconset` → `design-ui-kit` → `design-md-compiler`"** (각자 `assets/brand-kit/`를 시드로, `assets/tokens.css`를 공유 토대로 읽음. `design-md-compiler`까지가 designer 핵심 파이프라인이며, 페이지 이미지는 핵심 이후 선택 단계 `design-image-web`·`design-image-mobile`). 라이브 프리뷰 서버가 떠 있으면 종료한다.
