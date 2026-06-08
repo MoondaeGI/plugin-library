@@ -17,6 +17,9 @@ DESIGN.md를 바탕으로 한 **풀페이지 HTML 프로토타입의 스펙**을
 
 - `DESIGN.md`
 - `.design/brand-tokens.json`
+- `.design/assets/ui-kit/ui-kit.css` (컴포넌트 권위)
+- `.design/view/ui-kit.html` (컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조)
+- `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json` (아이콘 권위 — 인라인 currentColor)
 - `.design/assets/**/*.{png,jpg,jpeg,webp}` (확정본) → 없으면 `.design/candidate/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)
 
 권위 기준은 `DESIGN.md`/브랜드 토큰이다. 생성 comp(`.design/assets/**` 또는 `candidate/**`의 풀페이지 목업 PNG)는 gpt-image 산출물이라 **정답이 아니라 불완전한 한 해석**이다 — 레이아웃·자산 위치의 *참고*로만 쓰고, 충실 기준은 항상 `DESIGN.md`다.
