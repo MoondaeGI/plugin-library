@@ -4,6 +4,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const MICRO_SPACE = { 1:"4px", 2:"8px", 3:"12px", 4:"16px", 5:"24px", 6:"32px", 7:"48px", 8:"64px" };
+const CONTROL_HEIGHT = { sm:"32px", md:"40px", lg:"48px" };
 const TINT_ALPHA = { primary:0.08, accent:0.10, success:0.14, warning:0.16, danger:0.12 };
 
 const WORDMARK_DEFAULTS = { tracking: "normal", weight: "700", case: "none", color: "text" };
@@ -108,6 +109,7 @@ export function generateTokensCss(tokens) {
     if (spacing[k]) L.push(`  --space-${kebab(k)}: ${spacing[k]};`);
   }
   for (const [k, v] of Object.entries(MICRO_SPACE)) L.push(`  --space-${k}: ${v};`);
+  for (const [k, v] of Object.entries(CONTROL_HEIGHT)) L.push(`  --control-h-${k}: ${v};`);
   for (const [k, a] of Object.entries(TINT_ALPHA)) {
     if (color[k]) L.push(`  --tint-${k}: ${hexToRgba(color[k], a)};`);
   }

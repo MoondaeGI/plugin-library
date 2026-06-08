@@ -44,6 +44,13 @@ test("입력과 무관하게 고정 관례 spacing 스케일 추가", () => {
   assert.match(css, /--space-8:\s*64px/);
 });
 
+test("고정 관례 컨트롤 높이 스케일 추가", () => {
+  const css = generateTokensCss(SAMPLE);
+  assert.match(css, /--control-h-sm:\s*32px/);
+  assert.match(css, /--control-h-md:\s*40px/);
+  assert.match(css, /--control-h-lg:\s*48px/);
+});
+
 test("brand color에서 tint 파생", () => {
   const css = generateTokensCss(SAMPLE);
   assert.match(css, /--tint-primary:\s*rgba\(54,\s*73,\s*95,\s*0?\.08\)/);
