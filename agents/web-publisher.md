@@ -35,6 +35,7 @@ model: inherit
 - **재사용 구조**: 버튼·카드·입력·배지·테이블은 재사용 가능한 class로. section·component 경계를 명확히 나눈다(React 이식 쉽게).
 - **컴포넌트 재사용 우선**: 무엇을 저작하기 전에 `ui-kit.css`에 해당 컴포넌트(navbar·btn·btn-icon·card·badge·input·table·chip 등)가 있는지 **먼저 확인하고, 있으면 재사용**한다. 페이지 전용 CSS는 ui-kit가 덮지 않는 레이아웃(카우셀·페이지 그리드·섹션 리듬)에만 짠다. 컴포넌트를 페이지에 맞게 적응해야 하면(예: navbar → 풀블리드 sticky 헤더) **내부 요소(`.brand`·`.nav-links`·`.btn-icon`)는 재사용하고 컨테이너만 조립**한다 — 컴포넌트 CSS를 처음부터 다시 쓰지 않는다. 정규 중첩 구조는 `ui-kit.html`을 마크업 레퍼런스로 참조한다.
 - **폰트 실렌더**: 고른 브랜드 폰트가 실제로 렌더되게 출처에서 로드한다 — 카탈로그(`references/design/font-catalog.md`)의 웹폰트면 `<head>` `<link>`(Google Fonts) 또는 jsDelivr/CDN `<link>`/`@import`(Pretendard·SUIT 등). 상용·system 폰트는 폴백 스택에 맡긴다.
+- **favicon `<link>`(필수)**: 만드는 화면 유형과 무관하게 `<head>`에 `<link rel="icon" href="<상대경로>/assets/logo/favicon.png">`를 **무조건** 넣는다. 경로는 출력 위치 기준 상대경로(`view/`·`prototype/` 모두 `../assets/logo/favicon.png`). favicon은 brand-kit이 임시본을 항상 깔아두므로 design-logo 미실행 단계에서도 채워지고, 만에 하나 파일이 없어도 404로 graceful. 빠뜨리면 브랜드 탭 아이콘이 안 떠 일관성이 깨진다.
 - **아이콘 출처**: 아이콘은 `.design/assets/icon/*.svg`(+`icon-map.json`)에서만 **인라인 currentColor**로 쓴다. 자리마다 SVG 패스를 창작하지 않는다. 쌍 컨트롤(prev/next·±·펼치기/접기 등)은 **같은 글리프 패밀리를 미러**해 모양을 맞춘다.
 - **div/그리드 건전성** (깨짐 방지의 핵심): 태그를 빠짐없이 닫고, 중첩을 올바르게 한다. flex/grid 컨테이너와 아이템 관계를 정확히 — 같은 행 카드 바닥선 정렬, 칸 너비 균일, 마지막 줄 홀수 칸 처리. 같은 행에 놓인 폼 컨트롤(input·button·select)은 높이를 맞춘다. 부모/자식 폭 계산이 어긋나 삐져나오지 않게.
 - **반응형**: 가로 스크롤이 생기지 않는다. 모바일에서도 기본적으로 깨지지 않는다.
