@@ -10,7 +10,7 @@ model: inherit
 ## 입력 (대상 프로젝트 cwd)
 
 - `DESIGN.md`, `.design/brand-tokens.json`, `.design/assets/tokens.css`
-- `.design/assets/ui-kit/ui-kit.css`, `.design/assets/icon/*.svg`
+- `.design/assets/ui-kit/ui-kit.css`(컴포넌트 권위), `.design/view/ui-kit.html`(컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조), `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json`(아이콘 권위 — 인라인 currentColor)
 - `.design/assets/**`(확정 이미지) → 없으면 `.design/candidate/**`
 - `.design/assets/vendor/*.svg`·`.design/assets/content/*`(상위 스킬이 빌드 전 조달한 타사 마크·콘텐츠 이미지)
 - `.design/assets/manifest.json`(있으면) — 어느 슬롯을 어느 파일로 채울지의 권위 매핑
