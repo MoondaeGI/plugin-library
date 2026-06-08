@@ -80,7 +80,7 @@ breakpoints:   # (--bp-* 있으면 — 없으면 생략 + §12에 표시)
 
 ## 5. 컴포넌트 규칙
 컴포넌트마다 스펙 블록: **의미 이름** + 실제 ui-kit class + 배경/텍스트/타이포/radius/padding(전부 {token.ref}) + 상태(default·active·focus 등 ui-kit.css 강제상태 그대로) + 용도 + 살릴점/버릴점.
-### Button / Input / Card / Badge / Navigation / Table / Dashboard Panel / Alert·Toast / Empty State …(ui-kit.css에 있는 것)
+### Button / Input / Card / Badge / Navigation / App Bar(navbar 변형) / Filter Chip / Section Header / Footer / Sidebar(조건부) / Table / Dashboard Panel / Alert·Toast / Empty State …(ui-kit.css에 있는 것)
 
 ## 6. 페이지 섹션 규칙
 ### Hero / Problem / Product Mechanism / Feature Grid / Dashboard·Evidence / CTA·Footer
