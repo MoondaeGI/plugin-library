@@ -49,14 +49,11 @@ design-brand-kit  (+ 공유 assets/css/tokens.css)
 
 제품 설명 한 줄에서 브랜드 성격·시각 방향·색·타이포·로고 방향·UI 분위기·금지 패턴을 정리하고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 **HTML 오버뷰(`overview.html`)**를 협업으로 만든다. lock 시 `brand-tokens.json`을 공유 `assets/css/tokens.css`로 물질화한다. (아래 [심화](#design-brand-kit-심화) 참고.)
 
-![design-brand-kit 산출물 — Nooknote 브랜드 킷 오버뷰](assets/brand-kit-nooknote.png)
-
 ### design-logo
 
 brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 만들 때 쓰는 온디맨드 단계. `reference/brand-kit/logo-base.png`(투명)를 시드로, 한 라운드에 3~4개 방향을 개별 투명 PNG로 만들어 `logos.html` 탐색 시트(번호·라벨·실색·실폰트)로 보여주고 단독 로고를 확정해 `assets/logo/`로 lock한다.
 
-<!-- ![design-logo 산출물 — 로고 탐색 시트](assets/logo-example.png) -->
-> 🖼️ _산출물 이미지 추가 예정_
+![design-logo 산출물 — 로고 탐색 시트](assets/logo-example.png)
 
 ### design-iconset
 
@@ -118,12 +115,12 @@ Q&A가 끝나면 미감이 **고정**됐는지 **열림**인지 판정한다. �
 
 | A — 룰드 모듈 그리드 | B — 에디토리얼 스프레드 |
 |:---:|:---:|
-| ![A 룰드 모듈 그리드](assets/archetype-a.png) | 🖼️ _이미지 추가 예정_<br><!-- ![B 에디토리얼 스프레드](assets/archetype-b.png) --> |
+| ![A 룰드 모듈 그리드](assets/archetype-a.png) | ![B 에디토리얼 스프레드](assets/archetype-b.png) |
 | 헤어라인 모듈 격자 · 시스템틱·정연 — 테크·SaaS·정밀·중립 | 비대칭·여백·세리프 풀쿼트 — 럭셔리·문학·에디토리얼·따뜻함 |
 
 | C — 사이드바 + 캔버스 | D — 스택 밴드 |
 |:---:|:---:|
-| 🖼️ _이미지 추가 예정_<br><!-- ![C 사이드바 + 캔버스](assets/archetype-c.png) --> | 🖼️ _이미지 추가 예정_<br><!-- ![D 스택 밴드](assets/archetype-d.png) --> |
+| ![C 사이드바 + 캔버스](assets/archetype-c.png) | ![D 스택 밴드](assets/archetype-d.png) |
 | 좌측 내비 + 우측 캔버스 · 강한 대비 — 프로덕트·대시보드·앱 | 풀폭 컬러 밴드 · 큰 타입 — 마케팅·대담·실험 |
 
 선택 규칙: 미감·페르소나·무드로 고른다(accent 세리프가 있고 따뜻/에디토리얼이면 B, 차분/미니멀이면 D는 피함). 블렌딩 허용 — 예: "C 골격 + B의 세리프 풀쿼트"처럼 근거에 명시한다. 개별 골격(구조·CSS 스켈레톤·불변·자유 존)은 `skills/design-brand-kit/references/archetypes/<name>.md`에 있다.
@@ -170,6 +167,4 @@ Nooknote는 읽은 책을 기록하고, 인상 깊은 문장을 저장하고, �
 이 내용을 바탕으로 로고, 색상, 폰트 느낌, 아이콘, 앱 화면이나 기록 카드 예시가 포함된 브랜드 키트 이미지를 만들어줘.
 ```
 
-**결과물 (`overview.html`)**
-
-![Nooknote 브랜드 킷 오버뷰 예시](assets/brand-kit-nooknote.png)
+이 프롬프트로 미감 **열림**(3방향 발산)을 거쳐 만든 오버뷰가 위 [레이아웃 아키타입 (A~D)](#레이아웃-아키타입-ad)의 예시들이다 — 같은 Nooknote 브랜드를 네 가지 레이아웃 아키타입으로 전개한 결과물(B 에디토리얼 스프레드가 확정안).
