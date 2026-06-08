@@ -158,5 +158,6 @@ npm run sync                # 생성 파일 갱신
 | 스킬 | 한 줄 |
 |---|---|
 | **librarian** | kb 지식 베이스(LLM Wiki)에 소스 입수·질의·무결성 점검. vault 경로는 `.env`의 `LIBRARIAN_VAULT_PATH`. |
+| **idea** | 날 것의 아이디어를 brainstorming 전에 devils-advocate 라운드로 압박 검증·합의. superpowers 있으면 brainstorming으로 핸드오프(없으면 일반 안내). |
 | **discussion** | 결정·설계·초안을 굳히기 전 Claude 의견 + 독립적 반대 의견을 함께 본다. |
 | **commit** | 이 모노레포 컨벤션에 맞춰 커밋. |
