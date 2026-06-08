@@ -72,7 +72,7 @@ circle / arc / concentric rings · square frame / rounded square · diagonal 45�
 ## 6. 절대 피할 것 (Avoid)
 
 (아래는 네거티브 프롬프트 재료다 — §7 청크의 `Avoid:` 줄에 붙인다.)
-shield / lock / globe / gear / speech-bubble 클리셰 · 정당화 없는 랜덤 동물 · 가짜 럭셔리 크레스트 · 유명 마크 모방 · 과도하게 복잡한 심볼 · 클립아트 아이콘 느낌 · 의미 없는 sparkle/반짝임 · 의미 없는 gradient · 3D bevel · drop shadow · 일관성 없는 변형(variant마다 다른 비율·굵기) · 작아지면 안 읽히는 tiny illegible 디테일 · 스톡 템플릿 로고 느낌.
+shield / lock / globe / gear / speech-bubble 클리셰 · 정당화 없는 랜덤 동물 · 마스코트/캐릭터/의인화 마크(gpt-image가 여러 생성·접점에서 캐릭터 일관성을 못 지킴) · 가짜 럭셔리 크레스트 · 유명 마크 모방 · 과도하게 복잡한 심볼 · 클립아트 아이콘 느낌 · 의미 없는 sparkle/반짝임 · 의미 없는 gradient · 3D bevel · drop shadow · 일관성 없는 변형(variant마다 다른 비율·굵기) · 작아지면 안 읽히는 tiny illegible 디테일 · 스톡 템플릿 로고 느낌.
 
 ## 7. 프롬프트 청크 (그대로 떠넣기)
 
@@ -85,7 +85,7 @@ Form language: [geometric/organic, angular/rounded], consistent stroke weight, s
 Wordmark: by default DO NOT render the brand name inside the symbol — this is a standalone symbol asset. The wordmark is composed separately in the lockup (spec B). Only render letters if the chosen type is itself a wordmark/lettermark.
 Color: brand palette [HEX...] — flat, no gradient; tasteful 1-3 tones.
 Presentation: large centered mark, generous clearspace, NOT autocropped to the edges; self-contained (a filled badge/mark that reads on its own on a transparent background); no mockup, no busy scenery behind, no extra UI.
-Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxury crest, copying famous marks, meaningless gradient/3D bevel/drop shadow/sparkle, clip-art feel, inconsistent variants, tiny illegible detail.
+Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, mascot/character/anthropomorphic marks (no character consistency across renders), fake luxury crest, copying famous marks, meaningless gradient/3D bevel/drop shadow/sparkle, clip-art feel, inconsistent variants, tiny illegible detail.
 ```
 
 위 [브래킷]은 `BRAND_KIT.md`/`brand-tokens.json`에서 채우고(이름·logo idea·기하·form·타이포·HEX), 실제 프롬프트에는 §6의 항목을 `Avoid: ...` 한 줄로 이어 붙인다.
@@ -99,7 +99,7 @@ Avoid: shield/lock/globe/gear/speech-bubble clichés, random animals, fake luxur
 ```text
 Logo Direction section: show ONE well-crafted mark in a few clean placements only — (1) symbol + wordmark lockup, (2) the standalone symbol on its own, (3) favicon + app-icon tile (small size), (4) a one-line construction/meaning note. Restrained — NOT an exploration sheet, NOT a row of many logo variants.
 Mark concept: [BRAND_KIT.md §6 구성·의미 — 예: "monogram F fused with a scaffold-frame corner via negative space"], built on [grid / diagonal cut / orbit / frame], single consistent stroke weight, strong silhouette, legible at favicon size, valid in solid monochrome; the symbol reads on its own without the name.
-Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo, a grid/sheet of many logo variations.
+Avoid: shield/lock/globe/gear clichés, meaningless gradient/3D bevel/sparkle, letters-only logo, mascot/character marks, a grid/sheet of many logo variations.
 ```
 
 ## 8. 품질 테스트 (결과물 평가용 — 프롬프트 재료 아님)
