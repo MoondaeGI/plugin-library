@@ -1,5 +1,7 @@
 # design-logo favicon / 단색마크 시스템 (스펙 B-🅱-ii) Design
 
+> **⚠️ 대체됨(2026-06-08):** 이 스펙의 "단색 마스터 → `bake-logo-assets.mjs` 베이크" 경로는 `logo-asset-suite-and-lockups-design.md`로 대체되었다 — favicon·app-icon은 이제 **PNG**이며 로고 맥락에서 만든다(레터마크/단순=autocrop 재사용, 그 외=로고 `--image`+캐싱 프롬프트로 단순화 생성). `bake-logo-assets.mjs`는 제거됨. 16px 가독 게이트의 취지만 유효하다.
+
 > Status: Draft (brainstorming 산출, 선검증 PASS). 다음 = writing-plans.
 > Date: 2026-06-07
 > 상위: `2026-06-05-design-logo-presentation-recipe-design.md` §6(스펙 B 백로그) → `2026-06-05-design-logo-lockup-system-design.md`(🅰, 완료·머지). 본 스펙은 🅱를 분해한 **🅱-ii**(favicon/단색마크). 풍부한 로고 light/dark 2장은 **🅱-i(이연)**.
