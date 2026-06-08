@@ -62,6 +62,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 - shadow `--shadow-<key>`
 - page spacing `--space-section-y`·`--space-container-x`·`--space-card-padding`
 - micro spacing(고정 관례) `--space-1`…`--space-8` = 4/8/12/16/24/32/48/64
+- control height(고정 관례) `--control-h-sm|md|lg` = 32/40/48
 - tint(파생) `--tint-primary|accent|success|warning|danger`
 - **tokens.css에 없는 키는 만들지 않는다**(`--color-primary-dark/-light`·`--color-bg` 금지). 버튼 active 등 음영은 `filter:brightness()` 또는 tint로 처리.
 
@@ -98,6 +99,8 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    .input:focus, .input.is-focus { outline:2px solid var(--tint-primary); }
    ```
    컨트롤은 `.is-checked`·`.is-on` 등.
+
+   **단일행 컨트롤 높이 정렬(중요)**: `.input`·`.select`·`.btn`(+`.btn-sm`/`.btn-lg`)·`.stepper`·search field 등 한 줄짜리 인터랙티브 컨트롤은 세로 크기를 padding이 아니라 **`height: var(--control-h-md)`**(기본)로 잡고, 변형은 `--control-h-sm`/`--control-h-lg`를 쓴다. 콘텐츠는 flex(`align-items:center`) 또는 line-height로 세로 센터링하고, **가로 padding은 유지**한다. 이렇게 해야 input·button을 한 행에 놓아도 높이가 어긋나지 않는다. **textarea(멀티라인)·checkbox/radio/toggle(자체 고정 크기)은 제외.**
 
    **신규 구조 컴포넌트 저작 가이드**(해당 제품 화면이 필요로 할 때만):
    - **footer**(`.footer` + `.footer-brand`·`.footer-col`·`.footer-bottom`): 브랜드 컬럼 + 링크 컬럼 + (선택)뉴스레터(`.field`·`.input`·`.btn` 재사용) + 하단 바. surface/틴트 배경 + 상단 헤어라인. 마케팅 히어로 아님.
