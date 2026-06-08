@@ -72,12 +72,13 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 | 그룹 | IN(기본 포함) | 예시(조건부) | OUT(이 스킬 아님) |
 |---|---|---|---|
 | **1 Foundations** | 색 스와치·타이포 스케일·radius·shadow·spacing 시연 | — | 토큰 정의 자체(tokens.css 소관) |
-| **2 Core Interactive** | button(variant×state)·input·textarea·select·checkbox·radio·toggle·badge/chip | slider·stepper·search field | 폼 검증 로직 |
+| **2 Core Interactive** | button(variant×state)·input·textarea·select·checkbox·radio·toggle·badge/chip·filter chip(필터 토글 — 태그형 .chip과 구분) | slider·stepper·search field | 폼 검증 로직 |
 | **3 Informational** | card·alert/banner·toast·tooltip·empty state·tag | stat tile·avatar | 차트(데이터 시각화) |
-| **4 Structural** | navbar/topbar·tabs·breadcrumb·table·pagination·list | sidebar·dashboard 패널(예시 1개, 차트 제외) | 마케팅 히어로/CTA 섹션 → design-image-web |
+| **4 Structural** | navbar/topbar·navbar 풀블리드 변형(app bar)·tabs·breadcrumb·table·pagination·list·footer·section header | sidebar·dashboard 패널(예시 1개, 차트 제외) | 마케팅 히어로/CTA 섹션 → design-image-web |
 
 - table·nav·card·empty·toast는 **기본 포함**(IN). dashboard 패널은 레이아웃 예시 1개만(내부 차트는 제외).
 - 마케팅 히어로·풀 페이지 레이아웃은 만들지 않는다 → `design-image-web` 몫.
+- footer·app bar·section header는 **반복되는 구조 chrome**이라 IN. 단 "마케팅 히어로·풀페이지 레이아웃"은 여전히 제외(→ `design-image-web`). footer는 chrome이지 마케팅 히어로가 아니다.
 
 ## 흐름 (디자이너 협업 루프)
 
