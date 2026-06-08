@@ -87,7 +87,7 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
 
 `logos.html`은 생성기로 만들지 않는다 — `references/logo-sheet-html-direction.md`의 레이아웃 규칙을 가드레일로 **LLM이 저작**한다: 자산은 `<img>`(`../candidate/logo/` 상대경로), 브랜드명·태그라인은 `.design/BRAND_KIT.md`에서, 폰트는 `../references/design/font-catalog.md`의 실폰트 CDN `<link>`. 카드 라벨은 그 라운드에서 실제 만든 컨셉 방향을 가리킨다(지어내지 않음). `logo-base.png`는 베이스라인 타일(#0)로 고정.
 
-**토큰은 tokens.css로 소비:** brand-kit이 있으면 head에 `<link rel="stylesheet" href="../assets/tokens.css">`(`view/` 깊이 상대경로)를 넣고, 시트의 색·폰트·radius를 **실 HEX·실 px 인라인 대신 `var(--token)`**(`--color-*`·`--font-*`·`--radius-*`)으로 렌더한다(실값은 tokens.css가 보유 — 전사 드리프트 방지). tokens.css는 brand-kit lock이 생성하며, 부재 시(로고용 최소 Q&A 경로) var() 폴백값 또는 `brand-tokens.json` 실값을 인라인한다.
+**토큰은 tokens.css로 소비:** brand-kit이 있으면 head에 `<link rel="stylesheet" href="../assets/css/tokens.css">`(`view/` 깊이 상대경로)를 넣고, 시트의 색·폰트·radius를 **실 HEX·실 px 인라인 대신 `var(--token)`**(`--color-*`·`--font-*`·`--radius-*`)으로 렌더한다(실값은 tokens.css가 보유 — 전사 드리프트 방지). tokens.css는 brand-kit lock이 생성하며, 부재 시(로고용 최소 Q&A 경로) var() 폴백값 또는 `brand-tokens.json` 실값을 인라인한다.
 
 ### 라이브 프리뷰 (자동 새로고침)
 

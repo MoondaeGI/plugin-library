@@ -11,7 +11,7 @@ description: （placeholder · 미구현 — 아직 호출하지 말 것）확�
 
 **대상 프로젝트에 실제 컴포넌트 세트 생성**을 담당할 단계의 자리표시자. 소유: **front-developer** 에이전트. 위치: designer 핵심 파이프라인(`…ui-kit → md-compiler`) 직후. 다운스트림 최종 코드 생성은 별도 단계(`design-generate-code`)다.
 
-- 입력(예정): `.design/assets/ui-kit/ui-kit.css`(권위 컴포넌트 CSS), `.design/assets/tokens.css`(토큰), 확정 자산.
+- 입력(예정): `.design/assets/css/ui-kit.css`(권위 컴포넌트 CSS), `.design/assets/css/tokens.css`(토큰), 확정 자산.
 - 산출(예정): 대상 프로젝트에 **plain CSS canonical 세트** + 얇은 React/Next 컴포넌트 래퍼(className만 입히는 wrapper). 스타일링은 프레임워크 중립(CSS 변수)로 가는 방향.
 - 미결: 타깃 프레임워크/스타일링 전략 게이트, 디렉터리 규약, 자산 포맷(로고/워드마크) 소비 방식.
 

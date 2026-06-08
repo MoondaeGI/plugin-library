@@ -17,7 +17,7 @@ DESIGN.md를 바탕으로 한 **풀페이지 HTML 프로토타입의 스펙**을
 
 - `DESIGN.md`
 - `.design/brand-tokens.json`
-- `.design/assets/ui-kit/ui-kit.css` (컴포넌트 권위)
+- `.design/assets/css/ui-kit.css` (컴포넌트 권위)
 - `.design/view/ui-kit.html` (컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조)
 - `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json` (아이콘 권위 — 인라인 currentColor)
 - `.design/assets/**/*.{png,jpg,jpeg,webp}` (확정본) → 없으면 `.design/candidate/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)

@@ -28,7 +28,7 @@ description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드
 - `.design/assets/icon/*.svg` — 확정 아이콘셋 (`--image` 앵커, 있는 것만)
 - `.design/assets/brand-kit/ui-base.png` — 확정 UI 베이스 이미지 (`--image` 앵커, 있으면)
 - `.design/assets/brand-kit/key-visual.png` — 확정 키비주얼 (`--image` 앵커, 있으면)
-- `.design/assets/tokens.css` — 라이브 시트의 `var()` 렌더 용도
+- `.design/assets/css/tokens.css` — 라이브 시트의 `var()` 렌더 용도
 
 > **읽지 않는 것**: candidate 시안(`candidate/page/`, `candidate/brand-kit/` 등), 브랜드킷 컨셉 아이콘(`assets/brand-kit/icon/*`). 확정 deliverable이 아닌 탐색 중간물은 앵커로 사용하지 않는다.
 
@@ -97,7 +97,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 직접 URL: `http://localhost:5500/view/page-web-<slug>.html`
 
-시트의 `<img>` 태그는 `../candidate/page/...` 상대경로로 참조하고, 색·폰트·radius는 `../assets/tokens.css`의 `var(--token)`으로 렌더한다(실값 인라인 금지 — 토큰 드리프트 방지). 이후 PNG가 교체될 때마다 라이브 서버가 자동 새로고침한다. lock 완료 후·세션 종료 시 서버를 종료한다.
+시트의 `<img>` 태그는 `../candidate/page/...` 상대경로로 참조하고, 색·폰트·radius는 `../assets/css/tokens.css`의 `var(--token)`으로 렌더한다(실값 인라인 금지 — 토큰 드리프트 방지). 이후 PNG가 교체될 때마다 라이브 서버가 자동 새로고침한다. lock 완료 후·세션 종료 시 서버를 종료한다.
 
 ## 흐름 (발산 게이트 루프)
 

@@ -67,7 +67,7 @@ test('결정적 — 같은 입력 두 번 → 바이트 동일', () => {
 
 test('시트가 공유 tokens.css 를 링크', () => {
   const { outPath } = setup({ 'a.svg': SVG() });
-  assert.match(readFileSync(outPath, 'utf8'), /<link[^>]+href="\.\.\/assets\/tokens\.css"/);
+  assert.match(readFileSync(outPath, 'utf8'), /<link[^>]+href="\.\.\/assets\/css\/tokens\.css"/);
 });
 
 test('색은 tokens.css 변수 참조 (HEX 인라인 아님)', () => {

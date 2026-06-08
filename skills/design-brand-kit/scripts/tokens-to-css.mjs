@@ -1,4 +1,4 @@
-// brand-tokens.json → assets/tokens.css 결정적 생성.
+// brand-tokens.json → assets/css/tokens.css 결정적 생성.
 // (a) brand-tokens.json 매핑 + (b) 고정 관례 primitive 레이어(spacing 스케일·tint).
 // 변수 네이밍 계약은 design-ui-kit 플랜 File Structure 참조 — 컴포넌트 CSS가 이 이름에 의존.
 import { readFile, writeFile } from "node:fs/promises";

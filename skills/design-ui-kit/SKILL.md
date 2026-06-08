@@ -1,6 +1,6 @@
 ---
 name: design-ui-kit
-description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/ui-kit/ui-kit.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 design-md-compiler를 호출해 DESIGN.md에 반영한다. image-gen·OPENAI_API_KEY 불필요.
+description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/css/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/css/ui-kit.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 design-md-compiler를 호출해 DESIGN.md에 반영한다. image-gen·OPENAI_API_KEY 불필요.
 ---
 
 # Design UI Kit
@@ -15,7 +15,7 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
 
 ## 전제
 
-- `design-brand-kit` 산출물 중 `.design/BRAND_KIT.md`·`.design/brand-tokens.json`·`.design/assets/tokens.css`가 있으면 그걸 쓴다. **tokens.css가 없으면** brand-kit lock이 생성하므로, brand-kit을 먼저 lock하라고 안내한다(또는 `tokens-to-css.mjs`로 생성).
+- `design-brand-kit` 산출물 중 `.design/BRAND_KIT.md`·`.design/brand-tokens.json`·`.design/assets/css/tokens.css`가 있으면 그걸 쓴다. **tokens.css가 없으면** brand-kit lock이 생성하므로, brand-kit을 먼저 lock하라고 안내한다(또는 `tokens-to-css.mjs`로 생성).
 - **이미지 생성·`OPENAI_API_KEY` 불필요** — 컴포넌트는 LLM이 HTML/CSS를 직접 저작한다. 쇼케이스만 chrome 템플릿 + serve-design로 결정적 렌더한다.
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
@@ -23,7 +23,7 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
 권위 원본은 md/tokens/icon이다.
 
 - `.design/BRAND_KIT.md` — **§10 비주얼·UI 방향(권위)**: 전체 분위기·카드/컴포넌트·상태 표현·컨트롤·피해야 할 시각 요소. + §7 색·§8 타이포·§1/에센스·금지 패턴.
-- `.design/assets/tokens.css` — **컴포넌트가 참조할 토큰 변수의 단일 권위**(색·폰트·radius·shadow·spacing·tint). (+ `brand-tokens.json` 원본.)
+- `.design/assets/css/tokens.css` — **컴포넌트가 참조할 토큰 변수의 단일 권위**(색·폰트·radius·shadow·spacing·tint). (+ `brand-tokens.json` 원본.)
 - `.design/assets/icon/*.svg` — 컴포넌트 안 아이콘은 이 확정 SVG를 **인라인**(currentColor)으로 쓴다. 없으면 텍스트/유니코드로 대체하거나 design-iconset 먼저 안내.
 - 참조 시드(분위기 확인용, 값 추출 아님): `.design/assets/brand-kit/ui-base.png`·`key-visual.png`.
 
@@ -32,8 +32,8 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
 ```
 .design/
   assets/
-    ui-kit/
-      ui-kit.css                 # 컴포넌트 class — 토큰 변수만(하드코딩 HEX·px 0). 상단 @import "../tokens.css";
+    css/
+      ui-kit.css                 # 컴포넌트 class — 토큰 변수만(하드코딩 HEX·px 0). 상단 @import "tokens.css";
   view/
     ui-kit.html                  # chrome 템플릿 기반 쇼케이스(개발자 핸드오프). ../assets/ 상대경로.
   candidate/
@@ -41,7 +41,7 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
       ui-kit-briefs.md           # 읽은 §10 근거·확정 컴포넌트 목록·스타일 방향·제약
 ```
 
-- `ui-kit.css`는 `assets/ui-kit/`에 처음부터 제자리 저작(별도 승격 복사 없음 — lock은 승인). `~800줄` 초과 시 family별 파일로 분리하고 `ui-kit.css`가 `@import`로 모은다.
+- `ui-kit.css`는 `assets/css/`에 처음부터 제자리 저작(별도 승격 복사 없음 — lock은 승인). `~800줄` 초과 시 family별 파일로 분리하고 `ui-kit.css`가 `@import`로 모은다.
 - `ui-kit.html`은 `view/`에서 chrome 템플릿(`templates/ui-kit-sheet.html`)을 복사해 시작하고 slot을 채워 저작한다.
 
 ## 3분할 규약 (중요)
@@ -50,7 +50,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 
 | 층 | 출처 | 저작 여부 |
 |---|---|---|
-| **토큰값**(실 HEX·실 px·실 폰트) | `assets/tokens.css` 주입 (`var(--token)`) | 저작 안 함 — 참조만 |
+| **토큰값**(실 HEX·실 px·실 폰트) | `assets/css/tokens.css` 주입 (`var(--token)`) | 저작 안 함 — 참조만 |
 | **chrome**(보드/패널/매트릭스 골격·쇼케이스 CSS·헤더 key-visual 슬롯) | `templates/ui-kit-sheet.html` | 저작 안 함 — 복사 후 slot만 채움 |
 | **컴포넌트 class**(`ui-kit.css`) | LLM(이 스킬)이 저작 | **저작함** |
 | **쇼케이스 마크업**(`view/ui-kit.html` slot 채우기) | web-publisher 서브에이전트가 저작·QA | **위임** — 이 스킬은 슬롯 스펙만 정의 |
@@ -84,7 +84,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 ## 흐름 (디자이너 협업 루프)
 
 ### Phase 0 — 전제 감지
-- `.design/BRAND_KIT.md`·`brand-tokens.json`·`assets/tokens.css` 존재 확인. tokens.css 없으면 brand-kit lock 안내(또는 생성). icon 없으면 design-iconset 안내(아이콘 쓰는 컴포넌트 한정).
+- `.design/BRAND_KIT.md`·`brand-tokens.json`·`assets/css/tokens.css` 존재 확인. tokens.css 없으면 brand-kit lock 안내(또는 생성). icon 없으면 design-iconset 안내(아이콘 쓰는 컴포넌트 한정).
 
 ### Phase 1 — 흡수 → 게이트1(목록) → 게이트2(스타일 방향)
 1. **§10 흡수**: §10(분위기·카드·상태·컨트롤·피해야 할 요소)·§7·§8·tokens.css를 읽어 **컴포넌트 가족 계약**(버튼 형태·radius 깊이·그림자·상태 색 매핑)을 메모(`candidate/ui-kit/ui-kit-briefs.md`).
@@ -92,7 +92,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 3. **게이트2 — 스타일 방향**: 핵심 스타일 결정(버튼 형태·기본 radius·그림자 깊이·테두리 유무)을 §10 근거로 합의한 뒤 저작 시작. *"왜 이 형태인가"를 먼저 합의.*
 
 ### Phase 2 — 저작 → 쇼케이스 검수 → 편집 → lock
-4. **ui-kit.css 저작**: 확정 목록을 토큰 변수만으로 작성. 상단 `@import "../tokens.css";`. **하드코딩 HEX·px 0**(spacing도 `--space-*`). 매트릭스용 강제상태 class를 의사상태와 **규칙 공유**:
+4. **ui-kit.css 저작**: 확정 목록을 토큰 변수만으로 작성. 상단 `@import "tokens.css";`. **하드코딩 HEX·px 0**(spacing도 `--space-*`). 매트릭스용 강제상태 class를 의사상태와 **규칙 공유**:
    ```css
    .btn-primary:hover, .btn-primary.is-hover { filter:brightness(.94); }
    .input:focus, .input.is-focus { outline:2px solid var(--tint-primary); }
@@ -114,7 +114,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 6. **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design`(루트=`.design/`). 시트 직접 URL `http://localhost:5500/view/ui-kit.html`. 처음 제시 시 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
 7. **편집 루프**: 번호/이름 지목 → 외과 편집 → 자동 새로고침. **`ui-kit.css` class 편집은 이 스킬**이, **`ui-kit.html` specimen 마크업 편집·레이아웃 깨짐 수정은 web-publisher**가 한다(쇼케이스 저작자가 일관되게 고치도록).
 8. **lock (승인 + overview 슬롯 + md-compiler 호출)**:
-   - `assets/ui-kit/ui-kit.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.
+   - `assets/css/ui-kit.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.
    - `view/overview.html`의 `<!-- design-ui-kit:slot -->…<!-- /design-ui-kit:slot -->` 사이를 **UI 킷 한 줄 링크**(`<a href="ui-kit.html">UI Kit →</a>`)로 멱등 외과 치환(마커 없으면 §10 끝에 삽입). overview를 컴포넌트로 부풀리지 않는다.
    - **`design-md-compiler`를 호출**해 DESIGN.md를 만든다/갱신한다. 이 스킬은 DESIGN.md를 직접 쓰지 않는다 — md-compiler가 단일 소유자이며, ui-kit.css를 §5 컴포넌트 규칙의 권위 입력으로 읽는다.
    - 라이브 프리뷰 서버가 떠 있으면 종료.

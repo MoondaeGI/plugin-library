@@ -45,7 +45,7 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 ```
 
 - 작업본 `candidate/icon/` → 확정 `assets/icon/` **순수 복사**. 버전 이력은 git.
-- 시트는 SVG를 인라인 임베드한다. 색은 공유 `../assets/tokens.css`의 `var(--color-*)`로 참조하므로(시트가 link), 색 HEX 인라인 주입은 없다(전사 드리프트 방지). tokens.css는 brand-kit lock이 생성하며, 부재 시 var() 폴백값으로 degrade.
+- 시트는 SVG를 인라인 임베드한다. 색은 공유 `../assets/css/tokens.css`의 `var(--color-*)`로 참조하므로(시트가 link), 색 HEX 인라인 주입은 없다(전사 드리프트 방지). tokens.css는 brand-kit lock이 생성하며, 부재 시 var() 폴백값으로 degrade.
 - `generated/`는 두지 않는다(SVG는 텍스트라 초안 누적 불필요).
 
 ## SVG 저작 방식
