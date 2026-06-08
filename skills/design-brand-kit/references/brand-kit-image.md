@@ -7,15 +7,15 @@
 ## 산출물 (v3 레이아웃)
 
 1. **base 시각 자산 (필수)** — 오버뷰가 끼워넣고 다운스트림이 시드로 쓰는 안정적 PNG 파일들.
-   - 자산: `.design/assets/brand-kit/`(확정 캐노니컬 홈 — 제자리 작업).
+   - 자산: `.design/reference/brand-kit/`(확정 캐노니컬 홈 — 제자리 작업).
    - `logo-base.png` — 로고 마크/심볼. **투명**(gpt-image-1.5 + `--background transparent`).
    - `wordmark-base.png` — 워드마크(브랜드명 로고타입). **투명**(gpt-image-1.5 + `--background transparent`). 짧고 또렷하게(한글 글리프 뭉갬 주의).
    - `key-visual.png` — 브랜드 히어로 이미지(단일). 불투명(gpt-image-2).
    - `ui-base.png` — UI 컴포넌트 룩(카드·배지·컨트롤). 불투명(gpt-image-2). **방향 확정 후에만 생산.**
-   - `icon/<name>.png` — 오버뷰가 쓰는 개별 컨셉 아이콘(assets/brand-kit/icon/). **투명**(gpt-image-1.5 + `--background transparent`). §2·§4·§9 장식 + §11 쇼케이스 + design-iconset 가족 기준. **방향 확정 후에만 생산.**
+   - `icon/<name>.png` — 오버뷰가 쓰는 개별 컨셉 아이콘(reference/brand-kit/icon/). **투명**(gpt-image-1.5 + `--background transparent`). §2·§4·§9 장식 + §11 쇼케이스 + design-iconset 가족 기준. **방향 확정 후에만 생산.**
 2. **종합 브랜드 오버뷰 (필수 · 메인)** — 위 자산을 끼워넣고 데이터 섹션을 토큰에서 렌더한 **HTML 페이지** `overview.html`. AI 래스터 보드가 아니다.
-   - 저작 위치: `.design/view/overview.html`(제자리, ../assets/brand-kit/ 참조).
-3. **(선택) 추가 탐색 이미지** — 대안 무드·히어로 변형 등. → `.design/assets/brand-kit/`.
+   - 저작 위치: `.design/view/overview.html`(제자리, ../reference/brand-kit/ 참조).
+3. **(선택) 추가 탐색 이미지** — 대안 무드·히어로 변형 등. → `.design/reference/brand-kit/`.
 
 **워드마크도 이미지 자산이다**(`wordmark-base.png`, 투명) — 타입페이스/커스텀 레터링을 조건 없이 일관 처리. §1에선 `key-visual` 위에 `<img>`로 얹는다. 컷아웃은 `logo-base`·`wordmark-base`·아이콘.
 
@@ -166,8 +166,8 @@ Color System 섹션에는 스와치마다 **HEX 값과 용도**를 함께 적는
 - **입력**: `BRAND_KIT.md`(개요·에센스·타깃·가치·태그라인·로고 방향·보이스·금지 패턴)와 `brand-tokens.json`(색·타이포 토큰)에서 전략·콘텐츠·팔레트·타이포를 읽어 보드 각 섹션에 반영한다. 보드는 `BRAND_KIT.md`의 §1–11을 렌더하며 1:1로 대응한다 — **§12 다음 결정 사항은 md 전용이라 보드에 렌더하지 않는다.**
 - **권위**: 색 HEX·폰트 스펙·문구의 정답은 md/tokens. 보드는 그것을 한눈에 보는 시각 원페이저로 렌더한다. 폰트 스펙의 실존 출처는 `../../references/design/font-catalog.md`이며, 토큰의 font-family는 거기서 고른 실존값이다.
 - **저장**: `image-gen` 스크립트의 `--out`에 **프로젝트 cwd 기준 절대 경로**를 직접 지정한다(스크립트가 거기 바로 씀).
-  - **작업 자산**: 이미지를 `<cwd>/.design/assets/brand-kit/`에 `--auto-version`으로 저장(예: `logo-base.png` → `logo-base-v2.png` 누적).
-  - **락**: 확정 자산은 `.design/assets/brand-kit/`에 제자리(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icon/<name>.png`) — 별도 복사 없음, `--auto-version`으로 시안 누적.
+  - **작업 자산**: 이미지를 `<cwd>/.design/reference/brand-kit/`에 `--auto-version`으로 저장(예: `logo-base.png` → `logo-base-v2.png` 누적).
+  - **락**: 확정 자산은 `.design/reference/brand-kit/`에 제자리(`logo-base.png`·`wordmark-base.png`·`key-visual.png`·`ui-base.png`·`icon/<name>.png`) — 별도 복사 없음, `--auto-version`으로 시안 누적.
   - **오버뷰**: `overview.html`을 `.design/view/overview.html`에 LLM이 제자리 저작(이미지 생성 아님).
 - **협업 루프**: 방향 확정(발산·방향 선택은 SKILL.md 흐름 + `references/brand-kit-contact-sheet.md`) 후, 확정 방향의 자산을 한 장씩 생산한다 — **첫 생성만 텍스트→이미지, 이후 모든 수정·수렴은 직전 이미지를 `--image`로 첨부한 증분 편집으로 한 가지씩** 고쳐 재생성(gpt-image-2 는 입력 이미지를 항상 high fidelity로 처리 — 나머지 보존, 한 가지만 변경). 추가 탐색은 한 장씩. (로고는 보드 §6 섹션으로만 들어가고, 독립 로고는 design-logo가 만든다.)
 

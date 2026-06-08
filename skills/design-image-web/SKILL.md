@@ -1,6 +1,6 @@
 ---
 name: design-image-web
-description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드·마케팅)의 풀페이지 목업 이미지를 세로 1:3 한 컴프로 만드는 designer 소유의 선택 다운스트림 단계 — HTML 구현(design-html-prototype) 전 룩 탐색용. DESIGN.md 토큰(실 HEX·실폰트)과 확정 자산(logo·icon·ui-base)에 바인딩해 image-gen(gpt-image-2)으로 풀페이지 방향을 발산(저품질)→확정(고품질)하고, 타깃 slug별 게이트 리뷰 시트로 검수·외과 편집해 assets/page/로 lock한다. DESIGN.md가 없으면 design.md 요청 또는 진도 감지 후 design-md-compiler/brand-kit로 유도. OPENAI_API_KEY 필요. 아트디렉션은 references/art-direction-web.md.
+description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드·마케팅)의 풀페이지 목업 이미지를 세로 1:3 한 컴프로 만드는 designer 소유의 선택 다운스트림 단계 — HTML 구현(design-html-prototype) 전 룩 탐색용. DESIGN.md 토큰(실 HEX·실폰트)과 확정 자산(logo·icon·ui-base)에 바인딩해 image-gen(gpt-image-2)으로 풀페이지 방향을 발산(저품질)→확정(고품질)하고, 타깃 slug별 게이트 리뷰 시트로 검수·외과 편집해 reference/page/로 lock한다. DESIGN.md가 없으면 design.md 요청 또는 진도 감지 후 design-md-compiler/brand-kit로 유도. OPENAI_API_KEY 필요. 아트디렉션은 references/art-direction-web.md.
 ---
 
 # Design Image Web
@@ -26,11 +26,11 @@ description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드
 - `DESIGN.md` — frontmatter 토큰(colors HEX·typography 실폰트) / §1 제품명 / §3 시각 방향 / §6 페이지 섹션 규칙 / §8 이미지 에셋 규칙 / §11 anti-slop
 - `.design/assets/logo/logo.png` — 확정 로고 (`--image` 앵커)
 - `.design/assets/icon/*.svg` — 확정 아이콘셋 (`--image` 앵커, 있는 것만)
-- `.design/assets/brand-kit/ui-base.png` — 확정 UI 베이스 이미지 (`--image` 앵커, 있으면)
-- `.design/assets/brand-kit/key-visual.png` — 확정 키비주얼 (`--image` 앵커, 있으면)
+- `.design/reference/brand-kit/ui-base.png` — 확정 UI 베이스 이미지 (`--image` 앵커, 있으면)
+- `.design/reference/brand-kit/key-visual.png` — 확정 키비주얼 (`--image` 앵커, 있으면)
 - `.design/assets/css/tokens.css` — 라이브 시트의 `var()` 렌더 용도
 
-> **읽지 않는 것**: candidate 시안(`candidate/page/`, `candidate/brand-kit/` 등), 브랜드킷 컨셉 아이콘(`assets/brand-kit/icon/*`). 확정 deliverable이 아닌 탐색 중간물은 앵커로 사용하지 않는다.
+> **읽지 않는 것**: candidate 시안(`candidate/page/`, `candidate/brand-kit/` 등), 브랜드킷 컨셉 아이콘(`reference/brand-kit/icon/*`). 확정 deliverable이 아닌 탐색 중간물은 앵커로 사용하지 않는다.
 
 ## 출력 파일 (cwd 기준 레이아웃)
 
@@ -41,7 +41,7 @@ description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드
   candidate/page/
     page-briefs.md                                  # 공통 출처 로그 (산문)
     <slug>-web[-<zone>]-r<N>-<NN>.png               # 발산/수렴 변주 (--auto-version, low)
-  assets/page/
+  reference/page/
     <slug>-web[-<zone>].png                         # 확정 풀페이지 목업 (high)
 ```
 
@@ -67,7 +67,7 @@ description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드
 node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
   --prompt-file /tmp/landing-dir1-prompt.txt \
   --image "<cwd>/.design/assets/logo/logo.png" \
-  --image "<cwd>/.design/assets/brand-kit/ui-base.png" \
+  --image "<cwd>/.design/reference/brand-kit/ui-base.png" \
   --out "<cwd>/.design/candidate/page/landing-web-r1-01.png" \
   --auto-version --model gpt-image-2 --size 1280x3840 --quality low
 ```
@@ -78,8 +78,8 @@ node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
 node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
   --prompt-file /tmp/landing-final-prompt.txt \
   --image "<cwd>/.design/assets/logo/logo.png" \
-  --image "<cwd>/.design/assets/brand-kit/ui-base.png" \
-  --out "<cwd>/.design/assets/page/landing-web.png" \
+  --image "<cwd>/.design/reference/brand-kit/ui-base.png" \
+  --out "<cwd>/.design/reference/page/landing-web.png" \
   --auto-version --model gpt-image-2 --size 1280x3840 --quality high
 ```
 
@@ -110,7 +110,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 1. DESIGN.md §6 페이지 섹션 규칙을 읽어 섹션 목록 도출(Hero·Problem·Feature·CTA 등).
 2. 타깃 페이지 slug을 제안한다(한국어 요청이면 영문으로 제안 — 예: "랜딩" → `landing`).
 3. **이 컴프에 담을 섹션을 사용자가 선택**한다. 히어로는 기본 포함. 1:3을 초과하는 분량은 필요 시 독립 존 컴프(`-<zone>`)로 분리함을 안내한다.
-4. 기존 `candidate/page/`·`assets/page/` 파일과 slug 충돌 여부를 확인하고, 충돌 시 "덮어쓸까요 / 새 이름으로 할까요?"를 묻는다.
+4. 기존 `candidate/page/`·`reference/page/` 파일과 slug 충돌 여부를 확인하고, 충돌 시 "덮어쓸까요 / 새 이름으로 할까요?"를 묻는다.
 5. 사용자가 확정하기 전까지 이미지를 **한 장도 생성하지 않는다**.
 
 ### 게이트2 — 아트디렉션 방향 합의
@@ -132,7 +132,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 ### Lock
 
-- 확정본을 `assets/page/<slug>-web[-<zone>].png`에 복사(풀페이지 목업, 확정 deliverable).
+- 확정본을 `reference/page/<slug>-web[-<zone>].png`에 복사(풀페이지 목업, 확정 deliverable).
 - 시안은 `candidate/page/`에 보존한다. 덮지 않는다.
 - `candidate/page/page-briefs.md`에 타깃·섹션 구성·확정 방향·컨셉을 산문으로 기록한다(`design-md-compiler`가 이 파일을 읽는다).
 - 서버를 종료하고 **"확정 목업이 `design-html-prototype`의 비주얼 타깃"** 임을 안내한다.
@@ -153,6 +153,6 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 - `references/art-direction-web.md`의 anti-slop 항목을 모두 준수한다.
 - **자율 일괄 생성 금지**: 게이트 확정 없이 여러 방향을 한꺼번에 확정하지 않는다.
 - **브랜드·카피·팔레트 창작 금지**: DESIGN.md에 없는 값을 지어내지 않는다. 색·폰트·제품명·카피는 반드시 DESIGN.md에서 가져온다.
-- **candidate 시안을 확정처럼 참조 금지**: `candidate/page/` 시안을 `assets/page/` 확정 deliverable처럼 인용하지 않는다.
+- **candidate 시안을 확정처럼 참조 금지**: `candidate/page/` 시안을 `reference/page/` 확정 deliverable처럼 인용하지 않는다.
 - **토큰 인라인 금지**: 라이브 시트에서 실값(HEX·px)을 인라인하지 않고 `var(--token)`으로만 렌더한다.
 - **긴 페이지를 이미지로 완전 재현하려 하지 않음**: 상단 핵심 섹션으로 캡하고, 풀길이 정밀본은 `design-html-prototype`(HTML)이 만든다.

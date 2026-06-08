@@ -11,7 +11,7 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 
 `design-brand-kit`(과 보통 `design-logo`)이 확정된 뒤 사용한다. brand kit의 §11 아이코노그래피는 스타일·폼 규칙·메타포·상태 규칙을 한 줄씩 박아둔 결정이므로, 여기서 그 결정을 따라 **Iconify 단일 세트에서 fetch해 `viewBox="0 0 24 24"`·`currentColor`로 정규화**하고, 세트에 없는 gap(도메인 전용) 아이콘만 §11 폼 규칙을 따라 합성·저작한다(처음부터 전량 저작은 이제 fallback이 아닌 gap에 한정). 각 SVG는 `viewBox="0 0 24 24"`·`currentColor`로 recolor·무한 scale 된다. 품질 기준은 "랜덤 AI 아이콘"이 아니라 **하나의 가족(one family)으로 읽히는 제품 아이콘 세트**다 — cross-icon 일관성이 전부다.
 
-**역할 분리:** brand-kit의 `assets/brand-kit/icon/*.png`는 **브랜드 컨셉/정체성 전시용**(overview에만)이라 제품에 안 나간다. iconset은 그것을 시드로도 읽지 않는다 — 스타일 근거는 **§11 규칙 + tokens만**이며, 제품용 SVG 가족은 Iconify 세트 fetch(적중분)와 gap 합성/저작(미적중분)으로 완성한다.
+**역할 분리:** brand-kit의 `reference/brand-kit/icon/*.png`는 **브랜드 컨셉/정체성 전시용**(overview에만)이라 제품에 안 나간다. iconset은 그것을 시드로도 읽지 않는다 — 스타일 근거는 **§11 규칙 + tokens만**이며, 제품용 SVG 가족은 Iconify 세트 fetch(적중분)와 gap 합성/저작(미적중분)으로 완성한다.
 
 > **파이프라인 비대칭(의도):** 로고는 확정 시 캐노니컬 파일(`assets/logo/logo.png`)을 덮어써 overview에서 base를 갈아치우지만, 아이콘은 이 역할 분리 때문에 컨셉 PNG(브랜드 전시)와 확정 SVG(제품)가 overview §11에 **병존**한다. lock 때 `<!-- design-iconset:slot -->` 사이를 확정 SVG로 치환하되 컨셉 PNG는 남긴다(아래 흐름 9). 이 비대칭은 빠뜨린 게 아니라 의도다.
 
@@ -19,16 +19,16 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 
 ## 전제
 
-- `design-brand-kit` 산출물 중 `.design/BRAND_KIT.md`·`.design/brand-tokens.json`이 있으면 그걸 쓴다. **없으면 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 / 아이콘용 최소 Q&A로 진행).
+- `design-brand-kit` 산출물 중 `.design/reference/BRAND_KIT.md`·`.design/reference/brand-tokens.json`이 있으면 그걸 쓴다. **없으면 Phase 0에서 감지해 선택을 제시**한다(브랜드 킷 먼저 / 아이콘용 최소 Q&A로 진행).
 - **이미지 생성·`OPENAI_API_KEY` 불필요** — 아이콘은 Iconify 세트에서 fetch+정규화하고, gap(세트 미수록)만 LLM이 SVG 코드로 직접 저작한다. 검수 시트는 결정적 스크립트로 HTML 렌더한다. 네트워크 필요(api.iconify.design, 키 불필요).
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
 권위 원본은 md/tokens다.
 
-- `.design/BRAND_KIT.md` — §11 아이코노그래피(스타일·폼 규칙·메타포·상태 규칙)·§6·§1/에센스·§3·§4·§10·금지 패턴.
-- `.design/brand-tokens.json` — 색 HEX(라인색·액센트·상태색·캔버스).
-- **brand-kit `assets/brand-kit/icon/*`는 읽지 않는다**(컨셉용). 없으면 Phase 0 폴백.
+- `.design/reference/BRAND_KIT.md` — §11 아이코노그래피(스타일·폼 규칙·메타포·상태 규칙)·§6·§1/에센스·§3·§4·§10·금지 패턴.
+- `.design/reference/brand-tokens.json` — 색 HEX(라인색·액센트·상태색·캔버스).
+- **brand-kit `reference/brand-kit/icon/*`는 읽지 않는다**(컨셉용). 없으면 Phase 0 폴백.
 
 ## 출력 파일 (대상 프로젝트 cwd 기준)
 
@@ -58,7 +58,7 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 ## 흐름 (디자이너 협업 루프)
 
 ### Phase 0 — brand kit 감지 (시작 시 필수)
-- `.design/BRAND_KIT.md`·`.design/brand-tokens.json` 존재 확인.
+- `.design/reference/BRAND_KIT.md`·`.design/reference/brand-tokens.json` 존재 확인.
 - **있으면** → Phase 1.
 - **없으면** → 두 길 제시:
   - **(1) 브랜드 킷 먼저**(권장) — design-brand-kit 안내 후 종료.

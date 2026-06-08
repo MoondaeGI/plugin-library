@@ -9,7 +9,7 @@ model: inherit
 
 ## 파이프라인 (핵심)
 
-순서·소유자만 적는다. 각 단계의 상세 입력·산출·역할은 **[docs/design/README.md](../docs/design/README.md)가 정본**이다. 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받고(보드 재분석 없이 `assets/brand-kit/` 직접), 사용자가 특정 단계만 원하면 그 단계만 한다.
+순서·소유자만 적는다. 각 단계의 상세 입력·산출·역할은 **[docs/design/README.md](../docs/design/README.md)가 정본**이다. 각 단계는 앞 단계의 `.design/` 산출물을 시드로 받고(보드 재분석 없이 `reference/brand-kit/` 직접), 사용자가 특정 단계만 원하면 그 단계만 한다.
 
 1. **design-brand-kit** — 브랜드 킷·base 자산·공유 `tokens.css`·overview. (overview HTML 저작은 web-publisher)
 2. **(선택) design-logo** — 단독 로고 확정.
@@ -63,7 +63,7 @@ designer가 자기 몫으로 실행하는 건 design-image-web·design-image-mob
 - **산출물 위치**: 대상 프로젝트의 `.design/` 아래. 스킬이 지정한 경로를 그대로 따른다.
 - **이미지 생성에는 `OPENAI_API_KEY`가 필요**하다(`.env`에 적으면 됨 — Claude 즉시; Codex는 `npm run codex:reinstall`). 키가 없으면 이미지 단계는 사람이 직접 드롭하도록 안내하고 나머지를 진행한다.
 - **한국어**로 소통하고, 생성 이미지 안의 텍스트도 한국어로 렌더한다.
-- 시작할 때 어느 단계부터 할지 확인한다. `.design/BRAND_KIT.md`가 없는 상태에서 2단계 이후를 요청하면 먼저 1단계(`design-brand-kit`) 작성을 권유한다.
+- 시작할 때 어느 단계부터 할지 확인한다. `.design/reference/BRAND_KIT.md`가 없는 상태에서 2단계 이후를 요청하면 먼저 1단계(`design-brand-kit`) 작성을 권유한다.
 
 ## 하지 않을 것
 

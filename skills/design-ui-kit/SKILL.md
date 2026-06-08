@@ -15,17 +15,17 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
 
 ## 전제
 
-- `design-brand-kit` 산출물 중 `.design/BRAND_KIT.md`·`.design/brand-tokens.json`·`.design/assets/css/tokens.css`가 있으면 그걸 쓴다. **tokens.css가 없으면** brand-kit lock이 생성하므로, brand-kit을 먼저 lock하라고 안내한다(또는 `tokens-to-css.mjs`로 생성).
+- `design-brand-kit` 산출물 중 `.design/reference/BRAND_KIT.md`·`.design/reference/brand-tokens.json`·`.design/assets/css/tokens.css`가 있으면 그걸 쓴다. **tokens.css가 없으면** brand-kit lock이 생성하므로, brand-kit을 먼저 lock하라고 안내한다(또는 `tokens-to-css.mjs`로 생성).
 - **이미지 생성·`OPENAI_API_KEY` 불필요** — 컴포넌트는 LLM이 HTML/CSS를 직접 저작한다. 쇼케이스만 chrome 템플릿 + serve-design로 결정적 렌더한다.
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
 권위 원본은 md/tokens/icon이다.
 
-- `.design/BRAND_KIT.md` — **§10 비주얼·UI 방향(권위)**: 전체 분위기·카드/컴포넌트·상태 표현·컨트롤·피해야 할 시각 요소. + §7 색·§8 타이포·§1/에센스·금지 패턴.
-- `.design/assets/css/tokens.css` — **컴포넌트가 참조할 토큰 변수의 단일 권위**(색·폰트·radius·shadow·spacing·tint). (+ `brand-tokens.json` 원본.)
+- `.design/reference/BRAND_KIT.md` — **§10 비주얼·UI 방향(권위)**: 전체 분위기·카드/컴포넌트·상태 표현·컨트롤·피해야 할 시각 요소. + §7 색·§8 타이포·§1/에센스·금지 패턴.
+- `.design/assets/css/tokens.css` — **컴포넌트가 참조할 토큰 변수의 단일 권위**(색·폰트·radius·shadow·spacing·tint). (+ `reference/brand-tokens.json` 원본.)
 - `.design/assets/icon/*.svg` — 컴포넌트 안 아이콘은 이 확정 SVG를 **인라인**(currentColor)으로 쓴다. 없으면 텍스트/유니코드로 대체하거나 design-iconset 먼저 안내.
-- 참조 시드(분위기 확인용, 값 추출 아님): `.design/assets/brand-kit/ui-base.png`·`key-visual.png`.
+- 참조 시드(분위기 확인용, 값 추출 아님): `.design/reference/brand-kit/ui-base.png`·`key-visual.png`.
 
 ## 출력 파일 (대상 프로젝트 cwd 기준)
 
@@ -84,7 +84,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 ## 흐름 (디자이너 협업 루프)
 
 ### Phase 0 — 전제 감지
-- `.design/BRAND_KIT.md`·`brand-tokens.json`·`assets/css/tokens.css` 존재 확인. tokens.css 없으면 brand-kit lock 안내(또는 생성). icon 없으면 design-iconset 안내(아이콘 쓰는 컴포넌트 한정).
+- `.design/reference/BRAND_KIT.md`·`reference/brand-tokens.json`·`assets/css/tokens.css` 존재 확인. tokens.css 없으면 brand-kit lock 안내(또는 생성). icon 없으면 design-iconset 안내(아이콘 쓰는 컴포넌트 한정).
 
 ### Phase 1 — 흡수 → 게이트1(목록) → 게이트2(스타일 방향)
 1. **§10 흡수**: §10(분위기·카드·상태·컨트롤·피해야 할 요소)·§7·§8·tokens.css를 읽어 **컴포넌트 가족 계약**(버튼 형태·radius 깊이·그림자·상태 색 매핑)을 메모(`candidate/ui-kit/ui-kit-briefs.md`).
@@ -107,7 +107,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    - **sidebar**(`.sidebar` + `.sidebar-nav`·`.sidebar-link`·`.sidebar-link.is-active`): app/console 화면 전용. 세로 네비, 활성 링크 강조. **SugarLoop류 스토어프론트엔 저작하지 않는다.**
 5. **쇼케이스 스펙 정의 → web-publisher 위임**: `view/ui-kit.html`의 마크업 저작과 레이아웃 QA는 **web-publisher 서브에이전트**가 맡는다. 이 스킬은 *무엇을 넣을지*(아래 슬롯 스펙)를 정해 넘긴다 — 직접 div를 저작하지 않는다. web-publisher를 직접 부를 수 없으면(서브에이전트로 실행 중) 이 스펙과 "쇼케이스는 web-publisher로 빌드해야 한다"는 점을 메인 세션에 넘긴다. 넘길 스펙: `templates/ui-kit-sheet.html`을 `view/ui-kit.html`로 복사해 slot을 채운다 —
    - `slot:font-links`: brand-tokens.json typography(display/heading/body/mono) **+ `wordmark.font`(있으면)**의 실폰트 CDN `<link>`를 모두 주입(`../references/design/font-catalog.md` 기준 — 전용 로고타입 폰트 누락 시 시스템 폴백으로 깨짐).
-   - `slot:masthead`: 심볼 자산(`../assets/logo/logo.png`)이 있으면 `.lockup`(심볼 + `.wordmark`)으로, 없으면 `.wordmark` 단독으로 저작한다 — 폰트 모드면 `<span class="wordmark">브랜드명</span>`(`.wordmark`는 tokens.css 정의 — 레터링 재구현 금지), 이미지 모드면 `<img src="../assets/brand-kit/wordmark-base.png">`. `.lockup*`도 tokens.css가 정의(재구현 금지)이며 `slot:font-links`의 워드마크 폰트 포함(기존)을 유지한다. **key-visual `--kv` 주입은 현행 유지** — `.board-head`에 `style="--kv:url('../assets/brand-kit/key-visual.png')"`로 은은히 주입(헤더 밴드 한정).
+   - `slot:masthead`: 심볼 자산(`../assets/logo/logo.png`)이 있으면 `.lockup`(심볼 + `.wordmark`)으로, 없으면 `.wordmark` 단독으로 저작한다 — 폰트 모드면 `<span class="wordmark">브랜드명</span>`(`.wordmark`는 tokens.css 정의 — 레터링 재구현 금지), 이미지 모드면 `<img src="../reference/brand-kit/wordmark-base.png">`. `.lockup*`도 tokens.css가 정의(재구현 금지)이며 `slot:font-links`의 워드마크 폰트 포함(기존)을 유지한다. **key-visual `--kv` 주입은 현행 유지** — `.board-head`에 `style="--kv:url('../reference/brand-kit/key-visual.png')"`로 은은히 주입(헤더 밴드 한정).
    - `slot:foundations|core|informational|structural`: 각 그룹 specimen. **매트릭스(행=상태×열=변형)**로 변형·상태를 한눈에. 번호/라벨로 검수 가능하게. 신규 구조 컴포넌트는 대응 패널에 specimen으로 노출 — **core**: filter chip(`.chip-filter` 기본/활성), **structural**: footer·navbar 풀블리드 변형·section header·(제품에 있으면) sidebar. 템플릿은 4패널 고정 chrome이므로 새 패널을 만들지 않고 기존 슬롯에 채운다.
    - 아이콘은 `assets/icon/*.svg`를 **인라인**(currentColor).
    - **key-visual은 헤더 밴드에만**(패널 뒤 금지 — 토큰 충실도·대비 보호).

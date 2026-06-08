@@ -1,6 +1,6 @@
 ---
 name: design-image-mobile
-description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로스플랫폼)의 화면·플로우 디자인 이미지를 세로 폰 목업 포맷으로 만드는 designer 소유의 선택 다운스트림 단계. DESIGN.md엔 앱 화면 정의가 없어 화면 플로우는 사용자와 협업 확정(게이트1)하되 색·폰트·자산 값은 DESIGN.md 토큰에 바인딩한다. image-gen(gpt-image-2)으로 화면 방향을 발산(저품질)→확정(고품질)하고, 게이트 리뷰 시트로 검수·외과 편집해 assets/page/로 lock. DESIGN.md가 없으면 design.md 요청 또는 진도 감지 후 design-md-compiler/brand-kit로 유도. HTML 구현(design-html-prototype) 전 룩 탐색용. OPENAI_API_KEY 필요. 아트디렉션은 references/art-direction-mobile.md.
+description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로스플랫폼)의 화면·플로우 디자인 이미지를 세로 폰 목업 포맷으로 만드는 designer 소유의 선택 다운스트림 단계. DESIGN.md엔 앱 화면 정의가 없어 화면 플로우는 사용자와 협업 확정(게이트1)하되 색·폰트·자산 값은 DESIGN.md 토큰에 바인딩한다. image-gen(gpt-image-2)으로 화면 방향을 발산(저품질)→확정(고품질)하고, 게이트 리뷰 시트로 검수·외과 편집해 reference/page/로 lock. DESIGN.md가 없으면 design.md 요청 또는 진도 감지 후 design-md-compiler/brand-kit로 유도. HTML 구현(design-html-prototype) 전 룩 탐색용. OPENAI_API_KEY 필요. 아트디렉션은 references/art-direction-mobile.md.
 ---
 
 # Design Image Mobile
@@ -25,11 +25,11 @@ description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로
   - **§6은 웹 페이지 섹션 정의**이므로 앱 화면 플로우의 직접 근거가 아니다. 화면 플로우는 게이트1에서 사용자와 협업 확정한다.
 - `.design/assets/logo/logo.png` — 확정 로고 (`--image` 앵커)
 - `.design/assets/icon/*.svg` — 확정 아이콘셋 (`--image` 앵커, 있는 것만)
-- `.design/assets/brand-kit/ui-base.png` — 확정 UI 베이스 이미지 (`--image` 앵커, 있으면)
-- `.design/assets/brand-kit/key-visual.png` — 확정 키비주얼 (`--image` 앵커, 있으면)
+- `.design/reference/brand-kit/ui-base.png` — 확정 UI 베이스 이미지 (`--image` 앵커, 있으면)
+- `.design/reference/brand-kit/key-visual.png` — 확정 키비주얼 (`--image` 앵커, 있으면)
 - `.design/assets/css/tokens.css` — 라이브 시트의 `var()` 렌더 용도
 
-> **읽지 않는 것**: candidate 시안(`candidate/page/`, `candidate/brand-kit/` 등), 브랜드킷 컨셉 아이콘(`assets/brand-kit/icon/*`). 확정 deliverable이 아닌 탐색 중간물은 앵커로 사용하지 않는다.
+> **읽지 않는 것**: candidate 시안(`candidate/page/`, `candidate/brand-kit/` 등), 브랜드킷 컨셉 아이콘(`reference/brand-kit/icon/*`). 확정 deliverable이 아닌 탐색 중간물은 앵커로 사용하지 않는다.
 
 ## 출력 파일 (cwd 기준 레이아웃)
 
@@ -40,7 +40,7 @@ description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로
   candidate/page/
     page-briefs.md                                # 공통 출처 로그 (산문)
     <slug>-mobile-<screen>-r<N>-<NN>.png          # 발산 시안 (low, --auto-version)
-  assets/page/
+  reference/page/
     <slug>-mobile-<screen>.png                    # 확정 deliverable (high)
 ```
 
@@ -67,7 +67,7 @@ description: 확정된 DESIGN.md를 시드로 모바일 앱(iOS·Android·크로
 node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
   --prompt-file /tmp/onboarding-dir1-prompt.txt \
   --image "<cwd>/.design/assets/logo/logo.png" \
-  --image "<cwd>/.design/assets/brand-kit/ui-base.png" \
+  --image "<cwd>/.design/reference/brand-kit/ui-base.png" \
   --out "<cwd>/.design/candidate/page/onboarding-mobile-welcome-r1-01.png" \
   --auto-version --model gpt-image-2 --size 1024x1536 --quality low
 ```
@@ -78,8 +78,8 @@ node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
 node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
   --prompt-file /tmp/onboarding-final-prompt.txt \
   --image "<cwd>/.design/assets/logo/logo.png" \
-  --image "<cwd>/.design/assets/brand-kit/ui-base.png" \
-  --out "<cwd>/.design/assets/page/onboarding-mobile-welcome.png" \
+  --image "<cwd>/.design/reference/brand-kit/ui-base.png" \
+  --out "<cwd>/.design/reference/page/onboarding-mobile-welcome.png" \
   --auto-version --model gpt-image-2 --size 1024x1536 --quality high
 ```
 
@@ -115,7 +115,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 2. `references/art-direction-mobile.md`의 플로우 논리(왜 화면2가 화면1 뒤인지 등)를 참고해 **화면 플로우 초안(예: 온보딩→인증→홈→상세→설정)을 제안**한다. 이는 LLM 단독 창작이 아닌 **사용자와의 협업 출발점**이다.
 3. 사용자가 플로우를 수정·확정하기 전까지 이미지를 **한 장도 생성하지 않는다**.
 4. 확정된 플로우에서 타깃 slug를 정한다(한국어 요청이면 영문 제안 — 예: "온보딩" → `onboarding`).
-5. 기존 `candidate/page/`·`assets/page/` 파일과 slug 충돌 여부를 확인하고, 충돌 시 "덮어쓸까요 / 새 이름으로 할까요?"를 묻는다.
+5. 기존 `candidate/page/`·`reference/page/` 파일과 slug 충돌 여부를 확인하고, 충돌 시 "덮어쓸까요 / 새 이름으로 할까요?"를 묻는다.
 
 단, 색·폰트·자산 등 **값은 여전히 DESIGN.md에 바인딩**한다. 화면 플로우만 사용자와 협업 창작이고, 브랜드 토큰은 지어내지 않는다.
 
@@ -137,7 +137,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 ### Lock
 
-- 확정 직전 `--quality high`로 최종 1장 생성해 `assets/page/<slug>-mobile-<screen>.png`에 저장(확정 deliverable).
+- 확정 직전 `--quality high`로 최종 1장 생성해 `reference/page/<slug>-mobile-<screen>.png`에 저장(확정 deliverable).
 - 발산·다듬기 시안은 `candidate/page/`에 보존한다. 덮지 않는다.
 - `candidate/page/page-briefs.md`에 타깃·화면·순서·캡션·확정 컨셉을 산문으로 기록한다(`design-md-compiler`가 이 파일을 읽는다).
 - 서버를 종료하고 **"확정 화면 이미지가 `design-html-prototype`의 비주얼 타깃"** 임을 안내한다.
@@ -159,7 +159,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 - **자율 일괄 생성 금지**: 게이트 확정 없이 여러 화면을 한꺼번에 생성하지 않는다.
 - **브랜드·카피·팔레트 창작 금지**: DESIGN.md에 없는 값을 지어내지 않는다. 색·폰트·제품명·카피는 반드시 DESIGN.md에서 가져온다.
 - **화면 플로우 단독 창작 금지**: 게이트1 없이 LLM이 단독으로 화면 플로우를 결정하지 않는다. 반드시 사용자와 협업 확정한다.
-- **candidate 시안을 확정처럼 참조 금지**: `candidate/page/` 시안을 `assets/page/` 확정 deliverable처럼 인용하지 않는다.
+- **candidate 시안을 확정처럼 참조 금지**: `candidate/page/` 시안을 `reference/page/` 확정 deliverable처럼 인용하지 않는다.
 - **토큰 인라인 금지**: 라이브 시트에서 실값(HEX·px)을 인라인하지 않고 `var(--token)`으로만 렌더한다.
 - **웹 같은 레이아웃 금지**: 폰 안의 웹사이트처럼 렌더하지 않는다. 모바일 앱 네이티브 UI 패턴(앱바·탭바·카드·FAB 등)을 따른다.
 - **세이프에어리어·목업 프레임 균등 여백**: 상단 노치·하단 홈인디케이터 여백을 목업 프레임과 함께 일관되게 렌더한다.
