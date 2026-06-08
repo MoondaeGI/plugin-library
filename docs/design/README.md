@@ -8,11 +8,11 @@
 
 ```
 핵심 파이프라인 (designer):
-design-brand-kit  (+ 공유 assets/tokens.css)
-   ├─ (선택) design-logo      ← assets/brand-kit/logo-base.png 시드
+design-brand-kit  (+ 공유 assets/css/tokens.css)
+   ├─ (선택) design-logo      ← reference/brand-kit/logo-base.png 시드
    ├─ (선택) design-iconset   ← BRAND_KIT.md §11 + brand-tokens.json 근거
    └─ design-ui-kit           ← BRAND_KIT.md §10 + tokens.css + assets/icon/*.svg
-          └─ design-md-compiler   → DESIGN.md   (여기까지 designer 핵심)
+          └─ design-md-compiler   → .design/DESIGN.md   (여기까지 designer 핵심)
 
 다운스트림 (주체 · 구현 상태):
    design-component-export   (front-developer · 미구현)
@@ -24,18 +24,18 @@ design-brand-kit  (+ 공유 assets/tokens.css)
 
 | 스킬 | 역할 | 입력 | 주요 산출물 |
 |---|---|---|---|
-| **design-brand-kit** | 브랜드 정체성·톤·색·타이포·로고 방향·UI 분위기를 정리하고, 정체성 base 자산(투명 PNG)과 한눈에 보는 HTML 오버뷰를 협업으로 만든다. lock 시 `brand-tokens.json`을 `assets/tokens.css`로 물질화(공유 토큰 토대) | 제품 설명 (+ 디스커버리 Q&A) | `.design/{BRAND_KIT.md·brand-tokens.json}`(루트) · `view/overview.html` · `assets/tokens.css` · `assets/brand-kit/` |
-| **(선택) design-logo** | 라운드 3~4개 탐색 시트 → 단독 로고 확정 | `assets/brand-kit/logo-base.png` | `.design/assets/logo/` |
+| **design-brand-kit** | 브랜드 정체성·톤·색·타이포·로고 방향·UI 분위기를 정리하고, 정체성 base 자산(투명 PNG)과 한눈에 보는 HTML 오버뷰를 협업으로 만든다. lock 시 `brand-tokens.json`을 `assets/css/tokens.css`로 물질화(공유 토큰 토대) | 제품 설명 (+ 디스커버리 Q&A) | `reference/{BRAND_KIT.md·brand-tokens.json}` · `view/overview.html` · `assets/css/tokens.css` · `reference/brand-kit/` |
+| **(선택) design-logo** | 라운드 3~4개 탐색 시트 → 단독 로고 확정 | `reference/brand-kit/logo-base.png` | `.design/assets/logo/` |
 | **(선택) design-iconset** | 한 가족으로 읽히는 아이콘 세트를 라벨 그리드 시트로 확정 | `BRAND_KIT.md` §11 · `brand-tokens.json` 근거 | `.design/assets/icon/` |
-| **design-ui-kit** | 제품 UI 컴포넌트 라이브러리를 토큰 기반 HTML/CSS로 저작(이미지 아님). lock 후 design-md-compiler 호출 | `BRAND_KIT.md` §10 · `tokens.css` · `assets/icon/*.svg` | `.design/assets/ui-kit/ui-kit.css` · `view/ui-kit.html` |
-| **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리(§4 토큰=tokens.css, §5 컴포넌트=ui-kit.css 권위). **designer 핵심 파이프라인의 종착** | 브랜드 킷 + tokens.css + ui-kit.css (페이지 이미지 있으면 선택 입력) | `DESIGN.md` (cwd 루트) |
+| **design-ui-kit** | 제품 UI 컴포넌트 라이브러리를 토큰 기반 HTML/CSS로 저작(이미지 아님). lock 후 design-md-compiler 호출 | `BRAND_KIT.md` §10 · `tokens.css` · `assets/icon/*.svg` | `.design/assets/css/ui-kit.css` · `view/ui-kit.html` |
+| **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리(§4 토큰=tokens.css, §5 컴포넌트=ui-kit.css 권위). **designer 핵심 파이프라인의 종착** | 브랜드 킷 + tokens.css + ui-kit.css (페이지 이미지 있으면 선택 입력) | `.design/DESIGN.md` |
 | **design-component-export** *(front-developer·미구현)* | 확정 ui-kit.css·tokens.css를 대상 프로젝트 컴포넌트 세트로 export | ui-kit.css·tokens.css | (예정) 컴포넌트 세트 |
 | **design-image-web** *(designer)* | 웹 풀페이지 목업(세로 1:3) 생성 — HTML 전 룩 탐색. 핵심 이후 *선택* 단계, `design-html-prototype` 직전 | `DESIGN.md` 시드 | 웹 풀페이지 목업 |
 | **design-image-mobile** *(designer)* | 앱 화면 목업 생성 — HTML 전 룩 탐색. 핵심 이후 *선택* 단계, `design-html-prototype` 직전 | `DESIGN.md` 시드 | 앱 화면 목업 |
 | **design-html-prototype** *(web-publisher)* | DESIGN.md로 풀페이지 HTML 프로토타입을 빌드+QA | `DESIGN.md` + 토큰 | 풀페이지 HTML 프로토타입 |
 | **design-generate-code** *(front-developer·미구현)* | 프로토타입+컴포넌트로 실제 페이지·앱 코드 생성 | 프로토타입 + 컴포넌트 세트 | (예정) 페이지·앱 코드 |
 
-핵심 파이프라인의 후속 단계(`design-logo`·`design-iconset`·`design-ui-kit`)는 보드를 다시 분석하지 않고 `design-brand-kit`이 만든 `.design/assets/brand-kit/`를 **직접 시드로**, `assets/tokens.css`를 **공유 토큰 토대로** 읽는다. (`design-image-web`·`design-image-mobile`은 `DESIGN.md`를 시드로 받아 풀페이지/화면 목업을 만들고, `design-html-prototype`으로 넘어가기 전 룩 탐색을 마무리한다.)
+핵심 파이프라인의 후속 단계(`design-logo`·`design-iconset`·`design-ui-kit`)는 보드를 다시 분석하지 않고 `design-brand-kit`이 만든 `.design/reference/brand-kit/`를 **직접 시드로**, `assets/css/tokens.css`를 **공유 토큰 토대로** 읽는다. (`design-image-web`·`design-image-mobile`은 `DESIGN.md`를 시드로 받아 풀페이지/화면 목업을 만들고, `design-html-prototype`으로 넘어가기 전 룩 탐색을 마무리한다.)
 
 이미지 생성은 공유 [`image-gen`](../../skills/image-gen) 스킬(OpenAI Images API)이 담당하며 `OPENAI_API_KEY`(`.env`)가 필요하다. 키가 없으면 이미지 단계만 사람이 직접 드롭하도록 안내하고 나머지는 진행한다.
 
@@ -47,13 +47,13 @@ design-brand-kit  (+ 공유 assets/tokens.css)
 
 ### design-brand-kit
 
-제품 설명 한 줄에서 브랜드 성격·시각 방향·색·타이포·로고 방향·UI 분위기·금지 패턴을 정리하고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 **HTML 오버뷰(`overview.html`)**를 협업으로 만든다. lock 시 `brand-tokens.json`을 공유 `assets/tokens.css`로 물질화한다. (아래 [심화](#design-brand-kit-심화) 참고.)
+제품 설명 한 줄에서 브랜드 성격·시각 방향·색·타이포·로고 방향·UI 분위기·금지 패턴을 정리하고, 정체성 base 자산(로고·워드마크·키비주얼·UI·개별 투명 아이콘)을 안정적 PNG로 생산한 뒤 그것들을 끼워넣은 **HTML 오버뷰(`overview.html`)**를 협업으로 만든다. lock 시 `brand-tokens.json`을 공유 `assets/css/tokens.css`로 물질화한다. (아래 [심화](#design-brand-kit-심화) 참고.)
 
 ![design-brand-kit 산출물 — Nooknote 브랜드 킷 오버뷰](assets/brand-kit-nooknote.png)
 
 ### design-logo
 
-brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 만들 때 쓰는 온디맨드 단계. `assets/brand-kit/logo-base.png`(투명)를 시드로, 한 라운드에 3~4개 방향을 개별 투명 PNG로 만들어 `logos.html` 탐색 시트(번호·라벨·실색·실폰트)로 보여주고 단독 로고를 확정해 `assets/logo/`로 lock한다.
+brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 만들 때 쓰는 온디맨드 단계. `reference/brand-kit/logo-base.png`(투명)를 시드로, 한 라운드에 3~4개 방향을 개별 투명 PNG로 만들어 `logos.html` 탐색 시트(번호·라벨·실색·실폰트)로 보여주고 단독 로고를 확정해 `assets/logo/`로 lock한다.
 
 <!-- ![design-logo 산출물 — 로고 탐색 시트](assets/logo-example.png) -->
 > 🖼️ _산출물 이미지 추가 예정_
@@ -67,7 +67,7 @@ brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 
 
 ### design-ui-kit
 
-확정 brand kit 위에 제품에서 바로 쓰는 **UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작**한다(이미지 아님). 컴포넌트를 4그룹(Foundations/Core Interactive/Informational/Structural)으로 확정하고 스타일 방향을 합의한 뒤, 토큰 변수만 참조하는 `assets/ui-kit/ui-kit.css`를 저작한다. 쇼케이스 `view/ui-kit.html` 마크업·QA는 web-publisher에 위임. lock 후 design-md-compiler를 호출한다.
+확정 brand kit 위에 제품에서 바로 쓰는 **UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작**한다(이미지 아님). 컴포넌트를 4그룹(Foundations/Core Interactive/Informational/Structural)으로 확정하고 스타일 방향을 합의한 뒤, 토큰 변수만 참조하는 `assets/css/ui-kit.css`를 저작한다. 쇼케이스 `view/ui-kit.html` 마크업·QA는 web-publisher에 위임. lock 후 design-md-compiler를 호출한다.
 
 <!-- ![design-ui-kit 산출물 — UI 킷 쇼케이스](assets/ui-kit-example.png) -->
 > 🖼️ _산출물 이미지 추가 예정_
@@ -134,19 +134,21 @@ Q&A가 끝나면 미감이 **고정**됐는지 **열림**인지 판정한다. �
 2. **승인 게이트 (이미지 0콜)** — 미감 고정이면 data-only `overview.html`(이미지 슬롯은 플레이스홀더)을 제시해 승인받고, 열림이면 컨택트 시트에서 한 방향을 고른다. 승인/선택 전에는 이미지를 **한 장도** 생성하지 않는다.
 3. **자산 생산** — `key-visual` → `logo-base` → `wordmark-base` → `ui-base` → `icons/*`를 **한 번에 하나씩** 만들어 보여주고, 피드백은 한 번에 한 가지만 반영해 다시 만든다. (컷아웃은 투명 PNG + autocrop, 사진류만 고품질.)
 4. **overview.html 마무리** — 플레이스홀더를 실제 자산으로 채워 마감.
-5. **lock** — 산출물은 캐노니컬 홈(루트 `BRAND_KIT.md`·`brand-tokens.json` · `view/overview.html` · `assets/brand-kit/`)에 제자리 저작되며 lock은 "승인" 의미. lock 시 `assets/tokens.css`를 생성(공유 토큰 토대)한다. 다음 단계(`design-logo` → `design-iconset` → `design-ui-kit` → `design-md-compiler`)를 안내한다.
+5. **lock** — 산출물은 캐노니컬 홈(`reference/{BRAND_KIT.md·brand-tokens.json}` · `view/overview.html` · `reference/brand-kit/`)에 제자리 저작되며 lock은 "승인" 의미. lock 시 `assets/css/tokens.css`를 생성(공유 토큰 토대)한다. 다음 단계(`design-logo` → `design-iconset` → `design-ui-kit` → `design-md-compiler`)를 안내한다.
 
 ### 산출물 레이아웃
 
 ```
 .design/
-  BRAND_KIT.md  brand-tokens.json     # 루트 스펙/토큰
+  index.html · DESIGN.md                # 진입점 + 스펙 (DESIGN.md는 .design/ 안)
   view/    overview.html · logos.html · iconset-sheet.html · ui-kit.html · directions.html
-  assets/  tokens.css(공유 토큰) · brand-kit/(base 자산·컨셉 아이콘) · logo/ · icon/ · ui-kit/ · page/   # 확정 deliverable
-  candidate/  brand-kit/ · logo/ · icon/ · page/                      # 탐색 데이터
+  assets/  css/{tokens.css,ui-kit.css} · icon/{*.svg,icon-map.json,vendor/*.svg} · logo/ · content/ · manifest.json   # 코드 import 전용
+  prototype/ index.html                 # 참고 구현 (.design/ 안)
+  reference/ BRAND_KIT.md · brand-tokens.json · manifest.json · brand-kit/ · page/   # 비-코드 자료
+  candidate/ logo/ · icon/ · brand-kit/ · page/ · ui-kit/                            # 탐색
 ```
 
-`overview.html`은 `view/`에서 `../assets/brand-kit/`를 상대경로로 참조한다.
+`overview.html`은 `view/`에서 `../reference/brand-kit/`를 상대경로로 참조한다.
 
 ### 예시 — Nooknote
 
