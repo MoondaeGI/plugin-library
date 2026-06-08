@@ -98,6 +98,13 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    .input:focus, .input.is-focus { outline:2px solid var(--tint-primary); }
    ```
    컨트롤은 `.is-checked`·`.is-on` 등.
+
+   **신규 구조 컴포넌트 저작 가이드**(해당 제품 화면이 필요로 할 때만):
+   - **footer**(`.footer` + `.footer-brand`·`.footer-col`·`.footer-bottom`): 브랜드 컬럼 + 링크 컬럼 + (선택)뉴스레터(`.field`·`.input`·`.btn` 재사용) + 하단 바. surface/틴트 배경 + 상단 헤어라인. 마케팅 히어로 아님.
+   - **navbar 풀블리드 변형**(`.navbar-bar`): 기존 `.navbar` 내부요소(`.brand`·`.nav-links`·`.btn-icon`)는 그대로, 컨테이너만 풀블리드 sticky·테두리/radius 제거·하단 헤어라인. 새 컴포넌트가 아니라 변형.
+   - **section header**(`.section-head` + `.section-title`·`.section-action`): 제목 + 액션 링크("전체보기 →"). 액션 아이콘은 `assets/icon/chevron-right.svg` 인라인.
+   - **filter chip**(`.chip-filter` + `.is-active`): 태그형 `.chip`과 구분되는 토글 필터. 기본=surface/테두리, 활성=primary-dark/surface 텍스트. 의사상태·강제상태(`.is-active`) 규칙 공유.
+   - **sidebar**(`.sidebar` + `.sidebar-nav`·`.sidebar-link`·`.sidebar-link.is-active`): app/console 화면 전용. 세로 네비, 활성 링크 강조. **SugarLoop류 스토어프론트엔 저작하지 않는다.**
 5. **쇼케이스 스펙 정의 → web-publisher 위임**: `view/ui-kit.html`의 마크업 저작과 레이아웃 QA는 **web-publisher 서브에이전트**가 맡는다. 이 스킬은 *무엇을 넣을지*(아래 슬롯 스펙)를 정해 넘긴다 — 직접 div를 저작하지 않는다. web-publisher를 직접 부를 수 없으면(서브에이전트로 실행 중) 이 스펙과 "쇼케이스는 web-publisher로 빌드해야 한다"는 점을 메인 세션에 넘긴다. 넘길 스펙: `templates/ui-kit-sheet.html`을 `view/ui-kit.html`로 복사해 slot을 채운다 —
    - `slot:font-links`: brand-tokens.json typography(display/heading/body/mono) **+ `wordmark.font`(있으면)**의 실폰트 CDN `<link>`를 모두 주입(`../references/design/font-catalog.md` 기준 — 전용 로고타입 폰트 누락 시 시스템 폴백으로 깨짐).
    - `slot:masthead`: 심볼 자산(`../assets/logo/logo.png`)이 있으면 `.lockup`(심볼 + `.wordmark`)으로, 없으면 `.wordmark` 단독으로 저작한다 — 폰트 모드면 `<span class="wordmark">브랜드명</span>`(`.wordmark`는 tokens.css 정의 — 레터링 재구현 금지), 이미지 모드면 `<img src="../assets/brand-kit/wordmark-base.png">`. `.lockup*`도 tokens.css가 정의(재구현 금지)이며 `slot:font-links`의 워드마크 폰트 포함(기존)을 유지한다. **key-visual `--kv` 주입은 현행 유지** — `.board-head`에 `style="--kv:url('../assets/brand-kit/key-visual.png')"`로 은은히 주입(헤더 밴드 한정).
