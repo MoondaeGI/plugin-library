@@ -9,7 +9,7 @@ description: web-publisher가 구현한 HTML/CSS를 OS 브라우저 스크린샷
 
 ## 입력
 
-- 검사할 HTML 파일 경로(예: `prototype/index.html`).
+- 검사할 HTML 파일 경로(예: `.design/prototype/index.html`).
 - (선택) breakpoint 폭. 없으면 기본 `375 / 768 / 1280`.
 
 ## 절차

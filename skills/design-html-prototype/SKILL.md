@@ -15,18 +15,18 @@ DESIGN.md를 바탕으로 한 **풀페이지 HTML 프로토타입의 스펙**을
 
 ## 입력 파일 (대상 프로젝트 cwd 기준)
 
-- `DESIGN.md`
+- `.design/DESIGN.md`
 - `.design/reference/brand-tokens.json`
 - `.design/assets/css/ui-kit.css` (컴포넌트 권위)
 - `.design/view/ui-kit.html` (컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조)
 - `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json` (아이콘 권위 — 인라인 currentColor)
-- `.design/assets/**/*.{png,jpg,jpeg,webp}` (확정본) → 없으면 `.design/candidate/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)
+- `.design/reference/page/**/*.{png,jpg,jpeg,webp}` (확정 comp) → 없으면 `.design/candidate/page/**/*.{png,jpg,jpeg,webp}` 폴백 (+ 선택 `manifest.json`)
 
-권위 기준은 `DESIGN.md`/브랜드 토큰이다. 생성 comp(`.design/assets/**` 또는 `candidate/**`의 풀페이지 목업 PNG)는 gpt-image 산출물이라 **정답이 아니라 불완전한 한 해석**이다 — 레이아웃·자산 위치의 *참고*로만 쓰고, 충실 기준은 항상 `DESIGN.md`다.
+권위 기준은 `DESIGN.md`/브랜드 토큰이다. 생성 comp(`.design/reference/page/**` 또는 `candidate/page/**`의 풀페이지 목업 PNG)는 gpt-image 산출물이라 **정답이 아니라 불완전한 한 해석**이다 — 레이아웃·자산 위치의 *참고*로만 쓰고, 충실 기준은 항상 `DESIGN.md`다.
 
 ## 출력 파일
 
-- `prototype/index.html` (사용자가 디렉터리 없이 단일 파일을 원하면 `prototype.html`)
+- `.design/prototype/index.html` (사용자가 디렉터리 없이 단일 파일을 원하면 `.design/prototype.html`)
 
 ## 자산 갭 해소 (빌드 전)
 
@@ -101,7 +101,7 @@ web-publisher의 범용 HTML 품질 기준에 더해, 풀페이지 프로토타�
 1. `DESIGN.md`·`.design/reference/brand-tokens.json`·생성 이미지(comp)를 읽어 위 스펙(출력 경로·섹션 구조)을 정한다.
 2. **자산 갭 해소(빌드 전)** — 위 "자산 갭 해소" 절대로 슬롯을 열거·조달하고 `.design/assets/manifest.json`을 기록한다. 검수 게이트에서 사람이 확인하고, escalate가 있으면 자산을 제공받는다.
 3. **완전성 체크리스트 생성(빌드 전)** — 위 "완전성 체크리스트" 절대로 `DESIGN.md`에서 필수 섹션·핵심 문구 앵커·핵심 요소를 뽑는다.
-4. web-publisher에 위임해 `prototype/index.html`을 빌드+QA한다 — **매니페스트(슬롯↔파일 경로)와 완전성 체크리스트를 함께** 넘긴다. web-publisher는 빌드·레이아웃 QA에 더해 체크리스트를 Read/Grep으로 대조해 미충족 항목을 자기 맥락 내부 루프로 채운다.
+4. web-publisher에 위임해 `.design/prototype/index.html`을 빌드+QA한다 — **매니페스트(슬롯↔파일 경로)와 완전성 체크리스트를 함께** 넘긴다. web-publisher는 빌드·레이아웃 QA에 더해 체크리스트를 Read/Grep으로 대조해 미충족 항목을 자기 맥락 내부 루프로 채운다.
 5. **사람이 브라우저로 확인한다 — comp 충실도 게이트.** 확인 시 comp(`.design/reference/page/*.png`)를 **나란히** 두고 구조적 divergence(화살표 위치·패널 비율·헤더 형태 등)를 본다. comp는 비권위("불완전한 한 해석")이므로 **사람이 살릴 점/버릴 점을 판정**한다 — 자동 픽셀 복제는 강제하지 않는다. (자동 비전 대조는 향후 옵션.)
 6. 마음에 안 들면 스펙·자산·체크리스트를 고쳐 web-publisher로 다시 빌드한다(4~5 반복).
 7. 더 손볼 게 있으면 `DESIGN.md`나 토큰을 고쳐 `design-md-compiler`·이 스킬을 다시 돌리거나, 만족하면 **실제 구현으로 진행**하도록 안내한다.

@@ -11,7 +11,7 @@ description: （placeholder · 미구현 — 아직 호출하지 말 것）web-p
 
 디자인 다운스트림의 **최종 코드 생성** 단계 — 대상 프로젝트에 실제 페이지·앱 코드를 만든다. 소유: **front-developer** 에이전트.
 
-- 입력(예정): web-publisher가 빌드한 `prototype/index.html`(풀페이지 프로토타입), `design-component-export` 산출 컴포넌트 세트, `DESIGN.md`·`.design/assets/css/tokens.css`.
+- 입력(예정): web-publisher가 빌드한 `.design/prototype/index.html`(풀페이지 프로토타입), `design-component-export` 산출 컴포넌트 세트, `.design/DESIGN.md`·`.design/assets/css/tokens.css`.
 - 산출(예정): 대상 프로젝트의 실제 페이지·앱 코드(React/Next 등). 컴포넌트는 component-export 세트를 재사용한다.
 - 미결: 타깃 프레임워크·라우팅·상태관리 게이트, 디렉터리 규약, 프로토타입→코드 변환 충실도 기준.
 

@@ -17,13 +17,13 @@ description: 확정된 DESIGN.md를 시드로 웹 페이지(랜딩·대시보드
 
 ## 전제
 
-- **`DESIGN.md`(cwd 루트)** 가 단일 시드다. 이 파일에서 frontmatter 토큰(colors HEX·typography 실폰트)과 §1 제품명·§3 시각 방향·§6 페이지 섹션 규칙·§8 이미지 에셋 규칙·§11 anti-slop을 읽어 프롬프트를 구성한다. 값을 지어내지 않는다.
+- **`.design/DESIGN.md`** 가 단일 시드다. 이 파일에서 frontmatter 토큰(colors HEX·typography 실폰트)과 §1 제품명·§3 시각 방향·§6 페이지 섹션 규칙·§8 이미지 에셋 규칙·§11 anti-slop을 읽어 프롬프트를 구성한다. 값을 지어내지 않는다.
 - 이미지 생성은 공유 `image-gen` 스킬의 스크립트(`../image-gen/scripts/image-gen.mjs`)로 수행한다. `OPENAI_API_KEY`가 필요하지만 **키를 사전 점검하지 않는다** — 바로 호출하면 되고, 키가 없으면 스크립트가 고치는 법(`.env`에 추가 / `npm run codex:reinstall` / OS 환경변수)을 안내하며 즉시 실패한다.
 - 라이브 프리뷰 시트는 LLM이 직접 저작한다(image-gen으로 생성하지 않음).
 
 ## 입력 파일 (cwd 기준, 있는 것만 읽는다)
 
-- `DESIGN.md` — frontmatter 토큰(colors HEX·typography 실폰트) / §1 제품명 / §3 시각 방향 / §6 페이지 섹션 규칙 / §8 이미지 에셋 규칙 / §11 anti-slop
+- `.design/DESIGN.md` — frontmatter 토큰(colors HEX·typography 실폰트) / §1 제품명 / §3 시각 방향 / §6 페이지 섹션 규칙 / §8 이미지 에셋 규칙 / §11 anti-slop
 - `.design/assets/logo/logo.png` — 확정 로고 (`--image` 앵커)
 - `.design/assets/icon/*.svg` — 확정 아이콘셋 (`--image` 앵커, 있는 것만)
 - `.design/reference/brand-kit/ui-base.png` — 확정 UI 베이스 이미지 (`--image` 앵커, 있으면)
@@ -141,7 +141,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 
 시작 시 아래 순서로 감지하고, 해당되는 단계에서 멈춰 사용자에게 안내한다.
 
-1. **`DESIGN.md`(cwd 루트) 있음** → 시드로 사용. 게이트1로 진행.
+1. **`.design/DESIGN.md` 있음** → 시드로 사용. 게이트1로 진행.
 2. **없음** → "기존 `design.md`·디자인 문서가 있으면 주세요"를 요청한다.
 3. **그마저 없음** → `.design/` 진도를 감지해 단계별로 안내한다:
    - `tokens.css`·`ui-kit.css`·`BRAND_KIT.md` 등이 있지만 `DESIGN.md`만 없음 → **"`design-md-compiler`를 먼저 돌리면 DESIGN.md가 나옵니다"** 안내.
