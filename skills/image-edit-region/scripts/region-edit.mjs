@@ -75,6 +75,9 @@ export async function main(argv) {
   const workDir = mkdtempSync(path.join(tmpdir(), 'image-edit-region-'));
 
   const session = createSession({
+    // 브라우저 백그라운드 탭은 타이머가 ~60s로 throttle 되므로 heartbeat 를 넉넉히(90s)
+    // 둔다. 진짜 창 닫힘은 GUI 의 pagehide beacon(/cancel)이 즉시 처리한다.
+    heartbeatMs: 90_000,
     runEditCycle: ({ bbox, prompt, quality }) =>
       runEditCycle({ imagePath: image, bbox, prompt, quality, workDir, runImageGen: defaultRunImageGen }),
     saveFinal: async (bbox, prompt) => {
@@ -85,7 +88,10 @@ export async function main(argv) {
     },
   });
 
-  const { url, close } = await startServer({ session, imagePath: image, uiDir: path.join(__dirname, 'ui') });
+  const { url, close } = await startServer({
+    session, imagePath: image, uiDir: path.join(__dirname, 'ui'),
+    log: (m) => console.error(`[srv] ${m}`),
+  });
   const watch = session.startWatchdog({});
   const guiUrl = opts.prompt ? `${url}/?prompt=${encodeURIComponent(opts.prompt)}` : url;
   openBrowser(guiUrl, opts.browser);

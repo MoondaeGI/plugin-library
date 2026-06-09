@@ -69,10 +69,13 @@ async function sendFile(res, file, type) {
 }
 
 // 세션 핸들러를 node:http 에 연결하고 listen(0). { url, close, port } 반환.
-export async function startServer({ session, imagePath, uiDir = path.join(__dirname, 'ui') }) {
+// log: 진단용 요청 로거(기본 no-op). region-edit 가 console.error 를 주입한다.
+export async function startServer({ session, imagePath, uiDir = path.join(__dirname, 'ui'), log = () => {} }) {
   const server = http.createServer(async (req, res) => {
     try {
       const u = new URL(req.url, 'http://localhost');
+      // 자산(GET /,/app.js,/image,/preview)은 시끄러우니 POST 액션만 로깅.
+      if (req.method === 'POST') log(`${req.method} ${u.pathname}`);
       if (req.method === 'GET' && u.pathname === '/') return sendFile(res, path.join(uiDir, 'index.html'), 'text/html; charset=utf-8');
       if (req.method === 'GET' && u.pathname === '/app.js') return sendFile(res, path.join(uiDir, 'app.js'), 'text/javascript; charset=utf-8');
       if (req.method === 'GET' && u.pathname === '/image') return sendFile(res, imagePath, 'image/png');
@@ -82,15 +85,19 @@ export async function startServer({ session, imagePath, uiDir = path.join(__dirn
         if (!p) { res.writeHead(404); return res.end('no preview'); }
         return sendFile(res, p.outPath, 'image/png');
       }
-      if (req.method === 'POST' && u.pathname === '/edit') return sendJson(res, 200, await session.handleEdit(await readJson(req)));
+      if (req.method === 'POST' && u.pathname === '/edit') {
+        const result = await session.handleEdit(await readJson(req));
+        if (result.error) log(`edit 실패: ${result.error}`);
+        return sendJson(res, 200, result);
+      }
       if (req.method === 'POST' && u.pathname === '/confirm') {
         try { return sendJson(res, 200, await session.handleConfirm(await readJson(req))); }
-        catch (e) { return sendJson(res, 400, { error: e.message }); }
+        catch (e) { log(`confirm 실패: ${e.message}`); return sendJson(res, 400, { error: e.message }); }
       }
       if (req.method === 'POST' && u.pathname === '/cancel') return sendJson(res, 200, await session.handleCancel());
       if (req.method === 'POST' && u.pathname === '/ping') { session.handlePing(); return sendJson(res, 200, { ok: true }); }
       res.writeHead(404); res.end('not found');
-    } catch (err) { sendJson(res, 500, { error: err.message }); }
+    } catch (err) { log(`서버 오류: ${err.message}`); sendJson(res, 500, { error: err.message }); }
   });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   const { port } = server.address();

@@ -87,4 +87,6 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   const ping = () => { fetch('/ping', { method: 'POST' }).catch(() => {}); };
   ping(); // 로드 즉시 1회 — 3초 기다리지 말고 연결을 바로 등록(워치독 grace 종료)
   setInterval(ping, 3000);
+  // 진짜 창/탭 닫힘은 즉시 통지(throttle 무관). beacon 은 unload 중에도 전송 보장.
+  window.addEventListener('pagehide', () => { try { navigator.sendBeacon('/cancel'); } catch (e) { /* 닫히는 중 실패 무시 */ } });
 }
