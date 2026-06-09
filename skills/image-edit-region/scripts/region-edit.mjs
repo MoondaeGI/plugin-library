@@ -17,13 +17,14 @@ export class RegionEditInputError extends Error {
 }
 
 export function parseArgs(argv) {
-  const o = { image: undefined, prompt: '', out: undefined };
+  const o = { image: undefined, prompt: '', out: undefined, browser: undefined };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]; const next = () => argv[++i];
     switch (a) {
       case '--image': o.image = next(); break;
       case '--prompt': o.prompt = next() ?? ''; break;
       case '--out': o.out = next(); break;
+      case '--browser': o.browser = next(); break;
       case '--help': case '-h': o.help = true; break;
       default: throw new RegionEditInputError(`알 수 없는 인자: ${a}`);
     }
@@ -38,17 +39,36 @@ export function resolveOutPath(image, out) {
   return `${dir}/${path.basename(image, ext)}-edited.png`;
 }
 
-function openBrowser(url) {
-  const browser = resolveBrowser();
-  if (!browser) throw new RegionEditInputError('설치된 브라우저(Edge/Chrome/Brave)를 찾지 못했습니다.');
-  const child = spawn(browser, [url], { detached: true, stdio: 'ignore' });
+// Chrome 우선 후보(Windows). Edge는 새 창 navigate 신뢰성이 낮아 뒤로 미룬다.
+function chromeFirstCandidates(env = process.env) {
+  const pf = env['ProgramFiles'] || 'C:\\Program Files';
+  const pfx86 = env['ProgramFiles(x86)'] || 'C:\\Program Files (x86)';
+  const local = env['LOCALAPPDATA'] || '';
+  return [
+    `${pf}\\Google\\Chrome\\Application\\chrome.exe`,
+    `${pfx86}\\Google\\Chrome\\Application\\chrome.exe`,
+    local ? `${local}\\Google\\Chrome\\Application\\chrome.exe` : null,
+  ].filter(Boolean);
+}
+
+// 명시 경로 > Chrome > screenshot.mjs 기본(Edge 등) 순으로 해석.
+export function resolveGuiBrowser(explicit, env = process.env) {
+  if (explicit) return explicit;
+  return resolveBrowser({ candidates: chromeFirstCandidates(env) }) || resolveBrowser();
+}
+
+function openBrowser(url, explicit) {
+  const browser = resolveGuiBrowser(explicit);
+  if (!browser) throw new RegionEditInputError('설치된 브라우저(Chrome/Edge/Brave)를 찾지 못했습니다.');
+  // --new-window: 기존 인스턴스에 붙어 navigate 안 하는 문제를 피하고 항상 새 창에 URL을 띄운다.
+  const child = spawn(browser, ['--new-window', url], { detached: true, stdio: 'ignore' });
   child.unref();
   return child;
 }
 
 export async function main(argv) {
   const opts = parseArgs(argv);
-  if (opts.help) { console.log('usage: node region-edit.mjs --image <png> [--prompt ...] [--out ...]'); return 0; }
+  if (opts.help) { console.log('usage: node region-edit.mjs --image <png> [--prompt ...] [--out ...] [--browser <path>]'); return 0; }
   const image = path.resolve(opts.image);
   if (!existsSync(image)) throw new RegionEditInputError(`이미지를 찾을 수 없습니다: ${image}`);
   const outPath = resolveOutPath(image, opts.out);
@@ -68,7 +88,7 @@ export async function main(argv) {
   const { url, close } = await startServer({ session, imagePath: image, uiDir: path.join(__dirname, 'ui') });
   const watch = session.startWatchdog({});
   const guiUrl = opts.prompt ? `${url}/?prompt=${encodeURIComponent(opts.prompt)}` : url;
-  openBrowser(guiUrl);
+  openBrowser(guiUrl, opts.browser);
   process.on('SIGINT', () => session.finish({ status: 'cancelled', reason: 'sigint' }));
 
   console.error(`브라우저에서 영역을 편집하세요: ${guiUrl}`);
