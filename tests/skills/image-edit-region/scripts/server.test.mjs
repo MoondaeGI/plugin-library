@@ -65,6 +65,19 @@ test('워치독: heartbeatMs 동안 ping 없으면 창 닫힘으로 cancel', asy
   watch.stop();
 });
 
+test('워치독: 첫 ping 전에는 window-closed 로 죽지 않는다(연결 grace)', async () => {
+  let t = 0;
+  const timers = [];
+  const s = createSession({ ...deps(), idleMs: 1_000_000, heartbeatMs: 100 });
+  const watch = s.startWatchdog({
+    now: () => t, setTimer: (fn) => { timers.push(fn); return 0; }, clearTimer: () => {},
+  });
+  t = 5_000; // heartbeat 100 을 한참 넘겼지만 ping 이 한 번도 없었음(브라우저 콜드 스타트 중)
+  timers.forEach((fn) => fn());
+  assert.equal(s.isAlive(), true); // 첫 연결 전이라 window-closed 미적용
+  watch.stop();
+});
+
 test('워치독: 유휴 idleMs 초과면 timeout 으로 cancel', async () => {
   let t = 0;
   const timers = [];

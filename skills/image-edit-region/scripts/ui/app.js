@@ -84,5 +84,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   redoBtn.onclick = () => { afterEl.style.display = 'none'; confirmBtn.disabled = true; redoBtn.disabled = true; setStatus('영역·지시문을 고쳐 다시 편집하세요.'); };
   cancelBtn.onclick = async () => { await postJson('/cancel', {}); setStatus('취소됨 — 창을 닫아도 됩니다.'); };
 
-  setInterval(() => { fetch('/ping', { method: 'POST' }).catch(() => {}); }, 3000);
+  const ping = () => { fetch('/ping', { method: 'POST' }).catch(() => {}); };
+  ping(); // 로드 즉시 1회 — 3초 기다리지 말고 연결을 바로 등록(워치독 grace 종료)
+  setInterval(ping, 3000);
 }

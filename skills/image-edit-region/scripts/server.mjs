@@ -13,7 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export function createSession({ runEditCycle, saveFinal, idleMs = 600_000, heartbeatMs = 10_000 }) {
   const previews = new Map(); // previewId -> { bbox, prompt, quality, outPath }
   let seq = 0, alive = true, resolveExit;
-  let lastPing = 0, started = 0, nowFn = () => 0;
+  let lastPing = 0, started = 0, nowFn = () => 0, everPinged = false;
   const exitPromise = new Promise((res) => { resolveExit = res; });
   function finish(result) { if (!alive) return; alive = false; resolveExit(result); }
 
@@ -38,14 +38,16 @@ export function createSession({ runEditCycle, saveFinal, idleMs = 600_000, heart
       return { savedPath };
     },
     async handleCancel() { finish({ status: 'cancelled' }); return { ok: true }; },
-    handlePing() { lastPing = nowFn(); },
+    handlePing() { lastPing = nowFn(); everPinged = true; },
     startWatchdog({ now, setTimer, clearTimer, tickMs = 1000 } = {}) {
       nowFn = now || (() => Date.now());
       lastPing = nowFn(); started = nowFn();
       const tick = () => {
         if (!alive) return;
         const t = nowFn();
-        if (t - lastPing >= heartbeatMs) finish({ status: 'cancelled', reason: 'window-closed' });
+        // window-closed 는 페이지가 최소 한 번 연결(ping)된 뒤에만 적용 — 브라우저 콜드
+        // 스타트로 첫 ping 이 늦어도 연결 전 서버를 죽이지 않는다(그 전엔 idle-timeout 만).
+        if (everPinged && t - lastPing >= heartbeatMs) finish({ status: 'cancelled', reason: 'window-closed' });
         else if (t - started >= idleMs) finish({ status: 'cancelled', reason: 'idle-timeout' });
       };
       const id = (setTimer || ((fn, ms) => { const h = setInterval(fn, ms); h.unref?.(); return h; }))(tick, tickMs);
