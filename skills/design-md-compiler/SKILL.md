@@ -136,7 +136,7 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
    - `page-briefs.md`/page 이미지 없음 → §6은 가능한 범위만, 누락은 §12.
 2. 존재하는 입력을 읽고 `.design/DESIGN.md`를 작성한다 — frontmatter는 tokens.css에서 재컴파일(D1·D6), 본문은 §1–12.
 3. 사람이 DESIGN.md를 검토한다.
-4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다 — **여기까지가 designer 핵심 파이프라인**이다:
-   - 핵심 다음 단계: **`design-component-export`** (front-developer 몫 · **미구현** placeholder)로 대상 프로젝트에 컴포넌트를 export.
+4. 마음에 안 들면 입력을 보강하거나 DESIGN.md를 고쳐(2단계) 다시 검토한다(3단계). 좋으면 안내한다 — md-compiler는 **ui-kit 2분기 중 docs 가지의 종착**(DESIGN.md)이다:
    - 페이지 디자인이 필요하면 웹은 **`design-image-web`**, 앱은 **`design-image-mobile`** — `DESIGN.md`를 시드로 하는 선택 단계. **`design-html-prototype` 직전 단계.** 페이지 이미지는 풀페이지 목업으로 `reference/page/<slug>-<platform>.png`(웹, 선택 `-<zone>`)·`reference/page/<slug>-mobile-<screen>.png`(모바일)로 저장되며, md-compiler는 파일명을 파싱하지 않고 `candidate/page/page-briefs.md` 산문에서 의미(화면·순서·캡션)를 읽는다.
    - 풀페이지 HTML 프로토타입은 **web-publisher**가 `design-html-prototype`으로 빌드+QA한다.
+   - **코드화(code 가지)**는 md-compiler를 거치지 않아도 된다(ui-kit 자산이 권위) — `front-developer`의 **`design-component-export-react`**(React/Next) 또는 **`design-component-export-html`**(MPA·미구현)다. docs·code 두 가지는 다운스트림 **`design-generate-code`**에서 재합류한다.

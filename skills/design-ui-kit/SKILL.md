@@ -1,6 +1,6 @@
 ---
 name: design-ui-kit
-description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/css/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/css/ui-kit.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 design-md-compiler를 호출해 DESIGN.md에 반영한다. image-gen·OPENAI_API_KEY 불필요.
+description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/css/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/css/ui-kit.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 다음 단계는 2분기다(택1·배타 아님) — docs는 design-md-compiler(DESIGN.md), code는 front-developer의 design-component-export. image-gen·OPENAI_API_KEY 불필요.
 ---
 
 # Design UI Kit
@@ -116,10 +116,12 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    - **key-visual은 헤더 밴드에만**(패널 뒤 금지 — 토큰 충실도·대비 보호).
 6. **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design`(루트=`.design/`). 시트 직접 URL `http://localhost:5500/view/ui-kit.html`. 처음 제시 시 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
 7. **편집 루프**: 번호/이름 지목 → 외과 편집 → 자동 새로고침. **`ui-kit.css` class 편집은 이 스킬**이, **`ui-kit.html` specimen 마크업 편집·레이아웃 깨짐 수정은 web-publisher**가 한다(쇼케이스 저작자가 일관되게 고치도록).
-8. **lock (승인 + overview 슬롯 + md-compiler 호출)**:
+8. **lock (승인 + overview 슬롯 + 다음 단계 2분기)**:
    - `assets/css/ui-kit.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.
    - `view/overview.html`의 `<!-- design-ui-kit:slot -->…<!-- /design-ui-kit:slot -->` 사이를 **UI 킷 한 줄 링크**(`<a href="ui-kit.html">UI Kit →</a>`)로 멱등 외과 치환(마커 없으면 §10 끝에 삽입). overview를 컴포넌트로 부풀리지 않는다.
-   - **`design-md-compiler`를 호출**해 DESIGN.md를 만든다/갱신한다. 이 스킬은 DESIGN.md를 직접 쓰지 않는다 — md-compiler가 단일 소유자이며, ui-kit.css를 §5 컴포넌트 규칙의 권위 입력으로 읽는다.
+   - **lock 후 다음 단계는 2분기다**(택1 · 배타 아님 — 나중에 다른 쪽도 가능. 두 가지는 다운스트림 `design-generate-code`에서 재합류):
+     - **docs 가지(designer 기본)**: **`design-md-compiler`를 호출**해 DESIGN.md를 만든다/갱신한다. 이 스킬은 DESIGN.md를 직접 쓰지 않는다 — md-compiler가 단일 소유자이며, ui-kit.css를 §5 컴포넌트 규칙의 권위 입력으로 읽는다. DESIGN.md는 이후 (선택)페이지 이미지·`design-html-prototype`로 이어진다.
+     - **code 가지(코드화)**: ui-kit 자산을 바로 코드로 옮기려면 **`front-developer`의 `design-component-export-*`**로 넘긴다(`-react`=React/Next, `-html`=MPA·미구현 — 타깃 택1은 거기 게이트). component-export는 DESIGN.md를 입력으로 쓰지 않아 **지금 분기해도 된다.** designer는 front-developer 스킬을 직접 부르지 못하므로 baton을 메인 세션에 넘긴다(기존 위임 패턴).
    - 라이브 프리뷰 서버가 떠 있으면 종료.
 
 ## 품질 기준 / 금지 사항
