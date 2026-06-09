@@ -37,3 +37,23 @@ export function assertBbox(bbox, width, height) {
   if (w <= 0 || h <= 0) throw new CompositeError('bbox 의 w·h 는 양수여야 합니다.');
   if (x < 0 || y < 0 || x + w > width || y + h > height) throw new CompositeError('bbox 가 이미지 범위를 벗어났습니다.');
 }
+
+// 원본 복사본의 bbox 영역에 edited 의 같은 영역 픽셀을 덮어쓴다(접근 2 재합성).
+// original·edited 는 같은 크기여야 한다(접근 2는 전체를 보내고 전체를 받으므로 보장).
+export function compositeRegion(originalBuf, editedBuf, bbox) {
+  const o = decodePNG(originalBuf);
+  const e = decodePNG(editedBuf);
+  if (o.width !== e.width || o.height !== e.height) {
+    throw new CompositeError(`크기 불일치: 원본 ${o.width}x${o.height} vs 편집 ${e.width}x${e.height}`);
+  }
+  assertBbox(bbox, o.width, o.height);
+  const W = o.width, H = o.height;
+  const out = toRGBA(o.px, o.bpp, W, H);
+  const eRGBA = toRGBA(e.px, e.bpp, W, H);
+  for (let y = bbox.y; y < bbox.y + bbox.h; y++) {
+    const rowStart = (y * W + bbox.x) * 4;
+    const rowLen = bbox.w * 4;
+    eRGBA.copy(out, rowStart, rowStart, rowStart + rowLen);
+  }
+  return encodePNG(out, W, H, 6);
+}
