@@ -28,6 +28,7 @@ bare `design-component-export`는 위 둘로 갈라지며 사라진다. react·n
 
 - 컴포넌트가 자기 상태를 소유(예: toggle 자체 on/off, password 보이기/숨기기) → **이 스킬**(uncontrolled 기본 + 내재 hook).
 - 페이지가 외부에서 상태를 제어(예: "이 버튼이 저 모달을 연다", "이 탭을 강제로 연다") → **generate-code**(controlled prop으로 빠짐).
+- **재사용 오버레이 인프라**(전역 toast 큐·confirm 호스트)는 페이지별이 아니라 라이브러리가 한 번 출고하는 싱글톤 → **이 스킬**이 provider+hook(`useToast()`/`useConfirm()`)을 *제공*, generate-code는 *소비*만. 단 ui-kit에 실재하는 transient 오버레이 가족(Toast, modal 있으면 confirm)에만 — Alert·Banner·Tooltip은 인라인 표현 컴포넌트로 둠. `src/providers/*.tsx`·portal 호스트 앱 셸 1회 mount.
 
 ## §2. 타깃 — react(Vite) | next(App Router)
 

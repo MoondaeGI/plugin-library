@@ -11,7 +11,7 @@ description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·
 
 확정된 ui-kit 자산을 react 또는 next npm 프로젝트의 컴포넌트 토대로 옮긴다.
 
-- **한다**: npm 프로젝트 스캐폴드, 자산 root 복사·이전, ui-kit 전체 가족 → 얇은 TS 컴포넌트 래퍼(+컴포넌트 내재 동작 hook), 쇼케이스 진입점.
+- **한다**: npm 프로젝트 스캐폴드, 자산 root 복사·이전, ui-kit 전체 가족 → 얇은 TS 컴포넌트 래퍼(+컴포넌트 내재 동작 hook), **transient 오버레이 가족의 재사용 provider+hook**(↓ 오버레이 프리미티브), 쇼케이스 진입점.
 - **안 한다**: 실제 페이지 배치·페이지 수준 wiring(→ `design-generate-code`), 페이지 div 저작·풀페이지 프로토타입(→ `design-html-prototype`/web-publisher), html/MPA 산출(→ `design-component-export-html`), 백엔드 연결.
 
 ### 경계 원칙 — "상태를 누가 소유하는가"
@@ -20,6 +20,7 @@ description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·
 
 - 컴포넌트가 자기 상태를 소유(toggle 자체 on/off, password 보이기/숨기기) → **이 스킬**(uncontrolled 기본 + 내재 hook).
 - 페이지가 외부에서 상태를 제어("이 버튼이 저 모달을 연다", "이 탭을 강제로 연다") → **generate-code**(controlled prop으로 빠짐).
+- **재사용 오버레이 인프라**(전역 toast 큐·confirm 호스트)는 페이지별이 아니라 컴포넌트 라이브러리가 한 번 출고하는 싱글톤 → **이 스킬**이 provider+hook을 제공하고, generate-code는 그 `useToast()`/`useConfirm()`를 *소비*만 한다(페이지 배선).
 
 ## 입력 파일 (대상 프로젝트 cwd `.design/` 기준, §3)
 
@@ -79,6 +80,16 @@ ui-kit.css는 그대로 쓰고, **얇은 래퍼의 prop만** 도출한다. 도�
 - 예시(존재할 때만): password 보이기/숨기기 토글, toast dismiss, tabs 패널 전환(uncontrolled), filter chip 활성 토글.
 - 페이지가 컴포넌트를 여닫는 식의 wiring은 작성하지 않는다(→ generate-code).
 
+## 오버레이/명령형 프리미티브 (provider) (§6.5)
+
+표현 컴포넌트만으론 못 쓰는 **transient·명령형 오버레이 가족**은 재사용 provider+hook+portal 호스트로 함께 출고한다 — 컴포넌트 라이브러리의 "배터리 포함"(Toast는 호스트 큐 없이 사실상 못 씀).
+
+- **대상(ui-kit에 있을 때만)**: `Toast`(알림 큐) → `ToastProvider` + `useToast()`(show/dismiss·auto-dismiss·portal). ui-kit에 `Modal`/`Dialog`가 있으면 → `useConfirm()`(`Promise<boolean>`)·`useDialog()` + portal 호스트.
+- **인라인 가족은 provider 안 만듦**: `Alert`·`Banner`·`Tooltip`은 페이지 흐름에 그대로 렌더하는 표현 컴포넌트로 둔다(`<Alert variant=… />`) — 전역 명령형으로 승격하지 않는다.
+- **없는 가족은 안 지어냄**: ui-kit에 modal이 없으면 `confirm()` provider도 없다(§6 규칙과 동일 — 원본 없으면 동작도 없음).
+- **위치·mount**: provider는 `src/providers/*.tsx`, hook은 `src/hooks/use*.ts`. portal 호스트는 앱 셸(`main.tsx`/`app/layout.tsx`)에 **1회 mount**한다(공급자 트리 최상단).
+- **경계**: 이 스킬은 `useToast()`/`useConfirm()`를 **제공**한다. "어느 페이지의 어떤 동작이 토스트를 띄우나"(배선)는 generate-code가 그 hook을 **호출**해 처리한다.
+
 ## 폰트 (§7)
 
 자가호스팅 기본.
@@ -104,9 +115,11 @@ src/assets/icon/{*.svg, icon-map}     src/assets/icon/{*.svg, icon-map}
 src/components/common/*.tsx ← 래퍼     src/components/common/*.tsx ← 래퍼
 src/components/common/icons.tsx        src/components/common/icons.tsx   ← 개별 아이콘 컴포넌트 + registry
 src/components/common/index.ts ← barrel src/components/common/index.ts ← barrel
-src/hooks/*.ts       ← 내재 동작       src/hooks/*.ts       ← 내재 동작
+src/hooks/*.ts       ← 내재 동작·useToast src/hooks/*.ts       ← 내재 동작·useToast
+src/providers/*.tsx ← 오버레이 provider src/providers/*.tsx ← 오버레이 provider
 src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유틸
 ```
+(`src/providers/`·`useToast`는 ui-kit에 transient 오버레이 가족이 있을 때만 — §6.5.)
 
 - **디렉터리 규약**: ui-kit 가족 래퍼·barrel은 전부 **`src/components/common/`**에 둔다(루트 `components/`에 flat 금지). 페이지별 컴포넌트는 이 스킬 범위가 아니며(→ generate-code), 추후 **`src/components/<page>/`**(예: `components/login/LoginForm.tsx`)에 페이지 폴더로 둔다. 유틸 함수는 **`src/utils/`**(`lib/` 아님 — 예: `utils/cx.ts`).
 - `package.json`은 의존성·스크립트를 **작성**하되 **`npm install`은 자동 실행하지 않는다**(옵션·사람 확인 — 전역 CLAUDE.md "명령 전 확인").
@@ -118,7 +131,7 @@ src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유
 1. **전제 감지** — `.design/assets/css/{tokens,ui-kit}.css`·`view/ui-kit.html` 존재 확인. 없으면 상류(design-ui-kit → design-md-compiler) 안내.
 2. **게이트1 — 타깃 선택** (react | next). 1개/실행.
 3. **충돌 검사(비파괴)** — repo 루트 기존 `package.json`·`src/` 충돌 시 **덮기 전 사용자 확인**. 기본은 안 덮음.
-4. **생성** — 자산 복사(이전 표) → ui-kit.html·ui-kit.css 직독 + 매핑 규약으로 래퍼·hook·진입점·프로젝트 파일 생성. 사람 확인 게이트로 넘긴 변형·gap 로그는 사용자에게 보고.
+4. **생성** — 자산 복사(이전 표) → ui-kit.html·ui-kit.css 직독 + 매핑 규약으로 래퍼·hook·**오버레이 provider(§6.5, 해당 가족 있을 때)**·진입점·프로젝트 파일 생성. 사람 확인 게이트로 넘긴 변형·gap 로그는 사용자에게 보고.
 5. **검증 게이트** (아래).
 6. **lock** — 승인 시 완료, `design-generate-code` 다음 단계 안내.
 
