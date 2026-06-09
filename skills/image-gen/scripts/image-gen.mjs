@@ -235,7 +235,7 @@ async function main() {
     }
     if (opts.mask) {
       const mbuf = readFileSync(opts.mask);
-      form.append('mask', new Blob([mbuf], { type: 'image/png' }), path.basename(opts.mask));
+      form.append('mask', new Blob([mbuf], { type: mimeFor(opts.mask) }), path.basename(opts.mask));
     }
     requestInit = {
       method: 'POST',
