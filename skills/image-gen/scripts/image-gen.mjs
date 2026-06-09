@@ -41,6 +41,7 @@ const HELP = `image-gen.mjs — OpenAI Images API 직접 호출 (Codex 비의존
   node image-gen.mjs --prompt-file <파일> --out <경로> [--image <경로>...] [--size WxH] [--quality high] [--model gpt-image-2] [--n 1] [--background transparent] [--force] [--auto-version] [--autocrop] [--dry-run]
 
 --image 가 1개 이상이면 /v1/images/edits 로 보낸다 (레퍼런스 생성·편집 공용 — 구분은 프롬프트로).
+--mask           편집 영역 마스크 PNG(투명=편집)  (edits 전용; --image 동반 필수)
 OPENAI_API_KEY 환경변수가 필요하다 (--dry-run 제외). --help로 이 도움말 출력.`;
 
 function die(msg, code = 2) {
@@ -69,6 +70,7 @@ function parseArgs(argv) {
       case '--prompt': opts.prompt = next(); break;
       case '--prompt-file': opts.promptFile = next(); break;
       case '--image': opts.images.push(next()); break;
+      case '--mask': opts.mask = next(); break;
       case '--input-fidelity': opts.inputFidelity = next(); break;
       case '--out': opts.out = next(); break;
       case '--size': opts.size = next(); break;
@@ -144,6 +146,11 @@ async function main() {
   for (const img of opts.images) {
     if (!existsSync(img)) die(`오류: --image 파일을 찾을 수 없습니다: ${img}`);
   }
+  // --mask: edits(--image 동반)에서만 의미. 단독 사용은 거부. 파일 존재 검증.
+  if (opts.mask) {
+    if (opts.images.length === 0) die('오류: --mask 는 --image 와 함께 써야 합니다(edits 전용).');
+    if (!existsSync(opts.mask)) die(`오류: --mask 파일을 찾을 수 없습니다: ${opts.mask}`);
+  }
   if (opts.inputFidelity && !['high', 'low'].includes(opts.inputFidelity)) {
     die('오류: --input-fidelity 는 high 또는 low 여야 합니다.');
   }
@@ -194,6 +201,7 @@ async function main() {
     if (useEdits) {
       console.log(`[dry-run] images (${opts.images.length}):`);
       opts.images.forEach((p) => console.log('  ' + path.resolve(p)));
+      if (opts.mask) console.log('[dry-run] mask: ' + path.resolve(opts.mask));
     }
     console.log('[dry-run] payload: ' + JSON.stringify({ ...fields, prompt: preview }, null, 2));
     console.log('[dry-run] out:');
@@ -224,6 +232,10 @@ async function main() {
     for (const img of opts.images) {
       const buf = readFileSync(img);
       form.append('image[]', new Blob([buf], { type: mimeFor(img) }), path.basename(img));
+    }
+    if (opts.mask) {
+      const mbuf = readFileSync(opts.mask);
+      form.append('mask', new Blob([mbuf], { type: 'image/png' }), path.basename(opts.mask));
     }
     requestInit = {
       method: 'POST',
