@@ -153,7 +153,7 @@ brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 
 
 확정 brand kit를 바탕으로 제품 아이콘 세트를 **Iconify 단일 세트에서 fetch**해 만든다. 후보 세트를 §11 스타일로 점수화해 1개 lock하고, 리스트 적중률을 측정한 뒤, 적중분은 `viewBox 0 0 24 24`·`currentColor`로 정규화해 가져오고 부족분만 합성·저작한다. 모든 아이콘을 `icon-map.json`에 기록하고 `assets/icon/`으로 lock한다. (네트워크 필요, 키 불필요.)
 
-이 세트(`assets/icon/*.svg`)는 이후 **design-ui-kit이 컴포넌트(버튼·인풋·내비 등)를 저작할 때와 다운스트림 컴포넌트 제작(design-component-export)에서 필수로 쓰이므로**, 로고와 달리 **핵심 파이프라인의 필수 단계**다.
+이 세트(`assets/icon/*.svg`)는 이후 **design-ui-kit이 컴포넌트(버튼·인풋·내비 등)를 저작할 때와 다운스트림 컴포넌트 제작(design-component-export-react)에서 필수로 쓰이므로**, 로고와 달리 **핵심 파이프라인의 필수 단계**다.
 
 ![design-iconset 산출물 — 아이콘 세트 시트](assets/iconset-example.png)
 
