@@ -98,6 +98,18 @@ git add docs/superpowers/
 git commit -m "docs: lock playwright human-channel tool whitelist for customer agent"
 ```
 
+### Task 1 결과 (LOCKED — 2026-06-09, context7 `/microsoft/playwright-mcp` 공식문서 기준)
+
+Playwright MCP는 현재 미등록 → 실측 대신 공식문서로 확정. 등록 시 툴 prefix는 등록명에 따름(예: 등록명 `playwright` → `mcp__playwright__browser_*`). 미등록이면 check-customer-ux는 스크린샷/추정 폴백으로 degrade(스킬은 정상 로드).
+
+**허용(인간 채널 — 눈·손):**
+`browser_navigate`, `browser_navigate_back`, `browser_take_screenshot`, `browser_snapshot`, `browser_click`, `browser_type`, `browser_press_key`, `browser_hover`, `browser_select_option`, `browser_wait_for`, `browser_resize`, `browser_tabs`, `browser_handle_dialog`, `browser_file_upload`, `browser_drag`, `browser_drop`, `browser_fill_form`
+
+**금지(타입 A 구현 X-ray — agent `tools`에 절대 넣지 않음):**
+`browser_evaluate`, `browser_run_code_unsafe`, `browser_console_messages`, `browser_network_request`, `browser_network_requests`
+
+**a11y 스냅샷 결정:** 허용(Approach A). 접근성 트리=역할·이름·라벨(사용자 제시 의미층, 스크린리더 지각)이라 구현 내부 아님. 기본 모드(`browser_click`이 snapshot ref 요구)라 신뢰성·설정 단순성 우선. 더 엄격한 대안=`--caps=vision`(스냅샷 제외+좌표 클릭 `browser_mouse_click_xy`)은 후속 옵션으로 노트.
+
 ---
 
 ## Task 2: 공유 코어 `customer-core.md`
