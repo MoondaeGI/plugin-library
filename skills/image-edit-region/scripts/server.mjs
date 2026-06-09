@@ -6,6 +6,7 @@
 export function createSession({ runEditCycle, saveFinal, idleMs = 600_000, heartbeatMs = 10_000 }) {
   const previews = new Map(); // previewId -> { bbox, prompt, quality, outPath }
   let seq = 0, alive = true, resolveExit;
+  let lastPing = 0, started = 0, nowFn = () => 0;
   const exitPromise = new Promise((res) => { resolveExit = res; });
   function finish(result) { if (!alive) return; alive = false; resolveExit(result); }
 
@@ -30,6 +31,19 @@ export function createSession({ runEditCycle, saveFinal, idleMs = 600_000, heart
       return { savedPath };
     },
     async handleCancel() { finish({ status: 'cancelled' }); return { ok: true }; },
+    handlePing() { lastPing = nowFn(); },
+    startWatchdog({ now, setTimer, clearTimer, tickMs = 1000 } = {}) {
+      nowFn = now || (() => Date.now());
+      lastPing = nowFn(); started = nowFn();
+      const tick = () => {
+        if (!alive) return;
+        const t = nowFn();
+        if (t - lastPing >= heartbeatMs) finish({ status: 'cancelled', reason: 'window-closed' });
+        else if (t - started >= idleMs) finish({ status: 'cancelled', reason: 'idle-timeout' });
+      };
+      const id = (setTimer || ((fn, ms) => { const h = setInterval(fn, ms); h.unref?.(); return h; }))(tick, tickMs);
+      return { stop: () => (clearTimer || clearInterval)(id) };
+    },
   };
   return session;
 }

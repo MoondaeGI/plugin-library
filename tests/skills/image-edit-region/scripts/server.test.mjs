@@ -47,3 +47,35 @@ test('handleEdit: runEditCycle 실패는 error 응답(세션 유지)', async () 
   assert.match(r.error, /boom/);
   assert.equal(s.isAlive(), true);
 });
+
+test('워치독: heartbeatMs 동안 ping 없으면 창 닫힘으로 cancel', async () => {
+  let t = 0;
+  const timers = [];
+  const s = createSession(deps());
+  const watch = s.startWatchdog({
+    now: () => t,
+    setTimer: (fn, ms) => { timers.push({ fn, ms }); return timers.length - 1; },
+    clearTimer: () => {},
+  });
+  const done = s.waitForExit();
+  s.handlePing();          // t=0 에 ping
+  t = 20_000;              // heartbeatMs(10s) 초과
+  timers.forEach((x) => x.fn()); // 워치독 tick 실행
+  assert.deepEqual(await done, { status: 'cancelled', reason: 'window-closed' });
+  watch.stop();
+});
+
+test('워치독: 유휴 idleMs 초과면 timeout 으로 cancel', async () => {
+  let t = 0;
+  const timers = [];
+  const s = createSession({ ...deps(), idleMs: 100, heartbeatMs: 1_000_000 });
+  const watch = s.startWatchdog({
+    now: () => t, setTimer: (fn) => { timers.push(fn); return 0; }, clearTimer: () => {},
+  });
+  const done = s.waitForExit();
+  s.handlePing();
+  t = 200; // idle 초과
+  timers.forEach((fn) => fn());
+  assert.deepEqual(await done, { status: 'cancelled', reason: 'idle-timeout' });
+  watch.stop();
+});
