@@ -104,11 +104,13 @@ core "꼼꼼 모드"로 인터뷰식 저작 — 타입 B 도메인 기대, 진�
 
 ## 8. 셋업 전제 (옵셔널 의존성)
 
-- Playwright MCP는 **하드 의존이 아니다** — 없으면 스크린샷 폴백 → 추정 경고로 degrade(§5).
-- 실사용 탐색 모드를 쓰려면:
-  1. `.claude.json`의 `mcpServers`에 Playwright MCP 등록(머신당 1회).
-  2. mcpServer 변경 후 **반드시 `sync-mcp` 스킬** 실행(`mcp-config.json` 동기화) — 사용자 규칙.
-  3. 정확한 등록 CLI(`claude mcp add ...`)는 context7로 공식문서 확인 후 안내.
+- Playwright MCP는 **하드 의존이 아니다** — 없으면 스크린샷 폴백 → 추정 경고로 degrade(§5). check-customer-ux의 실사용 탐색 모드에서만 필요하고, create-customer·check-customer-idea는 무관.
+- **등록(사용자 머신당 1회, 옵셔널).** context7 `/microsoft/playwright-mcp` 공식문서 확인 완료:
+  - Claude Code: `claude mcp add playwright npx @playwright/mcp@latest`
+  - Codex CLI: `codex mcp add playwright npx "@playwright/mcp@latest"`
+  - **등록명은 반드시 `playwright`** — `agents/customer.md`의 툴 화이트리스트가 `mcp__playwright__browser_*` prefix를 가정하므로, 다른 이름으로 등록하면 화이트리스트가 안 맞는다.
+- **이 플러그인에는 번들하지 않는다.** Playwright MCP는 브라우저를 띄우는 무거운 옵셔널 의존성이라, 플러그인 `mcp.servers.json`에 넣어 전체 사용자에게 강제하지 않는다. UX 실사용을 원하는 사용자가 위 명령으로 직접 등록한다. (만약 번들하기로 바꾸면 `mcp.servers.json` 수정 후 `npm run sync` + `sync-mcp` 스킬 — 사용자 규칙.)
+- 등록은 사용자 액션이다. 명령 실행 전 사용자에게 확인받는다(사용자 글로벌 규칙).
 
 ## 9. 설계 노트 (정직한 단서)
 
