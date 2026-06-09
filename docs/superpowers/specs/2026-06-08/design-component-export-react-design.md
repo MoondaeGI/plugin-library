@@ -88,7 +88,7 @@ ui-kit.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, �
 
 ## §7. 자산 물질화 상세
 
-- **아이콘**: `icon-map.json` 기반으로 svgr 인라인 컴포넌트(`<Icon name="search" />`)로 변환 — currentColor 색 상속·크기 prop 제어. 원본 svg는 `src/assets/icon/`에 둔다.
+- **아이콘**: 원본 svg는 `src/assets/icon/`에 두고, `src/components/common/icons.tsx` 한 모듈이 svgr(`?react`)로 인라인해 **개별 named 컴포넌트**(`SearchIcon`·`ChevronLeftIcon`… = icon-map 이름 PascalCase+`Icon`)로 export한다 — currentColor 상속·`size` prop. 같은 모듈이 **내부 name 레지스트리**도 export해 `IconButton`·`Search`가 `name`으로 참조(`<IconButton name="search" />` — 아이콘을 children으로 조합시키지 않음). 범용 공개 `<Icon name>`은 두지 않는다.
 - **폰트**: 자가호스팅 기본.
   - next: `next/font/google`(빌드 시 자동 자가호스팅).
   - Vite: `@fontsource/<font>`(npm). 패키지가 없으면 `public/font/` 로컬 woff2 + `@font-face` 폴백.
@@ -110,10 +110,14 @@ src/main.tsx       ← 전역 css import   src/app/layout.tsx ← next/font·전
 src/App.tsx        ← 쇼케이스 갤러리    src/app/page.tsx   ← 쇼케이스 갤러리
 src/assets/css/{tokens,ui-kit}.css    src/assets/css/{tokens,ui-kit}.css
 src/assets/icon/{*.svg, icon-map}     src/assets/icon/{*.svg, icon-map}
-src/components/*.tsx ← 래퍼            src/components/*.tsx ← 래퍼
+src/components/common/*.tsx ← 래퍼     src/components/common/*.tsx ← 래퍼
+src/components/common/icons.tsx        src/components/common/icons.tsx   ← 개별 아이콘 + registry
+src/components/common/index.ts ← barrel src/components/common/index.ts ← barrel
 src/hooks/*.ts       ← 내재 동작       src/hooks/*.ts       ← 내재 동작
+src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유틸
 ```
 
+- **디렉터리 규약**: ui-kit 가족 래퍼·barrel은 `src/components/common/`(루트 `components/` flat 금지). 페이지 컴포넌트는 추후 `src/components/<page>/`(예: `components/login/LoginForm.tsx` — generate-code 몫). 유틸은 `src/utils/`(`lib/` 아님).
 - `package.json`은 의존성과 스크립트를 포함해 **작성**하되, **`npm install`은 자동 실행하지 않는다**(옵션·사람 확인 — 전역 CLAUDE.md "명령 전 확인").
 - next 전역 css는 `app/layout.tsx`에서 1회 import. `ui-kit.css`의 `@import "tokens.css"`는 번들러 경고/성능을 피해 PostCSS로 inline 처리한다.
 - 진입점(`App.tsx`/`page.tsx`)은 export된 전체 가족을 ui-kit.html 4그룹 구조에 맞춰 렌더하는 **쇼케이스 갤러리** — 검증 표면 겸 핸드오프 레퍼런스. (generate-code가 나중에 실제 페이지로 대체·추가.)

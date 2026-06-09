@@ -45,7 +45,8 @@ description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·
 
 - `tokens.css`·`ui-kit.css`는 **내용 수정 없이 그대로 복사**(권위 유지). `@import "tokens.css"`만 빌드 환경에 맞게 처리(§8).
 - **파비콘**: `assets/logo/favicon*`가 있으면 그걸 쓰고, 없으면 **logo를 대용**하되 "favicon 없음 — 다중 해상도 누락 가능" gap 로그를 사용자에게 보고한다.
-- **아이콘**: `icon-map.json` 기반 svgr 인라인 컴포넌트(`<Icon name="search" />`) — currentColor 색 상속·크기 prop. 원본 svg는 `src/assets/icon/`.
+- **아이콘**: 원본 svg는 `src/assets/icon/`에 두고, `src/components/common/icons.tsx` **한 모듈**에서 svgr(`?react`)로 인라인해 **개별 named 컴포넌트**로 export한다 — icon-map 이름을 PascalCase+`Icon`으로(`search`→`SearchIcon`, `chevron-left`→`ChevronLeftIcon`). currentColor 상속·`size` prop. 같은 모듈이 **내부 name 레지스트리**(`name → SvgComponent`)도 함께 export해 `IconButton`·`Search` 등이 `name`으로 참조한다. **범용 공개 `<Icon name>` 컴포넌트는 두지 않는다** — 개별 컴포넌트가 공개 표면이고, 레지스트리는 `name` 소비자용 내부 표면이다.
+- **IconButton**: 안쪽에 아이콘을 조합(`children`)시키지 않는다 — `<IconButton name="search" />`처럼 **`name` prop**으로 받아 내부에서 레지스트리로 해석한다.
 - 복사 못 한/분류 안 되는 자산은 **gap 로그**로 사용자에게 보고(임의 폐기·창작 금지).
 
 ## class → prop 매핑 (규약, §4b)
@@ -100,10 +101,14 @@ src/main.tsx       ← 전역 css import   src/app/layout.tsx ← next/font·전
 src/App.tsx        ← 쇼케이스 갤러리    src/app/page.tsx   ← 쇼케이스 갤러리
 src/assets/css/{tokens,ui-kit}.css    src/assets/css/{tokens,ui-kit}.css
 src/assets/icon/{*.svg, icon-map}     src/assets/icon/{*.svg, icon-map}
-src/components/*.tsx ← 래퍼            src/components/*.tsx ← 래퍼
+src/components/common/*.tsx ← 래퍼     src/components/common/*.tsx ← 래퍼
+src/components/common/icons.tsx        src/components/common/icons.tsx   ← 개별 아이콘 컴포넌트 + registry
+src/components/common/index.ts ← barrel src/components/common/index.ts ← barrel
 src/hooks/*.ts       ← 내재 동작       src/hooks/*.ts       ← 내재 동작
+src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유틸
 ```
 
+- **디렉터리 규약**: ui-kit 가족 래퍼·barrel은 전부 **`src/components/common/`**에 둔다(루트 `components/`에 flat 금지). 페이지별 컴포넌트는 이 스킬 범위가 아니며(→ generate-code), 추후 **`src/components/<page>/`**(예: `components/login/LoginForm.tsx`)에 페이지 폴더로 둔다. 유틸 함수는 **`src/utils/`**(`lib/` 아님 — 예: `utils/cx.ts`).
 - `package.json`은 의존성·스크립트를 **작성**하되 **`npm install`은 자동 실행하지 않는다**(옵션·사람 확인 — 전역 CLAUDE.md "명령 전 확인").
 - next 전역 css는 `app/layout.tsx`에서 1회 import. `ui-kit.css`의 `@import "tokens.css"`는 번들러 경고/성능을 피해 PostCSS(`postcss-import`)로 inline 처리한다.
 - 진입점(`App.tsx`/`page.tsx`)은 export된 전체 가족을 ui-kit.html 4그룹 구조에 맞춰 렌더하는 **쇼케이스 갤러리** — 검증 표면 겸 핸드오프 레퍼런스(generate-code가 나중에 실제 페이지로 대체).
