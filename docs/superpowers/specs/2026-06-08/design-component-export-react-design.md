@@ -47,17 +47,17 @@ bare `design-component-export`는 위 둘로 갈라지며 사라진다. react·n
 - `.design/assets/logo/` — 로고·favicon 자산.
 - (있으면) `.design/assets/content/`·`reference/brand-kit/` 이미지.
 
-## §4. 결정적 코어 (타깃 무관)
+## §4. 산출 규약 (타깃 무관)
 
-품질 편차는 "결정적 스캐폴드"와 "비결정적 가족별 코드젠"이 섞일 때 생긴다. 비결정성을 줄이기 위해 두 가지를 **타깃 무관 결정적 코어**로 박는다. 공유 로직은 `scripts/lib/`에 두어 `design-component-export-html` 스킬과 공용한다.
+품질 편차는 "결정적 스캐폴드"와 "비결정적 가족별 코드젠"이 섞일 때 생긴다. 비결정성을 줄이려고 두 가지를 **명시 규약**으로 고정한다. 단 이 규약은 파서·이전 도구(mjs)가 아니라 **SKILL 산문**이다 — ui-kit 자산이 권위이므로 LLM이 `ui-kit.html`·`ui-kit.css`를 직접 읽어 규약을 적용한다. class를 정규식으로 추출하는 도구는 두지 않는다(아래 (b) 참조: variant와 자식 요소는 이름만으론 구분되지 않아 ui-kit.html 구조를 봐야 하고, 그건 래퍼 저작 LLM이 어차피 하는 일이다). `scripts/lib`는 이 repo에서 LLM이 못 하는 것(이미지 합성·네트워크·브라우저·SVG 정규화)만 두는 자리라 여기 해당 없음.
 
-### (a) 자산 물질화
+### (a) 자산 이전 — 복사 규칙
 
-`.design/assets/*`를 repo 루트의 배포용 트리로 **이전**하고 참조 경로를 실배포 경로로 재작성한다(아래 §7).
+`.design/assets/*`를 repo 루트의 배포용 트리로 **복사·이전**하고 참조 경로를 실배포 경로로 재작성한다(아래 §7). `tokens.css`·`ui-kit.css`는 내용 수정 없이 그대로 복사(권위 유지). 복사 못 한/분류 안 되는 자산은 gap 로그로 보고.
 
 ### (b) class → prop 매핑 테이블
 
-ui-kit.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, 24개 가족 prop 인터페이스 도출을 가족별 즉흥이 아닌 규약 적용으로 만든다.
+ui-kit.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, 가족 prop 인터페이스 도출을 가족별 즉흥이 아닌 규약 적용으로 만든다. 도출은 ui-kit.html의 가족별 specimen을 권위로 적용한다.
 
 | ui-kit.css 패턴 | prop |
 |---|---|
@@ -66,6 +66,7 @@ ui-kit.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, 2
 | 강제상태 `.is-checked`/`.is-on`/`.is-active` | 상태 prop(boolean) |
 | 의사상태 `.is-hover`/`.is-focus`/`.is-disabled` | 런타임 상태 — **prop 아님**(브라우저가 부여) |
 
+- **variant vs 자식 요소 구분(중요)**: `.btn-primary`(variant)와 `.footer-brand`·`.nav-links`·`.section-title`(컴포넌트 자식 요소)은 class 이름만으론 구분되지 않는다 — **ui-kit.html의 중첩 구조를 권위로** 판정한다(자식 요소는 prop이 아니라 래퍼 내부 마크업). 정규식 추출 도구를 두지 않는 이유.
 - 매핑 테이블로 안 잡히는 변형(가족 고유 class)은 **사람 확인 게이트**로 넘긴다 — 즉흥으로 prop을 만들지 않는다.
 - variant union 값은 ui-kit.css에 실재하는 class 접미사에서만 뽑는다(없는 변형 생성 금지).
 
@@ -153,7 +154,7 @@ src/hooks/*.ts       ← 내재 동작       src/hooks/*.ts       ← 내재 동
 - `skills/design-component-export/SKILL.md`(placeholder) → `skills/design-component-export-react/SKILL.md`로 대체(+ 추후 `-html`).
 - `agents/front-developer.md` — 소유 스킬 목록을 `-react`/`-html`로 갱신.
 - `docs/design/README.md` — 파이프라인 표·다운스트림 목록 갱신.
-- `scripts/lib/` — 자산 물질화 공유 모듈(두 export 스킬 공용, Codex 번들 포함).
+- (신규 mjs 없음) class→prop·자산 이전은 SKILL 산문 규약 — `scripts/lib` 모듈을 두지 않는다.
 - `npm run sync`로 Codex 번들·codex-agents 재생성.
 
 ## §14. 미해결·리스크
