@@ -16,7 +16,7 @@ description: 브랜드 킷·페이지 이미지 브리프·생성 이미지 목�
 - `.design/reference/BRAND_KIT.md`
 - `.design/reference/brand-tokens.json`
 - `.design/assets/css/tokens.css` (있으면 — §4 디자인 토큰·frontmatter의 실제 변수·값 권위)
-- `.design/assets/css/ui-kit.css` (있으면 — §5 컴포넌트 규칙의 권위: 확정된 class·variant·상태)
+- `.design/assets/css/components.css` (+ `parts/*.css`) (있으면 — §5 컴포넌트 규칙의 권위: 확정된 class·variant·상태. `components.css`는 parts를 모으는 배럴)
 - `.design/candidate/ui-kit/ui-kit-briefs.md` (있으면 — §5 컴포넌트 **의도(왜 이 형태)** 전사 근거)
 - `.design/view/ui-kit.html` (있으면 — 컴포넌트 쇼케이스 룩·분류 참조)
 - `.design/candidate/brand-kit/brand-briefs.md`
@@ -80,8 +80,8 @@ breakpoints:   # (--bp-* 있으면 — 없으면 생략 + §12에 표시)
 ### Border
 
 ## 5. 컴포넌트 규칙
-컴포넌트마다 스펙 블록: **의미 이름** + 실제 ui-kit class + 배경/텍스트/타이포/radius/padding(전부 {token.ref}) + 상태(default·active·focus 등 ui-kit.css 강제상태 그대로) + 용도 + 살릴점/버릴점.
-### Button / Input / Card / Badge / Navigation / App Bar(navbar 변형) / Filter Chip / Section Header / Footer / Sidebar(조건부) / Table / Dashboard Panel / Alert·Toast / Empty State …(ui-kit.css에 있는 것)
+컴포넌트마다 스펙 블록: **의미 이름** + 실제 ui-kit class + 배경/텍스트/타이포/radius/padding(전부 {token.ref}) + 상태(default·active·focus 등 components.css 강제상태 그대로) + 용도 + 살릴점/버릴점.
+### Button / Input / Card / Badge / Navigation / App Bar(navbar 변형) / Filter Chip / Section Header / Footer / Sidebar(조건부) / Table / Dashboard Panel / Alert·Toast / Empty State …(components.css에 있는 것)
 
 ## 6. 페이지 섹션 규칙
 ### Hero / Problem / Product Mechanism / Feature Grid / Dashboard·Evidence / CTA·Footer
@@ -113,8 +113,8 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
 
 - **D1 — frontmatter 컴파일(거울)**: frontmatter 값은 `tokens.css`(없으면 `brand-tokens.json`)에서 긁어 채운다. 손으로 쓰지 않으며 `# generated ... do not edit` 주석을 박는다. `tokens.css`가 단일 권위, frontmatter는 거울(projection). typography는 `--font-<role>`(family)와 `--text-<role>-{size,weight,leading,tracking}`를 합쳐 역할 객체로 적는다. 컨트롤 높이 `--control-h-*`도 spacing·radius와 같은 고정 관례 토큰이므로 frontmatter에 거울로 포함한다(`controls:`).
 - **D6 — 재생성 트리거**: 이 스킬은 호출될 때마다 frontmatter를 `tokens.css`에서 **항상 재컴파일**한다(거울을 매번 다시 닦음). 이미 `DESIGN.md`가 있고 `tokens.css`가 더 최신이면 "frontmatter stale — 재생성함"을 §12에 적는다. "한 번 만들고 방치"로 인한 drift를 막는다.
-- **D2 — 컴포넌트는 §5 산문**: 컴포넌트는 frontmatter에 구조화 YAML로 넣지 않는다(임의 CSS→YAML 변환은 깨지기 쉽고 ui-kit.css와 이중 관리). §5에 의미 이름 + 실제 ui-kit class명 + 토큰 참조 스펙 + 상태 + 용도로 산문 기술한다. 포터빌리티는 토큰 frontmatter + 이 산문으로 달성한다.
-- **§5 컴포넌트 권위**: 확정된 `assets/css/ui-kit.css`(있으면)의 **실제 class·variant·강제상태**(`.is-hover`·`.is-checked` 등)에서 뽑아 구현자가 복사해 쓰게 한다 — 이미지 추론이 아니다. 없으면 BRAND_KIT §10·이미지에서 추론(폴백)하되 §12에 폴백임을 표시.
+- **D2 — 컴포넌트는 §5 산문**: 컴포넌트는 frontmatter에 구조화 YAML로 넣지 않는다(임의 CSS→YAML 변환은 깨지기 쉽고 components.css와 이중 관리). §5에 의미 이름 + 실제 ui-kit class명 + 토큰 참조 스펙 + 상태 + 용도로 산문 기술한다. 포터빌리티는 토큰 frontmatter + 이 산문으로 달성한다.
+- **§5 컴포넌트 권위**: 확정된 `assets/css/components.css`(있으면)의 **실제 class·variant·강제상태**(`.is-hover`·`.is-checked` 등)에서 뽑아 구현자가 복사해 쓰게 한다 — 이미지 추론이 아니다. 없으면 BRAND_KIT §10·이미지에서 추론(폴백)하되 §12에 폴백임을 표시.
 - **D3 — rationale 전사, 창작 금지**: 토큰/컴포넌트별 "왜/어디"는 ① `BRAND_KIT.md` §7/§8/§10·금지 패턴 + `ui-kit-briefs.md`의 의도를 **그대로 옮긴다** → ② 근거 없으면 **사실만**("이 토큰은 `.btn-primary`에서 참조됨") → 시적 의도를 지어내지 않는다. 근거 얇은 항목은 얇은 채로 두고 §12에 "근거 부족" 표시.
 - **토큰 참조 문법**: 본문 산문은 인라인 HEX·px 대신 `{colors.primary}`·`{typography.body}` 점 표기로 frontmatter를 가리킨다.
 - 색상은 HEX, spacing·radius·shadow는 실제 CSS 값(frontmatter에 정의, 산문은 참조).
@@ -131,7 +131,7 @@ DESIGN.md는 **락된 확정 제품 자산만** 참조한다(candidate 시안·�
 ## 흐름 (리뷰 게이트)
 
 1. **입력 점검 → 없으면 이전 단계 먼저 안내(D4)**:
-   - `ui-kit.css` 없음 → "§5를 제대로 채우려면 `design-ui-kit`을 먼저 lock하고 다시 호출하세요"를 먼저 안내. 사용자가 그래도 진행하면 폴백(BRAND_KIT §10·이미지 추론) + §12 Known Gaps.
+   - `components.css` 없음 → "§5를 제대로 채우려면 `design-ui-kit`을 먼저 lock하고 다시 호출하세요"를 먼저 안내. 사용자가 그래도 진행하면 폴백(BRAND_KIT §10·이미지 추론) + §12 Known Gaps.
    - `--bp-*` breakpoint 토큰 없음 → "반응형이 필요하면 `design-brand-kit`에서 폼팩터를 정하고 다시 시도하세요" 안내. 진행 시 §7은 "고정폭 데스크톱 전용".
    - `page-briefs.md`/page 이미지 없음 → §6은 가능한 범위만, 누락은 §12.
 2. 존재하는 입력을 읽고 `.design/DESIGN.md`를 작성한다 — frontmatter는 tokens.css에서 재컴파일(D1·D6), 본문은 §1–12.

@@ -10,7 +10,7 @@ model: inherit
 ## 입력 (대상 프로젝트 cwd)
 
 - `.design/DESIGN.md`, `.design/reference/brand-tokens.json`, `.design/assets/css/tokens.css`
-- `.design/assets/css/ui-kit.css`(컴포넌트 권위), `.design/view/ui-kit.html`(컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조), `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json`(아이콘 권위 — 인라인 currentColor)
+- `.design/assets/css/components.css`(컴포넌트 권위), `.design/view/ui-kit.html`(컴포넌트 마크업 레퍼런스 — 정규 중첩 구조 참조), `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json`(아이콘 권위 — 인라인 currentColor)
 - `.design/assets/**`(확정 이미지) → 없으면 `.design/candidate/**`
 - `.design/assets/icon/vendor/*.svg`·`.design/assets/content/*`(상위 스킬이 빌드 전 조달한 타사 마크·콘텐츠 이미지)
 - `.design/assets/manifest.json`(있으면) — 어느 슬롯을 어느 파일로 채울지의 권위 매핑
@@ -19,10 +19,10 @@ model: inherit
 
 ## 흐름
 
-1. **구현** — 받은 스펙대로 HTML/CSS를 직접 저작한다. 아래 **HTML 품질 기준**을 지킨다. 템플릿이 지정되면 그걸 복사해 slot만 채운다. 토큰 변수(`tokens.css`)·`ui-kit.css` 클래스를 쓰고 색·폰트를 하드코딩하지 않는다.
+1. **구현** — 받은 스펙대로 HTML/CSS를 직접 저작한다. 아래 **HTML 품질 기준**을 지킨다. 템플릿이 지정되면 그걸 복사해 slot만 채운다. 토큰 변수(`tokens.css`)·`components.css` 클래스를 쓰고 색·폰트를 하드코딩하지 않는다.
 2. **자가 QA(레이아웃)** — `web-publisher-qa` 스킬을 `Skill` 도구로 호출해 구현 결과를 breakpoint별 스크린샷으로 점검한다. 보이는 레이아웃 깨짐(요소 overflow·정렬·grid 불균일·깨진 이미지·겹침)을 찾는다.
 3. **완전성 자가 대조** — 완전성 체크리스트를 받았으면, 빌드된 HTML을 **Read/Grep으로** 각 항목(필수 섹션·핵심 문구 앵커·핵심 요소)의 존재를 대조한다. 권위는 `DESIGN.md`다. (존재 대조는 미적·충실도 판정이 아니라 객관·기계적 판정이라 아래 "보기 좋은가는 판정 안 함" 경계와 충돌하지 않는다.)
-4. **컴포넌트·아이콘 재사용 자가 대조** — 빌드된 HTML을 **Read/Grep으로** 점검해 다음을 플래그한다: (a) `ui-kit.css`에 같은 역할의 클래스가 있는데 페이지 `<style>`에서 동등 컴포넌트를 새로 정의한 경우(헤더·버튼·카드·배지·입력 등), (b) `assets/icon/`에 대응 글리프가 있는데 임의 인라인 SVG 패스를 박은 경우, (c) 같은 컨트롤 쌍(prev/next 등)이 다른 글리프 패밀리를 쓴 경우. 이 대조는 존재·출처의 객관·기계적 판정이라 "미적 충실도는 판정 안 함" 경계와 충돌하지 않는다(완전성 자가 대조와 동일 논리).
+4. **컴포넌트·아이콘 재사용 자가 대조** — 빌드된 HTML을 **Read/Grep으로** 점검해 다음을 플래그한다: (a) `components.css`에 같은 역할의 클래스가 있는데 페이지 `<style>`에서 동등 컴포넌트를 새로 정의한 경우(헤더·버튼·카드·배지·입력 등), (b) `assets/icon/`에 대응 글리프가 있는데 임의 인라인 SVG 패스를 박은 경우, (c) 같은 컨트롤 쌍(prev/next 등)이 다른 글리프 패밀리를 쓴 경우. 이 대조는 존재·출처의 객관·기계적 판정이라 "미적 충실도는 판정 안 함" 경계와 충돌하지 않는다(완전성 자가 대조와 동일 논리).
 5. **수정 반복** — 레이아웃 깨짐·미충족 항목·재사용 위반을 찾으면 1로 돌아가 **외과적으로** 고치고 2·3·4를 다시 돈다. 셋 다 없으면 완료. 최종 메시지에 완전성 **충족/미충족 표**를 보고한다. 만들 수 없는 항목(필요 자산 부족 등)은 손으로 지어내지 말고 "매니페스트 밖 갭은 멈춰 보고" 규칙으로 에스컬레이션한다.
 6. 사람(또는 designer)이 디자인 충실도를 보는 건 그다음, 별개 단계다.
 
@@ -30,10 +30,10 @@ model: inherit
 
 만드는 화면 유형(랜딩·대시보드·쇼케이스·overview…)과 무관하게 항상 지킨다.
 
-- **토큰만 사용**: 색·폰트·간격·radius·shadow는 `var(--token)`. 하드코딩 HEX·px·폰트명 금지. `ui-kit.css`가 있으면 그 클래스를 쓴다.
+- **토큰만 사용**: 색·폰트·간격·radius·shadow는 `var(--token)`. 하드코딩 HEX·px·폰트명 금지. `components.css`가 있으면 그 클래스를 쓴다.
 - **실제 텍스트**: 문구는 진짜 HTML 텍스트로 — 이미지로 대체하지 않는다. UI 전체를 이미지로 갈음하지 않는다.
 - **재사용 구조**: 버튼·카드·입력·배지·테이블은 재사용 가능한 class로. section·component 경계를 명확히 나눈다(React 이식 쉽게).
-- **컴포넌트 재사용 우선**: 무엇을 저작하기 전에 `ui-kit.css`에 해당 컴포넌트(navbar·btn·btn-icon·card·badge·input·table·chip 등)가 있는지 **먼저 확인하고, 있으면 재사용**한다. 페이지 전용 CSS는 ui-kit가 덮지 않는 레이아웃(카우셀·페이지 그리드·섹션 리듬)에만 짠다. 컴포넌트를 페이지에 맞게 적응해야 하면(예: navbar → 풀블리드 sticky 헤더) **내부 요소(`.brand`·`.nav-links`·`.btn-icon`)는 재사용하고 컨테이너만 조립**한다 — 컴포넌트 CSS를 처음부터 다시 쓰지 않는다. 정규 중첩 구조는 `ui-kit.html`을 마크업 레퍼런스로 참조한다.
+- **컴포넌트 재사용 우선**: 무엇을 저작하기 전에 `components.css`에 해당 컴포넌트(navbar·btn·btn-icon·card·badge·input·table·chip 등)가 있는지 **먼저 확인하고, 있으면 재사용**한다. 페이지 전용 CSS는 ui-kit가 덮지 않는 레이아웃(카우셀·페이지 그리드·섹션 리듬)에만 짠다. 컴포넌트를 페이지에 맞게 적응해야 하면(예: navbar → 풀블리드 sticky 헤더) **내부 요소(`.brand`·`.nav-links`·`.btn-icon`)는 재사용하고 컨테이너만 조립**한다 — 컴포넌트 CSS를 처음부터 다시 쓰지 않는다. 정규 중첩 구조는 `ui-kit.html`을 마크업 레퍼런스로 참조한다.
 - **폰트 실렌더**: 고른 브랜드 폰트가 실제로 렌더되게 출처에서 로드한다 — 카탈로그(`references/design/font-catalog.md`)의 웹폰트면 `<head>` `<link>`(Google Fonts) 또는 jsDelivr/CDN `<link>`/`@import`(Pretendard·SUIT 등). 상용·system 폰트는 폴백 스택에 맡긴다.
 - **favicon `<link>`(필수)**: 만드는 화면 유형과 무관하게 `<head>`에 `<link rel="icon" href="<상대경로>/assets/logo/favicon.png">`를 **무조건** 넣는다. 경로는 출력 위치 기준 상대경로(`view/`·`prototype/` 모두 `../assets/logo/favicon.png`). favicon은 brand-kit이 임시본을 항상 깔아두므로 design-logo 미실행 단계에서도 채워지고, 만에 하나 파일이 없어도 404로 graceful. 빠뜨리면 브랜드 탭 아이콘이 안 떠 일관성이 깨진다.
 - **아이콘 출처**: 아이콘은 `.design/assets/icon/*.svg`(+`icon-map.json`)에서만 **인라인 currentColor**로 쓴다. 자리마다 SVG 패스를 창작하지 않는다. 쌍 컨트롤(prev/next·±·펼치기/접기 등)은 **같은 글리프 패밀리를 미러**해 모양을 맞춘다.
@@ -49,7 +49,7 @@ model: inherit
 
 ## 경계
 
-- 브랜드 킷·로고·아이콘·ui-kit.css·이미지·DESIGN.md 생성은 **designer 몫** — 이미 만들어진 걸 입력으로 받는다. 너는 그것들을 화면에 충실히 **저작·검수**한다.
+- 브랜드 킷·로고·아이콘·components.css·이미지·DESIGN.md 생성은 **designer 몫** — 이미 만들어진 걸 입력으로 받는다. 너는 그것들을 화면에 충실히 **저작·검수**한다.
 - 공통 컴포넌트 추출·React/Next·페이지 코드(실제 구현)는 **미래 front-developer 몫** — 하지 않는다.
 
 ## 하지 않을 것

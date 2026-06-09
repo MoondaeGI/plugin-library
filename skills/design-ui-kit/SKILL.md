@@ -1,6 +1,6 @@
 ---
 name: design-ui-kit
-description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/css/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/css/ui-kit.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 다음 단계는 2분기다(택1·배타 아님) — docs는 design-md-compiler(DESIGN.md), code는 front-developer의 design-component-export. image-gen·OPENAI_API_KEY 불필요.
+description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작하는 스킬. BRAND_KIT.md §10(비주얼·UI 방향)·§7 색·§8 타이포·assets/css/tokens.css·assets/icon/*.svg를 권위 근거로, 컴포넌트 목록을 4그룹(Foundations/Core Interactive/Informational/Structural)으로 제안·확정하고(게이트1), 스타일 방향을 합의한 뒤(게이트2), 토큰 변수만 참조하는 assets/css/components.css를 저작한다. 쇼케이스 view/ui-kit.html 마크업 저작·레이아웃 QA는 web-publisher 서브에이전트에 위임한다. lock 후 다음 단계는 2분기다(택1·배타 아님) — docs는 design-md-compiler(DESIGN.md), code는 front-developer의 design-component-export. image-gen·OPENAI_API_KEY 불필요.
 ---
 
 # Design UI Kit
@@ -33,7 +33,9 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
 .design/
   assets/
     css/
-      ui-kit.css                 # 컴포넌트 class — 토큰 변수만(하드코딩 HEX·px 0). 상단 @import "tokens.css";
+      components.css             # 배럴 — 상단 @import "tokens.css"; + 각 parts/<family>.css @import (직접 class 정의 안 함)
+      parts/
+        button.css · input.css · card.css · …   # 가족당 1파일, 토큰 변수만(하드코딩 HEX·px 0)
   view/
     ui-kit.html                  # chrome 템플릿 기반 쇼케이스(개발자 핸드오프). ../assets/ 상대경로.
   candidate/
@@ -41,7 +43,7 @@ description: 확정된 brand kit 위에 제품에서 바로 쓰는 UI 컴포넌�
       ui-kit-briefs.md           # 읽은 §10 근거·확정 컴포넌트 목록·스타일 방향·제약
 ```
 
-- `ui-kit.css`는 `assets/css/`에 처음부터 제자리 저작(별도 승격 복사 없음 — lock은 승인). `~800줄` 초과 시 family별 파일로 분리하고 `ui-kit.css`가 `@import`로 모은다.
+- 컴포넌트 class는 **처음부터 가족별로 분리 저작**한다 — `assets/css/parts/<family>.css`(button·input·card·…) 한 가족당 1파일, 토큰 변수만. `components.css`는 직접 class를 정의하지 않는 **배럴**로, 상단 `@import "tokens.css";` 뒤에 각 `@import "parts/<family>.css";`만 모은다(별도 승격 복사 없음 — lock은 승인). 한 파일에 다 몰아넣지 않는다.
 - `ui-kit.html`은 `view/`에서 chrome 템플릿(`templates/ui-kit-sheet.html`)을 복사해 시작하고 slot을 채워 저작한다.
 
 ## 3분할 규약 (중요)
@@ -52,10 +54,10 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 |---|---|---|
 | **토큰값**(실 HEX·실 px·실 폰트) | `assets/css/tokens.css` 주입 (`var(--token)`) | 저작 안 함 — 참조만 |
 | **chrome**(보드/패널/매트릭스 골격·쇼케이스 CSS·헤더 key-visual 슬롯) | `templates/ui-kit-sheet.html` | 저작 안 함 — 복사 후 slot만 채움 |
-| **컴포넌트 class**(`ui-kit.css`) | LLM(이 스킬)이 저작 | **저작함** |
+| **컴포넌트 class**(`components.css`) | LLM(이 스킬)이 저작 | **저작함** |
 | **쇼케이스 마크업**(`view/ui-kit.html` slot 채우기) | web-publisher 서브에이전트가 저작·QA | **위임** — 이 스킬은 슬롯 스펙만 정의 |
 
-**변수 네이밍 계약:** tokens.css가 내보내는 이름이 권위다. ui-kit.css는 **정확히 그 이름만** 쓴다.
+**변수 네이밍 계약:** tokens.css가 내보내는 이름이 권위다. components.css는 **정확히 그 이름만** 쓴다.
 - color `--color-<kebab(key)>` (예: `--color-surface-alt`·`--color-text-muted`·`--color-background`)
 - typography `--font-<key>` (display/heading/body/mono/accent)
 - radius `--radius-<key>` + `--radius-pill: 999px`
@@ -93,7 +95,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
 3. **게이트2 — 스타일 방향**: 핵심 스타일 결정(버튼 형태·기본 radius·그림자 깊이·테두리 유무)을 §10 근거로 합의한 뒤 저작 시작. *"왜 이 형태인가"를 먼저 합의.*
 
 ### Phase 2 — 저작 → 쇼케이스 검수 → 편집 → lock
-4. **ui-kit.css 저작**: 확정 목록을 토큰 변수만으로 작성. 상단 `@import "tokens.css";`. **하드코딩 HEX·px 0**(spacing도 `--space-*`). 매트릭스용 강제상태 class를 의사상태와 **규칙 공유**:
+4. **컴포넌트 class 저작(가족별 parts/ + 배럴)**: 확정 목록을 **가족당 `assets/css/parts/<family>.css` 1파일**로 토큰 변수만 써서 작성하고, `components.css`는 상단 `@import "tokens.css";` 뒤에 각 `@import "parts/<family>.css";`만 모은 배럴로 둔다(직접 class 정의 금지). **하드코딩 HEX·px 0**(spacing도 `--space-*`). 매트릭스용 강제상태 class를 의사상태와 **규칙 공유**(해당 가족 part 안에서):
    ```css
    .btn-primary:hover, .btn-primary.is-hover { filter:brightness(.94); }
    .input:focus, .input.is-focus { outline:2px solid var(--tint-primary); }
@@ -115,18 +117,18 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    - 아이콘은 `assets/icon/*.svg`를 **인라인**(currentColor).
    - **key-visual은 헤더 밴드에만**(패널 뒤 금지 — 토큰 충실도·대비 보호).
 6. **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design`(루트=`.design/`). 시트 직접 URL `http://localhost:5500/view/ui-kit.html`. 처음 제시 시 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
-7. **편집 루프**: 번호/이름 지목 → 외과 편집 → 자동 새로고침. **`ui-kit.css` class 편집은 이 스킬**이, **`ui-kit.html` specimen 마크업 편집·레이아웃 깨짐 수정은 web-publisher**가 한다(쇼케이스 저작자가 일관되게 고치도록).
+7. **편집 루프**: 번호/이름 지목 → 외과 편집 → 자동 새로고침. **`components.css` class 편집은 이 스킬**이, **`ui-kit.html` specimen 마크업 편집·레이아웃 깨짐 수정은 web-publisher**가 한다(쇼케이스 저작자가 일관되게 고치도록).
 8. **lock (승인 + overview 슬롯 + 다음 단계 2분기)**:
-   - `assets/css/ui-kit.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.
+   - `assets/css/components.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.
    - `view/overview.html`의 `<!-- design-ui-kit:slot -->…<!-- /design-ui-kit:slot -->` 사이를 **UI 킷 한 줄 링크**(`<a href="ui-kit.html">UI Kit →</a>`)로 멱등 외과 치환(마커 없으면 §10 끝에 삽입). overview를 컴포넌트로 부풀리지 않는다.
    - **lock 후 다음 단계는 2분기다**(택1 · 배타 아님 — 나중에 다른 쪽도 가능. 두 가지는 다운스트림 `design-generate-code`에서 재합류):
-     - **docs 가지(designer 기본)**: **`design-md-compiler`를 호출**해 DESIGN.md를 만든다/갱신한다. 이 스킬은 DESIGN.md를 직접 쓰지 않는다 — md-compiler가 단일 소유자이며, ui-kit.css를 §5 컴포넌트 규칙의 권위 입력으로 읽는다. DESIGN.md는 이후 (선택)페이지 이미지·`design-html-prototype`로 이어진다.
+     - **docs 가지(designer 기본)**: **`design-md-compiler`를 호출**해 DESIGN.md를 만든다/갱신한다. 이 스킬은 DESIGN.md를 직접 쓰지 않는다 — md-compiler가 단일 소유자이며, components.css를 §5 컴포넌트 규칙의 권위 입력으로 읽는다. DESIGN.md는 이후 (선택)페이지 이미지·`design-html-prototype`로 이어진다.
      - **code 가지(코드화)**: ui-kit 자산을 바로 코드로 옮기려면 **`front-developer`의 `design-component-export-*`**로 넘긴다(`-react`=React/Next, `-html`=MPA·미구현 — 타깃 택1은 거기 게이트). component-export는 DESIGN.md를 입력으로 쓰지 않아 **지금 분기해도 된다.** designer는 front-developer 스킬을 직접 부르지 못하므로 baton을 메인 세션에 넘긴다(기존 위임 패턴).
    - 라이브 프리뷰 서버가 떠 있으면 종료.
 
 ## 품질 기준 / 금지 사항
 
-- **토큰 준수**: ui-kit.css에 하드코딩 HEX·px·폰트명 0. 전부 `var(--token)`. tokens.css에 없는 변수 신설 금지.
+- **토큰 준수**: components.css에 하드코딩 HEX·px·폰트명 0. 전부 `var(--token)`. tokens.css에 없는 변수 신설 금지.
 - **시맨틱/접근성**: 폼 컨트롤에 `<label>`·아이콘 `aria-hidden` 또는 `aria-label`·인터랙티브에 `role`·focus 가시(`:focus-visible`). 색만으로 상태 구분 금지(아이콘·텍스트 병행).
 - **대비**: 텍스트/배경 대비 확보(§10 분위기 안에서). key-visual 헤더 밴드는 제목 쪽 불투명 surface로 가독 보호.
 - **반응형**: 컴포넌트는 컨테이너 폭에 깨지지 않게(매트릭스 grid는 좁아지면 1열).

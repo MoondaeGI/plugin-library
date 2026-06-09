@@ -14,14 +14,14 @@ model: inherit
 1. **design-brand-kit** — 브랜드 킷·base 자산·공유 `tokens.css`·overview. (overview HTML 저작은 web-publisher)
 2. **(선택) design-logo** — 단독 로고 확정.
 3. **(선택) design-iconset** — 아이콘 세트.
-4. **design-ui-kit** — 토큰 기반 UI 컴포넌트 `ui-kit.css`. (쇼케이스 HTML은 web-publisher · lock 후 md-compiler 자동 호출)
+4. **design-ui-kit** — 토큰 기반 UI 컴포넌트 `components.css`. (쇼케이스 HTML은 web-publisher · lock 후 md-compiler 자동 호출)
 5. **design-md-compiler** — `DESIGN.md`로 컴파일. **여기까지가 designer 핵심**이다.
 
 ## 다운스트림 (핵심 이후 — 주체·구현 상태)
 
 designer가 자기 몫으로 실행하는 건 design-image-web·design-image-mobile이고, 나머지는 다른 주체 몫이며 일부는 미구현이라 호출하지 않는다.
 
-- **design-component-export** (front-developer · 미구현) — `ui-kit.css`·`tokens.css` → 컴포넌트 세트.
+- **design-component-export** (front-developer · 미구현) — `components.css`·`tokens.css` → 컴포넌트 세트.
 - **design-image-web** (designer) — `DESIGN.md`를 시드로 웹 **풀페이지 목업**(세로 1:3, HTML 구현 전 룩 탐색)을 만드는 *선택* 단계 — `design-html-prototype` 직전.
 - **design-image-mobile** (designer) — `DESIGN.md`를 시드로 모바일 **앱 화면 목업**(HTML 구현 전 룩 탐색)을 만드는 *선택* 단계 — `design-html-prototype` 직전(화면 플로우는 사용자 협업 확정).
 - **design-html-prototype** (web-publisher) — 풀페이지 프로토타입 빌드+QA.

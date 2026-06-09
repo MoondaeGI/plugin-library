@@ -149,7 +149,7 @@ node ../../scripts/lib/serve-design.mjs <cwd>/.design
 1. **`.design/DESIGN.md` 있음** → 시드로 사용. 게이트1로 진행.
 2. **없음** → "기존 `design.md`·디자인 문서가 있으면 주세요"를 요청한다.
 3. **그마저 없음** → `.design/` 진도를 감지해 단계별로 안내한다:
-   - `tokens.css`·`ui-kit.css`·`BRAND_KIT.md` 등이 있지만 `DESIGN.md`만 없음 → **"`design-md-compiler`를 먼저 돌리면 DESIGN.md가 나옵니다"** 안내.
+   - `tokens.css`·`components.css`·`BRAND_KIT.md` 등이 있지만 `DESIGN.md`만 없음 → **"`design-md-compiler`를 먼저 돌리면 DESIGN.md가 나옵니다"** 안내.
    - `BRAND_KIT.md`까지만 있음 → ui-kit → md-compiler 순서로 다음 단계를 추천.
    - 아무 진도 없음 → **`design-brand-kit` 권유**. 사용자가 원하면 최소 Q&A로 진행(추측 금지, 수집분을 `candidate/page/page-briefs.md`에 기록). 이 경우 토큰 바인딩이 약해지므로 폴백임을 명시한다.
 

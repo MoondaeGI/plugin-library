@@ -30,9 +30,9 @@ design-brand-kit  (+ 공유 assets/css/tokens.css)
 | **design-brand-kit** | 브랜드 정체성·톤·색·타이포·로고 방향·UI 분위기를 정리하고, 정체성 base 자산(투명 PNG)과 한눈에 보는 HTML 오버뷰를 협업으로 만든다. lock 시 `brand-tokens.json`을 `assets/css/tokens.css`로 물질화(공유 토큰 토대) | 제품 설명 (+ 디스커버리 Q&A) | `reference/{BRAND_KIT.md·brand-tokens.json}` · `view/overview.html` · `assets/css/tokens.css` · `reference/brand-kit/` |
 | **(선택) design-logo** | 라운드 3~4개 탐색 시트 → 단독 로고 확정 | `reference/brand-kit/logo-base.png` | `.design/assets/logo/` |
 | **design-iconset** | 한 가족으로 읽히는 아이콘 세트를 라벨 그리드 시트로 확정. 산출 `assets/icon/*.svg`는 **design-ui-kit·컴포넌트 제작의 필수 입력** | `BRAND_KIT.md` §11 · `brand-tokens.json` 근거 | `.design/assets/icon/` |
-| **design-ui-kit** | 제품 UI 컴포넌트 라이브러리를 토큰 기반 HTML/CSS로 저작(이미지 아님). **lock 후 2분기**(docs=design-md-compiler · code=design-component-export) | `BRAND_KIT.md` §10 · `tokens.css` · `assets/icon/*.svg` | `.design/assets/css/ui-kit.css` · `view/ui-kit.html` |
-| **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리(§4 토큰=tokens.css, §5 컴포넌트=ui-kit.css 권위). **ui-kit 2분기 중 docs 가지의 종착(DESIGN.md)** | 브랜드 킷 + tokens.css + ui-kit.css (페이지 이미지 있으면 선택 입력) | `.design/DESIGN.md` |
-| **design-component-export-react** *(front-developer)* | 확정 ui-kit 자산을 repo 루트의 react(Vite)/next(App Router) 컴포넌트 토대로 물질화(얇은 className 래퍼 + 내재 동작 hook + 쇼케이스) | tokens.css·ui-kit.css·ui-kit.html·icon·logo | repo 루트 npm 프로젝트 컴포넌트 토대 |
+| **design-ui-kit** | 제품 UI 컴포넌트 라이브러리를 토큰 기반 HTML/CSS로 저작(이미지 아님). **lock 후 2분기**(docs=design-md-compiler · code=design-component-export) | `BRAND_KIT.md` §10 · `tokens.css` · `assets/icon/*.svg` | `.design/assets/css/components.css` · `view/ui-kit.html` |
+| **design-md-compiler** | 위 산출물을 구현자가 따를 수 있는 규칙으로 정리(§4 토큰=tokens.css, §5 컴포넌트=components.css 권위). **ui-kit 2분기 중 docs 가지의 종착(DESIGN.md)** | 브랜드 킷 + tokens.css + components.css (페이지 이미지 있으면 선택 입력) | `.design/DESIGN.md` |
+| **design-component-export-react** *(front-developer)* | 확정 ui-kit 자산을 repo 루트의 react(Vite)/next(App Router) 컴포넌트 토대로 물질화(얇은 className 래퍼 + 내재 동작 hook + 쇼케이스) | tokens.css·components.css·ui-kit.html·icon·logo | repo 루트 npm 프로젝트 컴포넌트 토대 |
 | **design-component-export-html** *(front-developer·미구현)* | 같은 입력 → html/MPA(jsp/php 블록) 산출 | 동일 ui-kit 자산 | (예정) html/MPA 블록 |
 | **design-image-web** *(designer)* | 웹 풀페이지 목업(세로 1:3) 생성 — HTML 전 룩 탐색. 핵심 이후 *선택* 단계, `design-html-prototype` 직전 | `DESIGN.md` 시드 | 웹 풀페이지 목업 |
 | **design-image-mobile** *(designer)* | 앱 화면 목업 생성 — HTML 전 룩 탐색. 핵심 이후 *선택* 단계, `design-html-prototype` 직전 | `DESIGN.md` 시드 | 앱 화면 목업 |
@@ -115,7 +115,7 @@ Q&A가 끝나면 미감이 **고정**됐는지 **열림**인지 판정한다. �
 .design/
   index.html · DESIGN.md                # 진입점 + 스펙 (DESIGN.md는 .design/ 안)
   view/    overview.html · logos.html · iconset-sheet.html · ui-kit.html · directions.html
-  assets/  css/{tokens.css,ui-kit.css} · icon/{*.svg,icon-map.json,vendor/*.svg} · logo/ · content/ · manifest.json   # 코드 import 전용
+  assets/  css/{tokens.css,components.css,parts/*.css} · icon/{*.svg,icon-map.json,vendor/*.svg} · logo/ · content/ · manifest.json   # 코드 import 전용
   prototype/ index.html                 # 참고 구현 (.design/ 안)
   reference/ BRAND_KIT.md · brand-tokens.json · manifest.json · brand-kit/ · page/   # 비-코드 자료
   candidate/ logo/ · icon/ · brand-kit/ · page/ · ui-kit/                            # 탐색
@@ -161,12 +161,12 @@ brand-kit 로고가 마음에 들지 않거나 단순히 프로젝트 로고를 
 
 ### design-ui-kit
 
-확정 brand kit 위에 제품에서 바로 쓰는 **UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작**한다(이미지 아님). 컴포넌트를 4그룹(Foundations/Core Interactive/Informational/Structural)으로 확정하고 스타일 방향을 합의한 뒤, 토큰 변수만 참조하는 `assets/css/ui-kit.css`를 저작한다. 쇼케이스 `view/ui-kit.html` 마크업·QA는 web-publisher에 위임. lock 후 design-md-compiler를 호출한다.
+확정 brand kit 위에 제품에서 바로 쓰는 **UI 컴포넌트 라이브러리를 HTML/CSS 코드로 직접 저작**한다(이미지 아님). 컴포넌트를 4그룹(Foundations/Core Interactive/Informational/Structural)으로 확정하고 스타일 방향을 합의한 뒤, 토큰 변수만 참조하는 컴포넌트 CSS를 **가족별 `assets/css/parts/*.css`로 분리 저작**하고 `components.css` 배럴(`@import tokens + parts`)로 모은다. 쇼케이스 `view/ui-kit.html` 마크업·QA는 web-publisher에 위임. lock 후 design-md-compiler를 호출한다.
 
 ![design-ui-kit 산출물 — UI 킷 쇼케이스](assets/ui-kit-example.png)
 
 ### design-md-compiler
 
-브랜드 킷·UI 킷·(있으면) 페이지 이미지 브리프를 바탕으로 외부 도구에서도 단독 활용 가능한 **`DESIGN.md`**를 만든다. 토큰 frontmatter(§4 = `tokens.css` 권위) + 컴포넌트 산문(§5 = `ui-kit.css` 권위)으로, 실제 구현자가 그대로 따를 수 있는 규칙으로 컴파일한다. **designer 핵심 파이프라인의 종착.**
+브랜드 킷·UI 킷·(있으면) 페이지 이미지 브리프를 바탕으로 외부 도구에서도 단독 활용 가능한 **`DESIGN.md`**를 만든다. 토큰 frontmatter(§4 = `tokens.css` 권위) + 컴포넌트 산문(§5 = `components.css` 권위)으로, 실제 구현자가 그대로 따를 수 있는 규칙으로 컴파일한다. **designer 핵심 파이프라인의 종착.**
 
 > 📄 산출 예시 — **[NookNote DESIGN.md](assets/design-md-example.md)** (토큰 frontmatter + §1~12 산문 전문)

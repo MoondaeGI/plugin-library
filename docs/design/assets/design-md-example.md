@@ -126,7 +126,7 @@ breakpoints: {}   # tokens.css에 --bp-* 없음 — §7·§12 참조
 - 헤어라인 {border.hairline}({colors.border})이 기본 구획·카드/입력/테이블 행 경계. 강조 경계는 {colors.text} 2px(테이블 헤더·마스트헤드).
 
 ## 5. 컴포넌트 규칙
-> 권위: `assets/css/ui-kit.css`의 실제 class·variant·강제상태. 구현자는 그대로 복사해 쓴다. 토큰은 점 표기 참조.
+> 권위: `assets/css/components.css`의 실제 class·variant·강제상태. 구현자는 그대로 복사해 쓴다. 토큰은 점 표기 참조.
 
 ### Button — `.btn` (+ `.btn-primary` `.btn-secondary` `.btn-ghost` `.btn-danger`, 크기 `.btn-sm` `.btn-lg`)
 - 형태: height {controls.md}(sm {controls.sm}/lg {controls.lg}), radius {radius.md}, 가로 padding {spacing.s5}, 텍스트 {typography.label} 700.
@@ -236,7 +236,7 @@ breakpoints: {}   # tokens.css에 --bp-* 없음 — §7·§12 참조
 - ❌ 스톡 인물·오피스 사진·클립아트·자물쇠/톱니/지구본 클리셰·3D 베벨.
 
 ## 10. 구현 제약
-- HTML/CSS: `assets/css/tokens.css` + `assets/css/ui-kit.css`를 그대로 사용. ui-kit.css는 토큰 변수만 참조(하드코딩 0). 색·폰트·radius·shadow는 `var(--token)`.
+- HTML/CSS: `assets/css/tokens.css` + `assets/css/components.css`를 그대로 사용. components.css는 토큰 변수만 참조(하드코딩 0). 색·폰트·radius·shadow는 `var(--token)`.
 - React 이식: ui-kit class를 얇은 컴포넌트 래퍼로 감싸 사용(예정: `design-component-export`). 토큰은 CSS 변수로 유지.
 - 접근성: 폼 컨트롤 `<label>` 연결, 아이콘 `aria-hidden`/`aria-label`, focus 가시(`:focus-visible`), 색만으로 상태 구분 금지(아이콘·텍스트 병행).
 - 반응형: 컨테이너 유동. 핵심 터치 요소 48px 권장. breakpoint 미정의(§7·§12).
@@ -251,7 +251,7 @@ breakpoints: {}   # tokens.css에 --bp-* 없음 — §7·§12 참조
 - ✅ 컴포넌트 재사용 구조 — 전부 토큰 기반 class.
 
 ## 12. Provenance & Known Gaps
-- 읽은 입력: `reference/BRAND_KIT.md` · `reference/brand-tokens.json` · `assets/css/tokens.css`(frontmatter 권위) · `assets/css/ui-kit.css`(§5 권위) · `candidate/ui-kit/ui-kit-briefs.md`(§5 의도) · `view/ui-kit.html` · `view/overview.html` · `candidate/brand-kit/brief.md` · 확정 자산(`assets/logo/logo.png`·`assets/icon/*.svg` 29) · 탐색 레퍼런스(`reference/brand-kit/key-visual.png`·`ui-base.png`·`logo-base.png`).
+- 읽은 입력: `reference/BRAND_KIT.md` · `reference/brand-tokens.json` · `assets/css/tokens.css`(frontmatter 권위) · `assets/css/components.css`(§5 권위) · `candidate/ui-kit/ui-kit-briefs.md`(§5 의도) · `view/ui-kit.html` · `view/overview.html` · `candidate/brand-kit/brief.md` · 확정 자산(`assets/logo/logo.png`·`assets/icon/*.svg` 29) · 탐색 레퍼런스(`reference/brand-kit/key-visual.png`·`ui-base.png`·`logo-base.png`).
 - **frontmatter**: `tokens.css`에서 재컴파일됨(거울, do not edit). tokens.css가 단일 권위.
 - **확정 자산 출처**:
   - 로고: `candidate/logo/logo-briefs.md` 존재 — 전용 로고 4안 탐색 후 **brand-kit base 마크로 단일 확정**(사용자 선택). 다크 변형 미생성(필요 시 design-logo 흐름 12).
@@ -260,4 +260,4 @@ breakpoints: {}   # tokens.css에 --bp-* 없음 — §7·§12 참조
   - 페이지 브리프·풀페이지 이미지 없음 → §6은 ui-kit 어휘 기반 골격만. 풀 페이지 디자인은 `design-image-mobile`(앱) 후 보강.
   - breakpoint 토큰(`--bp-*`) 없음 → §7 "유동·고정 정의 없음". 정식 반응형은 brand-kit에서 폼팩터 추가 필요.
   - 컨트롤 기본 높이 40px는 권장 터치타깃 44px 미만 — 핵심 터치 요소는 {controls.lg} 48px 권장(근거: tokens.css 관례값).
-- 추측 없음 — 모든 값은 tokens.css/ui-kit.css/BRAND_KIT 전사. 근거 얇은 항목 없음.
+- 추측 없음 — 모든 값은 tokens.css/components.css/BRAND_KIT 전사. 근거 얇은 항목 없음.

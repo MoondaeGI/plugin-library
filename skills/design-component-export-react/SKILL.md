@@ -1,11 +1,11 @@
 ---
 name: design-component-export-react
-description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·logo)을 제품 repo 루트의 바로 쓸 수 있는 react(Vite) 또는 next(App Router) npm 프로젝트 컴포넌트 토대로 물질화하는 스킬. 게이트로 타깃 택1(TypeScript 고정), 자산을 배포 트리로 복사하고, ui-kit.html 구조·ui-kit.css class를 직접 읽어 얇은 className 래퍼 TS 컴포넌트(+컴포넌트 내재 동작 hook)와 쇼케이스 진입점을 만든다. 페이지 배치·페이지 수준 wiring은 design-generate-code, html/MPA 산출은 design-component-export-html, 풀페이지 프로토타입은 design-html-prototype 몫이다. 소유는 front-developer 에이전트.
+description: 확정된 ui-kit 자산(tokens.css·components.css·ui-kit.html·icon·logo)을 제품 repo 루트의 바로 쓸 수 있는 react(Vite) 또는 next(App Router) npm 프로젝트 컴포넌트 토대로 물질화하는 스킬. 게이트로 타깃 택1(TypeScript 고정), 자산을 배포 트리로 복사하고, ui-kit.html 구조·components.css class를 직접 읽어 얇은 className 래퍼 TS 컴포넌트(+컴포넌트 내재 동작 hook)와 쇼케이스 진입점을 만든다. 페이지 배치·페이지 수준 wiring은 design-generate-code, html/MPA 산출은 design-component-export-html, 풀페이지 프로토타입은 design-html-prototype 몫이다. 소유는 front-developer 에이전트.
 ---
 
 # Design Component Export — React
 
-당신은 확정된 ui-kit 자산을 제품 repo 루트의 **바로 쓸 수 있는 react/next 컴포넌트 토대**로 물질화하는 프론트엔드 엔지니어다. 디자인을 새로 짓지 않는다 — ui-kit.html이 구조 권위, ui-kit.css가 class 권위, tokens.css가 토큰 권위다.
+당신은 확정된 ui-kit 자산을 제품 repo 루트의 **바로 쓸 수 있는 react/next 컴포넌트 토대**로 물질화하는 프론트엔드 엔지니어다. 디자인을 새로 짓지 않는다 — ui-kit.html이 구조 권위, components.css가 class 권위, tokens.css가 토큰 권위다.
 
 ## 목적·경계 (§1)
 
@@ -25,7 +25,7 @@ description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·
 ## 입력 파일 (대상 프로젝트 cwd `.design/` 기준, §3)
 
 - `.design/assets/css/tokens.css` — 토큰 변수 단일 권위.
-- `.design/assets/css/ui-kit.css` — 컴포넌트 class 권위(`@import "tokens.css"`).
+- `.design/assets/css/components.css` (+ `parts/*.css`) — 컴포넌트 class 권위. `components.css`는 배럴(`@import "tokens.css"` + 각 `parts/<family>.css`).
 - `.design/view/ui-kit.html` — 정규 마크업 specimen(가족·변형·상태 매트릭스). **중첩 구조·변형/상태 탐지의 권위 마크업.**
 - `.design/assets/icon/*.svg` + `icon-map.json` — 아이콘(viewBox 0 0 24 24·currentColor).
 - `.design/reference/brand-tokens.json` — 폰트 패밀리 원본.
@@ -39,12 +39,12 @@ description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·
 
 | `.design/` 원본 | repo 루트 목적지 |
 |---|---|
-| `assets/css/*.css` | `src/assets/css/*.css` |
+| `assets/css/` 전체(tokens·components·parts/*) | `src/assets/css/` (트리 보존) |
 | `assets/icon/*.svg` + `icon-map.json` | `src/assets/icon/*` |
 | `assets/logo/favicon*` | `public/favicon.*` |
 | `assets/logo/*`(그 외)·`assets/content/*`·`reference/brand-kit/*` 이미지 | `public/image/*` |
 
-- `tokens.css`·`ui-kit.css`는 **내용 수정 없이 그대로 복사**(권위 유지). `@import "tokens.css"`만 빌드 환경에 맞게 처리(§8).
+- `tokens.css`·`components.css`·`parts/*`는 **내용 수정 없이 그대로 복사**(권위 유지·디렉터리 트리 보존). `components.css`의 `@import`(tokens + parts)만 빌드 환경에 맞게 처리(§8).
 - **파비콘**: `assets/logo/favicon*`가 있으면 그걸 쓰고, 없으면 **logo를 대용**하되 "favicon 없음 — 다중 해상도 누락 가능" gap 로그를 사용자에게 보고한다.
 - **아이콘**: 원본 svg는 `src/assets/icon/`에 두고, `src/components/common/icons.tsx` **한 모듈**에서 svgr(`?react`)로 인라인해 **개별 named 컴포넌트**로 export한다 — icon-map 이름을 PascalCase+`Icon`으로(`search`→`SearchIcon`, `chevron-left`→`ChevronLeftIcon`). currentColor 상속·`size` prop. 같은 모듈이 **내부 name 레지스트리**(`name → SvgComponent`)도 함께 export해 `IconButton`·`Search` 등이 `name`으로 참조한다. **범용 공개 `<Icon name>` 컴포넌트는 두지 않는다** — 개별 컴포넌트가 공개 표면이고, 레지스트리는 `name` 소비자용 내부 표면이다.
 - **IconButton**: 안쪽에 아이콘을 조합(`children`)시키지 않는다 — `<IconButton name="search" />`처럼 **`name` prop**으로 받아 내부에서 레지스트리로 해석한다.
@@ -52,9 +52,9 @@ description: 확정된 ui-kit 자산(tokens.css·ui-kit.css·ui-kit.html·icon·
 
 ## class → prop 매핑 (규약, §4b)
 
-ui-kit.css는 그대로 쓰고, **얇은 래퍼의 prop만** 도출한다. 도출은 ui-kit.html의 가족별 specimen(변형·상태 매트릭스)을 권위로 아래 규약을 적용한다:
+components.css는 그대로 쓰고, **얇은 래퍼의 prop만** 도출한다. 도출은 ui-kit.html의 가족별 specimen(변형·상태 매트릭스)을 권위로 아래 규약을 적용한다:
 
-| ui-kit.css 패턴 | 의미 | prop |
+| components.css 패턴 | 의미 | prop |
 |---|---|---|
 | `.btn` + `.btn-sm`/`.btn-lg` | control-h 변형 | `size: 'sm' \| 'md' \| 'lg'` (md=기본) |
 | `.btn-primary`/`.btn-secondary`/… | 가족 변형 접미사 | `variant` (가족별 union) |
@@ -62,14 +62,14 @@ ui-kit.css는 그대로 쓰고, **얇은 래퍼의 prop만** 도출한다. 도�
 | `.is-hover`/`.is-focus`/`.is-disabled` | 의사상태 | 런타임 — **prop 아님**(브라우저가 부여) |
 
 - **variant vs 자식 요소 구분(중요)**: `.btn-primary`(variant)와 `.footer-brand`·`.nav-links`·`.section-title`(컴포넌트 자식 요소)은 class 이름만으론 구분되지 않는다 — **ui-kit.html의 중첩 구조를 권위로** 판정한다. 자식 요소는 prop이 아니라 래퍼 내부 마크업이다.
-- variant union 값은 ui-kit.css에 **실재하는 접미사만**(없는 변형 생성 금지).
+- variant union 값은 components.css에 **실재하는 접미사만**(없는 변형 생성 금지).
 - 규약으로 안 잡히는 가족 고유 변형은 **사람 확인 게이트**로 넘긴다 — 즉흥으로 prop을 만들지 않는다.
 
 ## 컴포넌트 모델 (§5)
 
-- **얇은 className 래퍼** + 전역 `tokens.css`·`ui-kit.css` **1회 import** + `className`/`style`/rest-props passthrough.
+- **얇은 className 래퍼** + 전역 `tokens.css`·`components.css` **1회 import** + `className`/`style`/rest-props passthrough.
   - 예: `<Button variant="primary" size="md" />` → `<button className="btn btn-primary">`.
-  - CSS Module·styled 미사용 — tokens/ui-kit.css 단일 권위 유지 + 상류 재싱크가 파일 덮기 한 번으로 끝나게. 국소 override는 `className`/`style` passthrough 또는 토큰 var로(컴포넌트별 css 추출 안 함 — YAGNI).
+  - CSS Module·styled 미사용 — tokens/components.css 단일 권위 유지 + 상류 재싱크가 파일 덮기 한 번으로 끝나게. 국소 override는 `className`/`style` passthrough 또는 토큰 var로(컴포넌트별 css 추출 안 함 — YAGNI).
 - **커버리지**: ui-kit.html에 있는 재사용 가능 전체 가족(button·input·textarea·select·checkbox·radio·toggle·badge/chip·filter chip·card·alert·toast·tooltip·tag·navbar·tabs·breadcrumb·table·pagination·list·footer·section header 등). Foundations(색 스와치·타이포 스케일 등 토큰 시연)는 컴포넌트화 제외.
 - **상태 컴포넌트**(checkbox·radio·toggle·tabs 등): **uncontrolled 기본 + 선택적 controlled prop**. API: `defaultChecked`(uncontrolled, 내부 state) / `checked`+`onChange`(controlled). 둘 다 받고 `checked`가 주어지면 controlled로 동작. 내재 토글은 이 스킬, 외부 제어가 필요하면 controlled로 generate-code가 wiring.
 
@@ -110,7 +110,7 @@ index.html                            (app/ 진입)
 public/{image/, favicon.*}            public/{image/, favicon.*}
 src/main.tsx       ← 전역 css import   src/app/layout.tsx ← next/font·전역 css·metadata
 src/App.tsx        ← 쇼케이스 갤러리    src/app/page.tsx   ← 쇼케이스 갤러리
-src/assets/css/{tokens,ui-kit}.css    src/assets/css/{tokens,ui-kit}.css
+src/assets/css/{tokens,components}.css+parts/ src/assets/css/{tokens,components}.css+parts/
 src/assets/icon/{*.svg, icon-map}     src/assets/icon/{*.svg, icon-map}
 src/components/common/*.tsx ← 래퍼     src/components/common/*.tsx ← 래퍼
 src/components/common/icons.tsx        src/components/common/icons.tsx   ← 개별 아이콘 컴포넌트 + registry
@@ -123,15 +123,15 @@ src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유
 
 - **디렉터리 규약**: ui-kit 가족 래퍼·barrel은 전부 **`src/components/common/`**에 둔다(루트 `components/`에 flat 금지). 페이지별 컴포넌트는 이 스킬 범위가 아니며(→ generate-code), 추후 **`src/components/<page>/`**(예: `components/login/LoginForm.tsx`)에 페이지 폴더로 둔다. 유틸 함수는 **`src/utils/`**(`lib/` 아님 — 예: `utils/cx.ts`).
 - `package.json`은 의존성·스크립트를 **작성**하되 **`npm install`은 자동 실행하지 않는다**(옵션·사람 확인 — 전역 CLAUDE.md "명령 전 확인").
-- next 전역 css는 `app/layout.tsx`에서 1회 import. `ui-kit.css`의 `@import "tokens.css"`는 번들러 경고/성능을 피해 PostCSS(`postcss-import`)로 inline 처리한다.
+- next 전역 css는 `app/layout.tsx`에서 1회 import. `components.css`의 `@import`(tokens.css + parts/*)는 번들러 경고/성능을 피해 PostCSS(`postcss-import`)로 inline 처리한다.
 - 진입점(`App.tsx`/`page.tsx`)은 export된 전체 가족을 ui-kit.html 4그룹 구조에 맞춰 렌더하는 **쇼케이스 갤러리** — 검증 표면 겸 핸드오프 레퍼런스(generate-code가 나중에 실제 페이지로 대체).
 
 ## 흐름·게이트 (§9)
 
-1. **전제 감지** — `.design/assets/css/{tokens,ui-kit}.css`·`view/ui-kit.html` 존재 확인. 없으면 상류(design-ui-kit → design-md-compiler) 안내.
+1. **전제 감지** — `.design/assets/css/{tokens,components}.css`·`view/ui-kit.html` 존재 확인. 없으면 상류(design-ui-kit → design-md-compiler) 안내.
 2. **게이트1 — 타깃 선택** (react | next). 1개/실행.
 3. **충돌 검사(비파괴)** — repo 루트 기존 `package.json`·`src/` 충돌 시 **덮기 전 사용자 확인**. 기본은 안 덮음.
-4. **생성** — 자산 복사(이전 표) → ui-kit.html·ui-kit.css 직독 + 매핑 규약으로 래퍼·hook·**오버레이 provider(§6.5, 해당 가족 있을 때)**·진입점·프로젝트 파일 생성. 사람 확인 게이트로 넘긴 변형·gap 로그는 사용자에게 보고.
+4. **생성** — 자산 복사(이전 표) → ui-kit.html·components.css 직독 + 매핑 규약으로 래퍼·hook·**오버레이 provider(§6.5, 해당 가족 있을 때)**·진입점·프로젝트 파일 생성. 사람 확인 게이트로 넘긴 변형·gap 로그는 사용자에게 보고.
 5. **검증 게이트** (아래).
 6. **lock** — 승인 시 완료, `design-generate-code` 다음 단계 안내.
 
@@ -140,7 +140,7 @@ src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유
 "쇼케이스 부팅 성공"은 신호가 약하다(얇은 래퍼는 거의 항상 부팅됨). 그래서:
 
 - **기본(install-free, 결정적)**:
-  - (i) 생성 컴포넌트가 참조하는 class명을 `ui-kit.css`와 **Grep 결정적 대조** — 존재하지 않는 class·오타 적발.
+  - (i) 생성 컴포넌트가 참조하는 class명을 **css 세트(`components.css` + `parts/*.css`) 전체**와 **Grep 결정적 대조** — 존재하지 않는 class·오타 적발.
   - (ii) 구조 완전성 — **ui-kit.html 가족 목록** 대비 생성 래퍼 누락 적발(Read/Grep).
 - **옵션(사람 확인 후)**: `tsc --noEmit`, dev 서버 부팅. `npm install` 필요라 기본 아님.
 - **시각 동등성**은 ui-kit.html이 이미 권위 쇼케이스 — 두 번째 쇼케이스를 픽셀 대조하지 않는다.

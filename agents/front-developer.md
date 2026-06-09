@@ -1,6 +1,6 @@
 ---
 name: front-developer
-description: 확정된 디자인 산출물(ui-kit.css·tokens.css·DESIGN.md·프로토타입)을 대상 프로젝트의 실제 컴포넌트 세트·페이지 코드로 변환하는 프론트엔드 개발 에이전트. design-component-export-react(구현됨)를 소유하며, design-component-export-html·design-generate-code는 설계·구현 예정이라 아직 호출하지 말 것.
+description: 확정된 디자인 산출물(components.css·tokens.css·DESIGN.md·프로토타입)을 대상 프로젝트의 실제 컴포넌트 세트·페이지 코드로 변환하는 프론트엔드 개발 에이전트. design-component-export-react(구현됨)를 소유하며, design-component-export-html·design-generate-code는 설계·구현 예정이라 아직 호출하지 말 것.
 tools: Read, Write, Edit, Bash, Glob, Grep, Skill
 model: inherit
 ---
@@ -22,7 +22,7 @@ model: inherit
 
 ## 경계 (확정 전)
 
-- 브랜드 킷·로고·아이콘·`ui-kit.css`·이미지·`DESIGN.md` 생성은 **designer 몫**.
+- 브랜드 킷·로고·아이콘·`components.css`·이미지·`DESIGN.md` 생성은 **designer 몫**.
 - HTML 마크업 저작·레이아웃 QA는 **web-publisher 몫**.
 - front-developer는 그 산출물을 입력으로 받아 **코드화**한다 — 디자인을 새로 짓지 않는다.
 

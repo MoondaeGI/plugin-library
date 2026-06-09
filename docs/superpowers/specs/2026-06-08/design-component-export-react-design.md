@@ -41,7 +41,7 @@ bare `design-component-export`는 위 둘로 갈라지며 사라진다. react·n
 권위 입력:
 
 - `.design/assets/css/tokens.css` — 토큰 변수(색·폰트·radius·shadow·spacing) 단일 권위.
-- `.design/assets/css/ui-kit.css` — 컴포넌트 class 권위(`@import "tokens.css"`).
+- `.design/assets/css/components.css` — 컴포넌트 class 권위(`@import "tokens.css"`).
 - `.design/view/ui-kit.html` — 정규 마크업 specimen(가족·변형·상태 매트릭스). 컴포넌트 중첩 구조·변형/상태 탐지의 권위 마크업.
 - `.design/assets/icon/*.svg` + `.design/assets/icon/icon-map.json` — 아이콘(viewBox 0 0 24 24·currentColor).
 - `.design/reference/brand-tokens.json` — 폰트 패밀리(typography) 원본.
@@ -50,17 +50,17 @@ bare `design-component-export`는 위 둘로 갈라지며 사라진다. react·n
 
 ## §4. 산출 규약 (타깃 무관)
 
-품질 편차는 "결정적 스캐폴드"와 "비결정적 가족별 코드젠"이 섞일 때 생긴다. 비결정성을 줄이려고 두 가지를 **명시 규약**으로 고정한다. 단 이 규약은 파서·이전 도구(mjs)가 아니라 **SKILL 산문**이다 — ui-kit 자산이 권위이므로 LLM이 `ui-kit.html`·`ui-kit.css`를 직접 읽어 규약을 적용한다. class를 정규식으로 추출하는 도구는 두지 않는다(아래 (b) 참조: variant와 자식 요소는 이름만으론 구분되지 않아 ui-kit.html 구조를 봐야 하고, 그건 래퍼 저작 LLM이 어차피 하는 일이다). `scripts/lib`는 이 repo에서 LLM이 못 하는 것(이미지 합성·네트워크·브라우저·SVG 정규화)만 두는 자리라 여기 해당 없음.
+품질 편차는 "결정적 스캐폴드"와 "비결정적 가족별 코드젠"이 섞일 때 생긴다. 비결정성을 줄이려고 두 가지를 **명시 규약**으로 고정한다. 단 이 규약은 파서·이전 도구(mjs)가 아니라 **SKILL 산문**이다 — ui-kit 자산이 권위이므로 LLM이 `ui-kit.html`·`components.css`를 직접 읽어 규약을 적용한다. class를 정규식으로 추출하는 도구는 두지 않는다(아래 (b) 참조: variant와 자식 요소는 이름만으론 구분되지 않아 ui-kit.html 구조를 봐야 하고, 그건 래퍼 저작 LLM이 어차피 하는 일이다). `scripts/lib`는 이 repo에서 LLM이 못 하는 것(이미지 합성·네트워크·브라우저·SVG 정규화)만 두는 자리라 여기 해당 없음.
 
 ### (a) 자산 이전 — 복사 규칙
 
-`.design/assets/*`를 repo 루트의 배포용 트리로 **복사·이전**하고 참조 경로를 실배포 경로로 재작성한다(아래 §7). `tokens.css`·`ui-kit.css`는 내용 수정 없이 그대로 복사(권위 유지). 복사 못 한/분류 안 되는 자산은 gap 로그로 보고.
+`.design/assets/*`를 repo 루트의 배포용 트리로 **복사·이전**하고 참조 경로를 실배포 경로로 재작성한다(아래 §7). `tokens.css`·`components.css`는 내용 수정 없이 그대로 복사(권위 유지). 복사 못 한/분류 안 되는 자산은 gap 로그로 보고.
 
 ### (b) class → prop 매핑 테이블
 
-ui-kit.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, 가족 prop 인터페이스 도출을 가족별 즉흥이 아닌 규약 적용으로 만든다. 도출은 ui-kit.html의 가족별 specimen을 권위로 적용한다.
+components.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, 가족 prop 인터페이스 도출을 가족별 즉흥이 아닌 규약 적용으로 만든다. 도출은 ui-kit.html의 가족별 specimen을 권위로 적용한다.
 
-| ui-kit.css 패턴 | prop |
+| components.css 패턴 | prop |
 |---|---|
 | `.btn` + `.btn-sm`/`.btn-lg` (control-h 변형) | `size: 'sm' \| 'md' \| 'lg'` |
 | `.btn-primary`/`.btn-secondary`/… (가족 변형 접미사) | `variant` (가족별 union) |
@@ -69,13 +69,13 @@ ui-kit.css의 class 명명 규약을 **명시 매핑 테이블**로 고정해, �
 
 - **variant vs 자식 요소 구분(중요)**: `.btn-primary`(variant)와 `.footer-brand`·`.nav-links`·`.section-title`(컴포넌트 자식 요소)은 class 이름만으론 구분되지 않는다 — **ui-kit.html의 중첩 구조를 권위로** 판정한다(자식 요소는 prop이 아니라 래퍼 내부 마크업). 정규식 추출 도구를 두지 않는 이유.
 - 매핑 테이블로 안 잡히는 변형(가족 고유 class)은 **사람 확인 게이트**로 넘긴다 — 즉흥으로 prop을 만들지 않는다.
-- variant union 값은 ui-kit.css에 실재하는 class 접미사에서만 뽑는다(없는 변형 생성 금지).
+- variant union 값은 components.css에 실재하는 class 접미사에서만 뽑는다(없는 변형 생성 금지).
 
 ## §5. 컴포넌트 모델
 
-- **얇은 className 래퍼** + 전역 `tokens.css`·`ui-kit.css` **1회 import** + `className`/`style`/rest-props passthrough.
+- **얇은 className 래퍼** + 전역 `tokens.css`·`components.css` **1회 import** + `className`/`style`/rest-props passthrough.
   - 예: `<Button variant="primary" size="md" />` → `<button className="btn btn-primary">`.
-  - CSS Module·styled 미사용 — tokens/ui-kit.css 단일 권위 유지 + 상류 재싱크가 파일 덮기 한 번으로 끝나게.
+  - CSS Module·styled 미사용 — tokens/components.css 단일 권위 유지 + 상류 재싱크가 파일 덮기 한 번으로 끝나게.
   - 국소 override는 `className`/`style` passthrough 또는 토큰 var로 해결(컴포넌트별 css 추출 안 함 — YAGNI).
 - **커버리지**: ui-kit.html에 있는 재사용 가능 전체 가족(button·input·textarea·select·checkbox·radio·toggle·badge/chip·filter chip·card·alert·toast·tooltip·tag·navbar·tabs·breadcrumb·table·pagination·list·footer·section header 등). Foundations(색 스와치·타이포 스케일 등 토큰 시연)는 컴포넌트화 제외.
 - **상태 컴포넌트**(checkbox·radio·toggle·tabs 등): **uncontrolled 기본 + 선택적 controlled prop**. 내재 토글은 이 스킬, 외부 제어가 필요하면 controlled로 generate-code가 wiring.
@@ -120,7 +120,7 @@ src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유
 
 - **디렉터리 규약**: ui-kit 가족 래퍼·barrel은 `src/components/common/`(루트 `components/` flat 금지). 페이지 컴포넌트는 추후 `src/components/<page>/`(예: `components/login/LoginForm.tsx` — generate-code 몫). 유틸은 `src/utils/`(`lib/` 아님).
 - `package.json`은 의존성과 스크립트를 포함해 **작성**하되, **`npm install`은 자동 실행하지 않는다**(옵션·사람 확인 — 전역 CLAUDE.md "명령 전 확인").
-- next 전역 css는 `app/layout.tsx`에서 1회 import. `ui-kit.css`의 `@import "tokens.css"`는 번들러 경고/성능을 피해 PostCSS로 inline 처리한다.
+- next 전역 css는 `app/layout.tsx`에서 1회 import. `components.css`의 `@import "tokens.css"`는 번들러 경고/성능을 피해 PostCSS로 inline 처리한다.
 - 진입점(`App.tsx`/`page.tsx`)은 export된 전체 가족을 ui-kit.html 4그룹 구조에 맞춰 렌더하는 **쇼케이스 갤러리** — 검증 표면 겸 핸드오프 레퍼런스. (generate-code가 나중에 실제 페이지로 대체·추가.)
 
 ## §9. 흐름·게이트
@@ -137,7 +137,7 @@ src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유
 "쇼케이스 부팅 성공"은 신호가 약하다(얇은 래퍼는 거의 항상 부팅됨 → 잘못된 prop·class 오타·시각 회귀를 못 잡음, LLM 자기검수 함정). 그래서:
 
 - **기본(install-free, 결정적)**:
-  - (i) 생성된 컴포넌트가 참조하는 class명을 `ui-kit.css`와 **Grep으로 결정적 대조** — 존재하지 않는 class·오타 적발.
+  - (i) 생성된 컴포넌트가 참조하는 class명을 `components.css`와 **Grep으로 결정적 대조** — 존재하지 않는 class·오타 적발.
   - (ii) 구조 완전성 체크 — ui-kit.html 가족 목록 대비 생성 래퍼 누락 적발(Read/Grep).
 - **옵션(사람 확인 후)**: `tsc --noEmit` 타입체크, dev 서버 부팅. `npm install`이 필요하므로 기본 아님(부수효과·비가역성).
 - **시각 동등성**은 ui-kit.html이 이미 권위 쇼케이스이므로 거기에 기댄다 — 두 번째 쇼케이스를 픽셀 대조하지 않는다.
@@ -164,6 +164,6 @@ src/utils/*.ts       ← cx 등 유틸       src/utils/*.ts       ← cx 등 유
 
 ## §14. 미해결·리스크
 
-- **specimen → prop 도출의 잔여 비결정성**: 매핑 테이블이 공통 규약은 잡지만, 가족 고유 변형은 사람 확인에 의존. 테이블 커버리지가 plan에서 ui-kit.css를 실제로 읽어 더 구체화돼야 함.
+- **specimen → prop 도출의 잔여 비결정성**: 매핑 테이블이 공통 규약은 잡지만, 가족 고유 변형은 사람 확인에 의존. 테이블 커버리지가 plan에서 components.css를 실제로 읽어 더 구체화돼야 함.
 - **상태 컴포넌트 controlled/uncontrolled API**: uncontrolled 기본 + 선택 controlled의 구체 prop 형태(`defaultChecked`/`checked`+`onChange` 등)는 plan에서 가족별로 확정.
 - **next `@import` inline**: PostCSS 설정의 구체 방식은 plan에서 확정.
