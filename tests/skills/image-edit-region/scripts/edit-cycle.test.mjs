@@ -31,16 +31,36 @@ test('runEditCycle: 마스크를 만들고 image-gen 을 부른 뒤 결과를 �
     quality: 'low', workDir: dir, runImageGen,
   });
 
-  // image-gen 에 --image(원본)·--mask·--prompt·--quality low 가 넘어갔는지
+  // image-gen 에 --image(원본)·--mask·--prompt·--quality low·--size 가 넘어갔는지
   assert.ok(seen.includes('--image') && seen.includes(imagePath));
   assert.ok(seen.includes('--mask'));
   assert.ok(seen.includes('--quality') && seen[seen.indexOf('--quality')+1] === 'low');
+  assert.ok(seen.includes('--size'));
   // 결과 파일 존재 + bbox 안 파랑/밖 빨강
   assert.ok(existsSync(res.outPath));
   const { px, width } = decodePNG(readFileSync(res.outPath));
   const at = (x,y)=>[...px.subarray((y*width+x)*4,(y*width+x)*4+4)];
   assert.deepEqual(at(0,0), [255,0,0,255]);
   assert.deepEqual(at(1,1), [0,0,255,255]);
+});
+
+test('runEditCycle: API 결과 크기가 달라도 원본 크기로 되돌려 합성', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ier-'));
+  const imagePath = path.join(dir, 'orig.png');
+  writeFileSync(imagePath, solid(4, 4, [255, 0, 0, 255])); // 원본 4x4 빨강
+  const runImageGen = async (args) => {
+    const outIdx = args.indexOf('--out');
+    writeFileSync(args[outIdx + 1], solid(8, 8, [0, 0, 255, 255])); // API는 8x8 파랑 반환
+    return { status: 0, stdout: '', stderr: '' };
+  };
+  const res = await runEditCycle({
+    imagePath, bbox: { x: 1, y: 1, w: 2, h: 2 }, prompt: 'x', quality: 'low', workDir: dir, runImageGen,
+  });
+  const { px, width, height } = decodePNG(readFileSync(res.outPath));
+  assert.equal(width, 4); assert.equal(height, 4); // 원본 크기로 복원
+  const at = (x,y)=>[...px.subarray((y*width+x)*4,(y*width+x)*4+4)];
+  assert.deepEqual(at(0,0), [255,0,0,255]); // bbox 밖 = 원본 빨강
+  assert.deepEqual(at(1,1), [0,0,255,255]); // bbox 안 = 편집 파랑
 });
 
 test('runEditCycle: image-gen 비정상 종료 시 에러를 던진다', async () => {

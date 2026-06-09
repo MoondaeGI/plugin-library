@@ -38,6 +38,30 @@ export function assertBbox(bbox, width, height) {
   if (x < 0 || y < 0 || x + w > width || y + h > height) throw new CompositeError('bbox 가 이미지 범위를 벗어났습니다.');
 }
 
+// PNG 를 targetW×targetH 로 bilinear 리샘플(RGBA 반환). 크기가 같으면 RGBA로만 재인코드.
+export function resizePNG(buf, targetW, targetH) {
+  const { width: sw, height: sh, bpp, px } = decodePNG(buf);
+  const src = toRGBA(px, bpp, sw, sh);
+  if (sw === targetW && sh === targetH) return encodePNG(src, targetW, targetH, 6);
+  const out = Buffer.alloc(targetW * targetH * 4);
+  for (let y = 0; y < targetH; y++) {
+    const fy = Math.min(sh - 1, Math.max(0, (y + 0.5) * sh / targetH - 0.5));
+    const y0 = Math.floor(fy), y1 = Math.min(sh - 1, y0 + 1), wy = fy - y0;
+    for (let x = 0; x < targetW; x++) {
+      const fx = Math.min(sw - 1, Math.max(0, (x + 0.5) * sw / targetW - 0.5));
+      const x0 = Math.floor(fx), x1 = Math.min(sw - 1, x0 + 1), wx = fx - x0;
+      const oi = (y * targetW + x) * 4;
+      for (let c = 0; c < 4; c++) {
+        const p00 = src[(y0*sw+x0)*4+c], p01 = src[(y0*sw+x1)*4+c];
+        const p10 = src[(y1*sw+x0)*4+c], p11 = src[(y1*sw+x1)*4+c];
+        const top = p00 + (p01 - p00) * wx, bot = p10 + (p11 - p10) * wx;
+        out[oi + c] = Math.round(top + (bot - top) * wy);
+      }
+    }
+  }
+  return encodePNG(out, targetW, targetH, 6);
+}
+
 // 원본 복사본의 bbox 영역에 edited 의 같은 영역 픽셀을 덮어쓴다(접근 2 재합성).
 // original·edited 는 같은 크기여야 한다(접근 2는 전체를 보내고 전체를 받으므로 보장).
 export function compositeRegion(originalBuf, editedBuf, bbox) {

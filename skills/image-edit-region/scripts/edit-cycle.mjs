@@ -6,10 +6,15 @@ import { writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { decodePNG } from '../../image-gen/scripts/autocrop.mjs';
-import { buildMask, compositeRegion } from './composite.mjs';
+import { buildMask, compositeRegion, resizePNG } from './composite.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IMAGE_GEN = path.resolve(__dirname, '../../image-gen/scripts/image-gen.mjs');
+
+// gpt-image-2 크기 제약: 변이 16의 배수, 각 변 ≤3840, 긴변/짧은변 비율 ≤3.
+export function gptImageSizeOk(w, h) {
+  return w % 16 === 0 && h % 16 === 0 && w <= 3840 && h <= 3840 && Math.max(w, h) / Math.min(w, h) <= 3;
+}
 
 export class EditCycleError extends Error {
   constructor(message) { super(message); this.name = 'EditCycleError'; }
@@ -32,11 +37,13 @@ export async function runEditCycle({ imagePath, bbox, prompt, quality, workDir, 
 
   const editedApi = path.join(workDir, `api-${tag}.png`);
 
+  const size = gptImageSizeOk(width, height) ? `${width}x${height}` : 'auto';
   const args = [
     '--image', imagePath,
     '--mask', maskPath,
     '--prompt', prompt,
     '--quality', quality,
+    '--size', size,
     '--out', editedApi,
     '--force',
   ];
@@ -46,6 +53,8 @@ export async function runEditCycle({ imagePath, bbox, prompt, quality, workDir, 
   }
 
   const outPath = path.join(workDir, `preview-${tag}.png`);
-  writeFileSync(outPath, compositeRegion(orig, readFileSync(editedApi), bbox));
+  // API 결과가 원본과 다른 크기로 올 수 있으므로(특히 size=auto) 원본 크기로 되돌린 뒤 합성한다.
+  const editedResized = resizePNG(readFileSync(editedApi), width, height);
+  writeFileSync(outPath, compositeRegion(orig, editedResized, bbox));
   return { outPath, maskPath, editedApi };
 }

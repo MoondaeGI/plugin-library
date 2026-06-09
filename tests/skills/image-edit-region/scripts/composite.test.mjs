@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildMask, toRGBA, compositeRegion } from '../../../../skills/image-edit-region/scripts/composite.mjs';
+import { buildMask, toRGBA, compositeRegion, resizePNG } from '../../../../skills/image-edit-region/scripts/composite.mjs';
 import { decodePNG, encodePNG } from '../../../../skills/image-gen/scripts/autocrop.mjs';
 
 // 단색 RGBA PNG Buffer 생성 헬퍼
@@ -49,4 +49,21 @@ test('compositeRegion: 크기 다른 edited 는 거부', () => {
   const original = solidRGBA(4, 4, [255, 0, 0, 255]);
   const edited   = solidRGBA(3, 3, [0, 0, 255, 255]);
   assert.throws(() => compositeRegion(original, edited, { x: 0, y: 0, w: 2, h: 2 }), /크기/);
+});
+
+test('resizePNG: 단색은 크기를 바꿔도 같은 색', () => {
+  const out = resizePNG(solidRGBA(2, 2, [10, 20, 30, 255]), 4, 4);
+  const { px, width, height } = decodePNG(out);
+  assert.equal(width, 4); assert.equal(height, 4);
+  // 단색을 리샘플하면 모든 픽셀이 동일해야 한다
+  for (let i = 0; i < width * height; i++) {
+    assert.deepEqual([...px.subarray(i*4, i*4+4)], [10, 20, 30, 255]);
+  }
+});
+
+test('resizePNG: 같은 크기는 그대로(RGBA)', () => {
+  const out = resizePNG(solidRGBA(3, 3, [1, 2, 3, 255]), 3, 3);
+  const { px, width } = decodePNG(out);
+  assert.equal(width, 3);
+  assert.deepEqual([...px.subarray(0, 4)], [1, 2, 3, 255]);
 });

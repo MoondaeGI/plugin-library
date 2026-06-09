@@ -17,14 +17,13 @@ export class RegionEditInputError extends Error {
 }
 
 export function parseArgs(argv) {
-  const o = { image: undefined, prompt: '', out: undefined, model: 'gpt-image-2' };
+  const o = { image: undefined, prompt: '', out: undefined };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]; const next = () => argv[++i];
     switch (a) {
       case '--image': o.image = next(); break;
       case '--prompt': o.prompt = next() ?? ''; break;
       case '--out': o.out = next(); break;
-      case '--model': o.model = next(); break;
       case '--help': case '-h': o.help = true; break;
       default: throw new RegionEditInputError(`알 수 없는 인자: ${a}`);
     }
@@ -49,7 +48,7 @@ function openBrowser(url) {
 
 export async function main(argv) {
   const opts = parseArgs(argv);
-  if (opts.help) { console.log('usage: node region-edit.mjs --image <png> [--prompt ...] [--out ...] [--model ...]'); return 0; }
+  if (opts.help) { console.log('usage: node region-edit.mjs --image <png> [--prompt ...] [--out ...]'); return 0; }
   const image = path.resolve(opts.image);
   if (!existsSync(image)) throw new RegionEditInputError(`이미지를 찾을 수 없습니다: ${image}`);
   const outPath = resolveOutPath(image, opts.out);
