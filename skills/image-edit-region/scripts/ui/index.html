@@ -2,34 +2,104 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <title>image-edit-region</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>영역 편집 · image-edit-region</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 16px; background: #111; color: #eee; }
-    #wrap { display: flex; gap: 16px; flex-wrap: wrap; }
-    canvas { border: 1px solid #444; cursor: crosshair; max-width: 100%; }
-    .col { display: flex; flex-direction: column; gap: 8px; }
-    textarea { width: 360px; height: 60px; }
-    button { padding: 8px 14px; font-size: 14px; }
-    #status { min-height: 1.2em; color: #9cf; }
-    img#after { border: 1px solid #444; max-width: 360px; display: none; }
+    :root {
+      --bg:#13151a; --panel:#1b1e26; --panel-2:#232733; --border:#2d3240;
+      --text:#e8eaf0; --muted:#98a1b2; --accent:#6d8cff; --accent-700:#4f6fe6;
+      --ok:#39d98a; --danger:#ff6b6b; --radius:14px;
+    }
+    * { box-sizing:border-box; }
+    html,body { height:100%; }
+    body { margin:0; background:radial-gradient(1200px 600px at 70% -10%, #1d2230 0%, var(--bg) 60%);
+      color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+    header { padding:20px 28px 14px; }
+    header h1 { margin:0; font-size:17px; font-weight:680; letter-spacing:.2px; display:flex; align-items:center; gap:9px; }
+    header h1 .dot { width:9px; height:9px; border-radius:50%; background:var(--accent); box-shadow:0 0 12px var(--accent); }
+    header p { margin:6px 0 0 18px; font-size:13px; color:var(--muted); }
+    main { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:22px; padding:8px 28px 28px; align-items:start; }
+    @media (max-width:880px){ main{ grid-template-columns:1fr; } }
+    .card { background:linear-gradient(180deg,var(--panel) 0%, #181b22 100%); border:1px solid var(--border);
+      border-radius:var(--radius); padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.35); }
+    .card h2 { margin:0 0 12px; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-weight:650; }
+    .canvas-wrap { display:flex; justify-content:center; align-items:center; background:
+      repeating-conic-gradient(#1e222b 0% 25%, #20242e 0% 50%) 50% / 22px 22px; border-radius:10px; padding:12px; }
+    canvas { max-width:100%; height:auto; border-radius:8px; cursor:crosshair; box-shadow:0 6px 18px rgba(0,0,0,.4); }
+    .controls { display:flex; flex-direction:column; gap:16px; }
+    .field { display:flex; flex-direction:column; gap:7px; font-size:12px; color:var(--muted); }
+    textarea { resize:vertical; min-height:78px; padding:11px 13px; border-radius:10px; border:1px solid var(--border);
+      background:var(--panel-2); color:var(--text); font:inherit; font-size:14px; line-height:1.45; }
+    textarea:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(109,140,255,.18); }
+    .btns { display:flex; gap:9px; }
+    button { flex:1; border:1px solid var(--border); background:var(--panel-2); color:var(--text); padding:11px 14px;
+      border-radius:10px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; transition:transform .1s, background .15s, border-color .15s; }
+    button:hover:not(:disabled){ border-color:#3c4356; transform:translateY(-1px); }
+    button:active:not(:disabled){ transform:translateY(0); }
+    button:disabled { opacity:.4; cursor:not-allowed; }
+    button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    button.primary:hover:not(:disabled){ background:var(--accent-700); border-color:var(--accent-700); }
+    button.ghost { background:transparent; }
+    #status { font-size:13px; line-height:1.5; color:var(--muted); min-height:1.4em; word-break:break-all; }
+    #status.ok { color:var(--ok); } #status.err { color:var(--danger); } #status.busy { color:var(--accent); }
+    #after { width:100%; border-radius:10px; border:1px solid var(--border); display:none; }
+    .hint { margin:10px 2px 0; font-size:12px; color:var(--muted); }
+    .hint b { color:var(--text); font-weight:600; }
+    .spin { display:inline-block; width:11px; height:11px; border:2px solid rgba(255,255,255,.25);
+      border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; vertical-align:-1px; margin-right:6px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    /* 진행 오버레이 */
+    #overlay { position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center;
+      background:rgba(10,12,16,.6); backdrop-filter:blur(3px); -webkit-backdrop-filter:blur(3px); }
+    #overlay[hidden] { display:none; }
+    .overlay-box { display:flex; flex-direction:column; align-items:center; gap:14px; min-width:200px;
+      background:linear-gradient(180deg,var(--panel) 0%, #181b22 100%); border:1px solid var(--border);
+      border-radius:16px; padding:26px 34px; box-shadow:0 24px 70px rgba(0,0,0,.55); }
+    .spin.big { width:30px; height:30px; border-width:3px; margin:0; }
+    #overlay-label { font-size:13px; font-weight:650; color:var(--text); }
+    #overlay-sub { font-size:11px; color:var(--muted); margin-top:-6px; }
   </style>
 </head>
 <body>
-  <h3>영역을 드래그하고 지시문을 입력하세요</h3>
-  <div id="wrap">
-    <div class="col">
-      <canvas id="cv"></canvas>
-    </div>
-    <div class="col">
-      <textarea id="prompt" placeholder="예: 로고를 빨간색으로"></textarea>
-      <div>
-        <button id="edit">편집(미리보기)</button>
-        <button id="confirm" disabled>확정 저장</button>
-        <button id="redo" disabled>다시</button>
-        <button id="cancel">취소</button>
+  <header>
+    <h1><span class="dot"></span>영역 편집</h1>
+    <p>바꿀 사각 영역을 드래그하고 지시문을 입력하세요. 선택 영역 <b>밖은 원본 그대로</b> 보존됩니다.</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2>원본 · 영역 선택</h2>
+      <div class="canvas-wrap"><canvas id="cv"></canvas></div>
+      <p class="hint" id="bboxhint">이미지를 드래그해 편집할 영역을 지정하세요.</p>
+    </section>
+    <section class="controls">
+      <div class="card">
+        <h2>편집 지시</h2>
+        <div class="field">
+          <span>무엇으로 바꿀까요?</span>
+          <textarea id="prompt" placeholder="예: 케이크 윗면의 고명을 걷어내고 깨끗한 크림 표면으로"></textarea>
+        </div>
+        <div class="btns" style="margin-top:13px;">
+          <button id="edit" class="primary">편집 미리보기</button>
+          <button id="redo" class="ghost" disabled>다시</button>
+        </div>
+        <div class="btns" style="margin-top:9px;">
+          <button id="confirm" disabled>확정 저장</button>
+          <button id="cancel" class="ghost">취소</button>
+        </div>
+        <p id="status" style="margin-top:13px;"></p>
       </div>
-      <div id="status"></div>
-      <img id="after" alt="편집 결과" />
+      <div class="card">
+        <h2>미리보기 · 편집 결과</h2>
+        <img id="after" alt="편집 결과 미리보기" />
+        <p class="hint" id="afterhint">아직 미리보기가 없습니다. 영역을 선택하고 <b>편집 미리보기</b>를 누르세요.</p>
+      </div>
+    </section>
+  </main>
+  <div id="overlay" hidden>
+    <div class="overlay-box">
+      <span class="spin big"></span>
+      <span id="overlay-label">처리 중…</span>
+      <span id="overlay-sub">OpenAI 편집 호출 중 — 잠시만요</span>
     </div>
   </div>
   <script type="module" src="/app.js"></script>
