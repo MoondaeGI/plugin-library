@@ -39,9 +39,10 @@ export async function runEditCycle({ imagePath, bbox, maskBuf, prompt, quality, 
     if (m.width !== width || m.height !== height) {
       throw new EditCycleError(`마스크 크기 불일치: 이미지 ${width}x${height} vs 마스크 ${m.width}x${m.height}`);
     }
-    // 브러시는 솔리드(하드)라 거친 1px 이음새가 남으므로 기본으로 작은 고정 페더(px)만 적용해
-    // 이음새를 부드럽게 한다. featherRadius 로 덮어쓸 수 있고 0 이면 완전 하드.
-    const radius = featherRadius ?? 3;
+    // 브러시는 솔리드(하드)라 거친 이음새가 남으므로 기본으로 이음새를 페더링한다.
+    // 고정 px 는 큰 이미지에서 안 보이므로 짧은변에 비례(≈1.5%)하되 6~40px 로 클램프.
+    // featherRadius 로 덮어쓸 수 있고 0 이면 완전 하드.
+    const radius = featherRadius ?? Math.min(40, Math.max(6, Math.round(Math.min(width, height) / 64)));
     effMask = featherMask(maskBuf, radius);
     tag = `mask-${shortHash(effMask)}-${quality}`;
     maskPath = path.join(workDir, `${tag}-mask.png`);
