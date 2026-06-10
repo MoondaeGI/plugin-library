@@ -6,7 +6,7 @@ import { writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { decodePNG } from '../../image-gen/scripts/autocrop.mjs';
-import { buildMask, compositeRegion, resizePNG } from './composite.mjs';
+import { buildMask, compositeRegion, compositeMask, maskHasEditableArea, resizePNG } from './composite.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IMAGE_GEN = path.resolve(__dirname, '../../image-gen/scripts/image-gen.mjs');
@@ -26,35 +26,50 @@ export function defaultRunImageGen(args) {
   return { status: r.status ?? 1, stdout: r.stdout ?? '', stderr: r.stderr ?? '' };
 }
 
-// imagePath 의 bbox 영역만 prompt 로 편집한 결과 PNG 를 workDir 에 만들고 경로를 돌려준다.
-export async function runEditCycle({ imagePath, bbox, prompt, quality, workDir, runImageGen = defaultRunImageGen }) {
+// imagePath 의 bbox(또는 maskBuf) 영역만 prompt 로 편집한 결과 PNG 를 workDir 에 만들고 경로를 돌려준다.
+// maskBuf 가 주어지면 브러시 마스크 경로(compositeMask 알파 가중 블렌드), 없으면 기존 직사각형 경로.
+export async function runEditCycle({ imagePath, bbox, maskBuf, prompt, quality, workDir, runImageGen = defaultRunImageGen }) {
   const orig = readFileSync(imagePath);
   const { width, height } = decodePNG(orig);
 
-  const tag = `${bbox.x}-${bbox.y}-${bbox.w}-${bbox.h}-${quality}`;
-  const maskPath = path.join(workDir, `mask-${tag}.png`);
-  writeFileSync(maskPath, buildMask(width, height, bbox));
-
-  const editedApi = path.join(workDir, `api-${tag}.png`);
-
-  const size = gptImageSizeOk(width, height) ? `${width}x${height}` : 'auto';
-  const args = [
-    '--image', imagePath,
-    '--mask', maskPath,
-    '--prompt', prompt,
-    '--quality', quality,
-    '--size', size,
-    '--out', editedApi,
-    '--force',
-  ];
-  const r = await runImageGen(args);
-  if (r.status !== 0) {
-    throw new EditCycleError(`image-gen 실패(status ${r.status}): ${r.stderr || r.stdout}`);
+  let tag, maskPath;
+  if (maskBuf) {
+    if (!maskHasEditableArea(maskBuf)) throw new EditCycleError('편집할 영역이 칠해지지 않았습니다.');
+    const m = decodePNG(maskBuf);
+    if (m.width !== width || m.height !== height) {
+      throw new EditCycleError(`마스크 크기 불일치: 이미지 ${width}x${height} vs 마스크 ${m.width}x${m.height}`);
+    }
+    tag = `mask-${shortHash(maskBuf)}-${quality}`;
+    maskPath = path.join(workDir, `${tag}-mask.png`);
+    writeFileSync(maskPath, maskBuf);
+  } else {
+    tag = `${bbox.x}-${bbox.y}-${bbox.w}-${bbox.h}-${quality}`;
+    maskPath = path.join(workDir, `mask-${tag}.png`);
+    writeFileSync(maskPath, buildMask(width, height, bbox));
   }
 
+  const editedApi = path.join(workDir, `api-${tag}.png`);
+  const size = gptImageSizeOk(width, height) ? `${width}x${height}` : 'auto';
+  const args = [
+    '--image', imagePath, '--mask', maskPath, '--prompt', prompt,
+    '--quality', quality, '--size', size, '--out', editedApi, '--force',
+  ];
+  const r = await runImageGen(args);
+  if (r.status !== 0) throw new EditCycleError(`image-gen 실패(status ${r.status}): ${r.stderr || r.stdout}`);
+
   const outPath = path.join(workDir, `preview-${tag}.png`);
-  // API 결과가 원본과 다른 크기로 올 수 있으므로(특히 size=auto) 원본 크기로 되돌린 뒤 합성한다.
+  // API 결과는 원본과 다른 크기로 올 수 있으므로 원본 크기로 되돌린 뒤 합성한다.
   const editedResized = resizePNG(readFileSync(editedApi), width, height);
-  writeFileSync(outPath, compositeRegion(orig, editedResized, bbox));
+  const composited = maskBuf
+    ? compositeMask(orig, editedResized, maskBuf)
+    : compositeRegion(orig, editedResized, bbox);
+  writeFileSync(outPath, composited);
   return { outPath, maskPath, editedApi };
+}
+
+// 마스크 내용 기반 짧은 16진 해시. 같은 마스크는 같은 파일명(덮어쓰기 안전).
+function shortHash(buf) {
+  let h = 0;
+  for (let i = 0; i < buf.length; i++) h = (h * 31 + buf[i]) | 0;
+  return (h >>> 0).toString(16);
 }
