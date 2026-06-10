@@ -81,3 +81,34 @@ export function compositeRegion(originalBuf, editedBuf, bbox) {
   }
   return encodePNG(out, W, H, 6);
 }
+
+// 마스크에 편집 영역(alpha<255)이 하나라도 있는지. 빈 편집을 호출부에서 거르는 용도.
+export function maskHasEditableArea(maskBuf) {
+  const { px, bpp, width, height } = decodePNG(maskBuf);
+  const m = toRGBA(px, bpp, width, height);
+  for (let i = 0; i < width * height; i++) if (m[i*4+3] < 255) return true;
+  return false;
+}
+
+// 마스크 alpha 가중 블렌드 합성. 편집가중 w=(255-alpha)/255.
+// out = edited*w + original*(1-w). alpha0=완전 편집, alpha255=완전 보존, 중간=페더링.
+// 세 PNG(원본·편집·마스크)는 같은 크기여야 한다.
+export function compositeMask(originalBuf, editedBuf, maskBuf) {
+  const o = decodePNG(originalBuf), e = decodePNG(editedBuf), m = decodePNG(maskBuf);
+  if (o.width !== e.width || o.height !== e.height || o.width !== m.width || o.height !== m.height) {
+    throw new CompositeError(`크기 불일치: 원본 ${o.width}x${o.height}, 편집 ${e.width}x${e.height}, 마스크 ${m.width}x${m.height}`);
+  }
+  const W = o.width, H = o.height;
+  const out = toRGBA(o.px, o.bpp, W, H);
+  const eR = toRGBA(e.px, e.bpp, W, H);
+  const mR = toRGBA(m.px, m.bpp, W, H);
+  for (let i = 0; i < W * H; i++) {
+    const w = (255 - mR[i*4+3]) / 255; // 편집 가중
+    if (w === 0) continue;             // 보존: 원본 그대로
+    for (let c = 0; c < 3; c++) {
+      out[i*4+c] = Math.round(eR[i*4+c] * w + out[i*4+c] * (1 - w));
+    }
+    // alpha 채널은 원본(불투명) 유지
+  }
+  return encodePNG(out, W, H, 6);
+}
