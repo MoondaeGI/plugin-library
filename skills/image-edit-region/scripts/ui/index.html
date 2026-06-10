@@ -40,6 +40,7 @@
     button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
     button.primary:hover:not(:disabled){ background:var(--accent-700); border-color:var(--accent-700); }
     button.ghost { background:transparent; }
+    button.ghost.active { background:var(--accent); border-color:var(--accent); color:#fff; }
     #status { font-size:13px; line-height:1.5; color:var(--muted); min-height:1.4em; word-break:break-all; }
     #status.ok { color:var(--ok); } #status.err { color:var(--danger); } #status.busy { color:var(--accent); }
     #after { width:100%; border-radius:10px; border:1px solid var(--border); display:none; }
@@ -74,6 +75,22 @@
     <section class="controls">
       <div class="card">
         <h2>편집 지시</h2>
+        <div class="btns" style="margin-bottom:12px;">
+          <button id="tool-rect" class="ghost active">사각형</button>
+          <button id="tool-brush" class="ghost">브러시</button>
+        </div>
+        <div id="brushctl" style="display:none; margin-bottom:12px;">
+          <label class="field" style="flex-direction:row; align-items:center; gap:10px;">
+            <span>브러시 크기</span>
+            <input id="brushsize" type="range" min="4" max="120" value="32" style="flex:1;" />
+          </label>
+          <div class="btns" style="margin-top:9px; align-items:center;">
+            <label class="field" style="flex-direction:row; align-items:center; gap:7px; flex:1;">
+              <input id="erase" type="checkbox" /> <span>지우개</span>
+            </label>
+            <button id="clearmask" class="ghost">전체 지우기</button>
+          </div>
+        </div>
         <div class="field">
           <span>무엇으로 바꿀까요?</span>
           <textarea id="prompt" placeholder="예: 케이크 윗면의 고명을 걷어내고 깨끗한 크림 표면으로"></textarea>

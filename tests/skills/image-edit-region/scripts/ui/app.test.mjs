@@ -1,6 +1,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { canvasToImageBbox, buildEditPayload } from '../../../../../skills/image-edit-region/scripts/ui/app.js';
+import { buildBrushPayload, buildEditPayload, canvasToImageBbox } from '../../../../../skills/image-edit-region/scripts/ui/app.js';
+
+test('buildBrushPayload: maskPng dataURL 과 prompt 를 묶는다', () => {
+  assert.deepEqual(
+    buildBrushPayload('data:image/png;base64,AAAA', '파랗게'),
+    { maskPng: 'data:image/png;base64,AAAA', prompt: '파랗게' },
+  );
+});
+
+test('buildEditPayload: 기존 bbox payload 회귀', () => {
+  assert.deepEqual(buildEditPayload({ x:0,y:0,w:2,h:2 }, 'x'), { bbox: { x:0,y:0,w:2,h:2 }, prompt: 'x' });
+});
 
 test('canvasToImageBbox: 표시배율을 반영해 원본 픽셀 정수 bbox로 환산', () => {
   // 원본 800x600, 캔버스 400x300(0.5배). 캔버스 (100,50)~(300,250) 드래그.
@@ -25,9 +36,4 @@ test('canvasToImageBbox: 이미지 경계로 클램프', () => {
     { canvasW: 400, canvasH: 300, imageW: 400, imageH: 300 },
   );
   assert.deepEqual(bbox, { x: 0, y: 0, w: 400, h: 300 });
-});
-
-test('buildEditPayload: bbox·prompt 를 JSON 페이로드로', () => {
-  const p = buildEditPayload({ x: 1, y: 2, w: 3, h: 4 }, '빨갛게');
-  assert.deepEqual(p, { bbox: { x: 1, y: 2, w: 3, h: 4 }, prompt: '빨갛게' });
 });
