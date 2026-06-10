@@ -40,7 +40,7 @@ test('runEditCycle(maskBuf): --mask 로 마스크를 보내고 compositeMask 로
   assert.deepEqual(at(1, 1), [0, 0, 255, 255]); // 편집
 });
 
-test('runEditCycle(maskBuf): featherRadius 옵션이 경계를 블렌드한다', async () => {
+test('runEditCycle(maskBuf): 기본(작은 고정 페더)이 경계를 블렌드한다', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ier-'));
   const imagePath = path.join(dir, 'orig.png');
   writeFileSync(imagePath, solid(32, 32, [255, 0, 0, 255])); // 빨강
@@ -49,16 +49,17 @@ test('runEditCycle(maskBuf): featherRadius 옵션이 경계를 블렌드한다',
     writeFileSync(args[args.indexOf('--out') + 1], solid(32, 32, [0, 0, 255, 255])); // 파랑
     return { status: 0, stdout: '', stderr: '' };
   };
-  const res = await runEditCycle({ imagePath, maskBuf, prompt: 'x', quality: 'low', workDir: dir, runImageGen, featherRadius: 4 });
+  // featherRadius 미지정 → 기본 작은 고정 페더가 이음새를 부드럽게
+  const res = await runEditCycle({ imagePath, maskBuf, prompt: 'x', quality: 'low', workDir: dir, runImageGen });
   const { px, width } = decodePNG(readFileSync(res.outPath));
   const at = (x,y)=>[...px.subarray((y*width+x)*4,(y*width+x)*4+4)];
   assert.deepEqual(at(0, 0), [255, 0, 0, 255]);   // 경계서 먼 보존 = 원본 빨강
   assert.deepEqual(at(15, 15), [0, 0, 255, 255]); // 편집 한가운데 = 파랑
-  const edge = at(7, 16);                          // 경계 바로 바깥 = 블렌드
+  const edge = at(7, 16);                          // 경계 바로 바깥 = 블렌드(페더)
   assert.ok(edge[0] > 0 && edge[0] < 255 && edge[2] > 0 && edge[2] < 255);
 });
 
-test('runEditCycle(maskBuf): 기본은 페더 없이 하드 경계', async () => {
+test('runEditCycle(maskBuf): featherRadius 0 은 하드 경계 유지', async () => {
   const dir = mkdtempSync(path.join(tmpdir(), 'ier-'));
   const imagePath = path.join(dir, 'orig.png');
   writeFileSync(imagePath, solid(32, 32, [255, 0, 0, 255]));
@@ -67,8 +68,7 @@ test('runEditCycle(maskBuf): 기본은 페더 없이 하드 경계', async () =>
     writeFileSync(args[args.indexOf('--out') + 1], solid(32, 32, [0, 0, 255, 255]));
     return { status: 0, stdout: '', stderr: '' };
   };
-  // featherRadius 미지정 → 기본 0(하드). 브러시가 소프트 마스크를 만들므로 서버 기본은 페더 없음.
-  const res = await runEditCycle({ imagePath, maskBuf, prompt: 'x', quality: 'low', workDir: dir, runImageGen });
+  const res = await runEditCycle({ imagePath, maskBuf, prompt: 'x', quality: 'low', workDir: dir, runImageGen, featherRadius: 0 });
   const { px, width } = decodePNG(readFileSync(res.outPath));
   const at = (x,y)=>[...px.subarray((y*width+x)*4,(y*width+x)*4+4)];
   assert.deepEqual(at(7, 16), [255, 0, 0, 255]); // 경계 바깥 = 순수 빨강(블렌드 없음)

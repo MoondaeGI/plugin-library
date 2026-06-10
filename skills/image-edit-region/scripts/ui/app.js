@@ -15,13 +15,6 @@ export function canvasToImageBbox(rect, { canvasW, canvasH, imageW, imageH }) {
 export function buildEditPayload(bbox, prompt) { return { bbox, prompt }; }
 export function buildBrushPayload(maskPng, prompt) { return { maskPng, prompt }; }
 
-// 부드러움 슬라이더(0=하드~100=풀소프트)를 소프트 브러시의 안쪽 솔리드 반경 비율로.
-// 1.0 이면 falloff 없음(하드), 0 이면 중심부터 가장자리까지 전부 그라데이션(가장 부드러움).
-export function brushInnerRadiusFraction(softness) {
-  const s = Math.max(0, Math.min(100, Number(softness) || 0));
-  return 1 - s / 100;
-}
-
 if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   const $ = (id) => document.getElementById(id);
   const cv = $('cv'), ctx = cv.getContext('2d');
@@ -30,15 +23,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   const editBtn = $('edit'), confirmBtn = $('confirm'), redoBtn = $('redo'), cancelBtn = $('cancel');
   const overlay = $('overlay'), overlayLabel = $('overlay-label'), overlaySub = $('overlay-sub');
   const toolRectBtn = $('tool-rect'), toolBrushBtn = $('tool-brush');
-  const brushCtl = $('brushctl'), sizeEl = $('brushsize'), softEl = $('brushsoft'), eraseEl = $('erase'), clearBtn = $('clearmask');
+  const brushCtl = $('brushctl'), sizeEl = $('brushsize'), eraseEl = $('erase'), clearBtn = $('clearmask');
 
   const img = new Image();
   let imageW = 0, imageH = 0, rect = null, dragging = false, lastPreviewId = null;
   let tool = 'rect';            // 'rect' | 'brush'
   let painting = false, painted = false, lastPt = null;
-  // 마스크 캔버스(원본 해상도)=데이터. 틴트 캔버스=마스크에서 도출한 화면 오버레이(WYSIWYG).
+  // 마스크 캔버스(원본 해상도)=데이터. 오버레이 캔버스=마스크에서 도출한 화면 강조(WYSIWYG).
   const maskCv = document.createElement('canvas'), maskCtx = maskCv.getContext('2d');
-  const tintCv = document.createElement('canvas'), tintCtx = tintCv.getContext('2d');
+  const ovCv = document.createElement('canvas'), ovCtx = ovCv.getContext('2d');
 
   const setStatus = (m, type = '') => { statusEl.textContent = m; statusEl.className = type; };
   const showOverlay = (label, sub) => { overlayLabel.textContent = label; overlaySub.textContent = sub || ''; overlay.hidden = false; };
@@ -52,7 +45,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     const scale = Math.min(1, 720 / imageW);
     cv.width = Math.round(imageW * scale); cv.height = Math.round(imageH * scale);
     maskCv.width = imageW; maskCv.height = imageH;
-    tintCv.width = imageW; tintCv.height = imageH;
+    ovCv.width = imageW; ovCv.height = imageH;
     resetMask();
     draw();
   };
@@ -69,15 +62,14 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.drawImage(img, 0, 0, cv.width, cv.height);
     if (tool === 'brush') {
-      // 화면 오버레이를 마스크에서 도출: 틴트 alpha = 255 - maskAlpha = 편집 정도(소프트 경계까지 그대로).
-      tintCtx.globalCompositeOperation = 'source-over';
-      tintCtx.clearRect(0, 0, imageW, imageH);
-      tintCtx.fillStyle = 'rgba(109,140,255,1)'; tintCtx.fillRect(0, 0, imageW, imageH);
-      tintCtx.globalCompositeOperation = 'destination-out';
-      tintCtx.drawImage(maskCv, 0, 0); // 보존영역(alpha255)은 틴트 제거, 편집영역(alpha낮음)은 틴트 남김
-      ctx.globalAlpha = 0.55;
-      ctx.drawImage(tintCv, 0, 0, cv.width, cv.height);
-      ctx.globalAlpha = 1;
+      // 보존 영역(편집 안 할 곳)만 어둡게 덮어 편집 영역을 또렷이(사각형 모드와 동일한 강조).
+      // ov = 어두운 전체 × maskAlpha → 보존(alpha255)만 어둡고 편집(alpha0)은 투명.
+      ovCtx.globalCompositeOperation = 'source-over';
+      ovCtx.clearRect(0, 0, imageW, imageH);
+      ovCtx.fillStyle = 'rgba(10,12,16,.5)'; ovCtx.fillRect(0, 0, imageW, imageH);
+      ovCtx.globalCompositeOperation = 'destination-in';
+      ovCtx.drawImage(maskCv, 0, 0);
+      ctx.drawImage(ovCv, 0, 0, cv.width, cv.height);
     } else if (rect) {
       const x = Math.min(rect.x0, rect.x1), y = Math.min(rect.y0, rect.y1);
       const w = Math.abs(rect.x1 - rect.x0), h = Math.abs(rect.y1 - rect.y0);
@@ -110,25 +102,15 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     bboxHintEl.innerHTML = `선택: <b>${b.w}×${b.h}px</b> @ (${b.x}, ${b.y}) · 원본 픽셀 기준`;
   }
 
-  // 소프트 브러시 한 점: 가장자리 falloff(radial gradient)로 마스크 alpha 를 부드럽게.
-  // 칠=destination-out 으로 alpha 를 깎아 편집영역(낮은 alpha). 지우개=검정 source-over 로 보존(255) 복원.
-  function dab(x, y) {
-    const r = Math.max(1, Number(sizeEl.value));
-    const inner = Math.min(brushInnerRadiusFraction(softEl.value) * r, r - 0.01);
-    const g = maskCtx.createRadialGradient(x, y, Math.max(0, inner), x, y, r);
-    g.addColorStop(0, 'rgba(0,0,0,1)');
-    g.addColorStop(1, 'rgba(0,0,0,0)');
-    maskCtx.globalCompositeOperation = eraseEl.checked ? 'source-over' : 'destination-out';
-    maskCtx.fillStyle = g;
-    maskCtx.beginPath(); maskCtx.arc(x, y, r, 0, Math.PI * 2); maskCtx.fill();
-  }
-  // from→to 를 촘촘한 소프트 점으로 이어 끊김 없는 획을 만든다.
+  // 솔리드 브러시 한 획: from→to 를 꽉 찬 둥근 선으로. 칠=destination-out 으로 alpha 0(편집),
+  // 지우개=검정 source-over 로 보존(255) 복원. 이음새 페더는 서버에서 작은 고정폭으로 처리.
   function stroke(from, to) {
     const r = Math.max(1, Number(sizeEl.value));
-    const dx = to.x - from.x, dy = to.y - from.y;
-    const dist = Math.hypot(dx, dy), step = Math.max(1, r * 0.3);
-    const n = Math.max(1, Math.ceil(dist / step));
-    for (let i = 0; i <= n; i++) dab(from.x + dx * i / n, from.y + dy * i / n);
+    maskCtx.globalCompositeOperation = eraseEl.checked ? 'source-over' : 'destination-out';
+    maskCtx.fillStyle = '#000'; maskCtx.strokeStyle = '#000';
+    maskCtx.lineWidth = r * 2; maskCtx.lineCap = 'round'; maskCtx.lineJoin = 'round';
+    maskCtx.beginPath(); maskCtx.moveTo(from.x, from.y); maskCtx.lineTo(to.x, to.y); maskCtx.stroke();
+    maskCtx.beginPath(); maskCtx.arc(to.x, to.y, r, 0, Math.PI * 2); maskCtx.fill();
     if (!eraseEl.checked) painted = true;
   }
 

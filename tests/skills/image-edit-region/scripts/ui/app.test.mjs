@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildBrushPayload, buildEditPayload, canvasToImageBbox, brushInnerRadiusFraction } from '../../../../../skills/image-edit-region/scripts/ui/app.js';
+import { buildBrushPayload, buildEditPayload, canvasToImageBbox } from '../../../../../skills/image-edit-region/scripts/ui/app.js';
 
 test('buildBrushPayload: maskPng dataURL 과 prompt 를 묶는다', () => {
   assert.deepEqual(
@@ -11,14 +11,6 @@ test('buildBrushPayload: maskPng dataURL 과 prompt 를 묶는다', () => {
 
 test('buildEditPayload: 기존 bbox payload 회귀', () => {
   assert.deepEqual(buildEditPayload({ x:0,y:0,w:2,h:2 }, 'x'), { bbox: { x:0,y:0,w:2,h:2 }, prompt: 'x' });
-});
-
-test('brushInnerRadiusFraction: 0=하드(1.0)~100=풀소프트(0), 범위 클램프', () => {
-  assert.equal(brushInnerRadiusFraction(0), 1);
-  assert.equal(brushInnerRadiusFraction(100), 0);
-  assert.ok(Math.abs(brushInnerRadiusFraction(45) - 0.55) < 1e-9);
-  assert.equal(brushInnerRadiusFraction(-20), 1);  // 클램프
-  assert.equal(brushInnerRadiusFraction(200), 0);  // 클램프
 });
 
 test('canvasToImageBbox: 표시배율을 반영해 원본 픽셀 정수 bbox로 환산', () => {

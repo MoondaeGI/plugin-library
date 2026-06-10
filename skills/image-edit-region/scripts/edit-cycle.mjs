@@ -39,9 +39,9 @@ export async function runEditCycle({ imagePath, bbox, maskBuf, prompt, quality, 
     if (m.width !== width || m.height !== height) {
       throw new EditCycleError(`마스크 크기 불일치: 이미지 ${width}x${height} vs 마스크 ${m.width}x${m.height}`);
     }
-    // 브러시가 GUI 에서 이미 소프트 마스크를 만들므로 서버 기본은 페더 없음(0).
-    // featherRadius 를 명시하면 추가로 마스크 alpha 를 blur 해 경계를 더 평활하게(옵션 knob).
-    const radius = featherRadius ?? 0;
+    // 브러시는 솔리드(하드)라 거친 1px 이음새가 남으므로 기본으로 작은 고정 페더(px)만 적용해
+    // 이음새를 부드럽게 한다. featherRadius 로 덮어쓸 수 있고 0 이면 완전 하드.
+    const radius = featherRadius ?? 3;
     effMask = featherMask(maskBuf, radius);
     tag = `mask-${shortHash(effMask)}-${quality}`;
     maskPath = path.join(workDir, `${tag}-mask.png`);
