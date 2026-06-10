@@ -179,7 +179,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     try {
       const res = await postJson('/confirm', { previewId: lastPreviewId });
       if (res.error) { setStatus('실패: ' + res.error, 'err'); confirmBtn.disabled = false; return; }
-      setStatus('저장됨: ' + res.savedPath + ' — 창을 닫아도 됩니다.', 'ok');
+      // 확정·저장 완료 → 창 자동 닫기. --new-window 로 직접 연 창이라 Chrome 에서 window.close() 가 허용됨.
+      // 차단되는 브라우저면 메시지가 남으니 사용자가 직접 닫으면 된다.
+      setStatus('저장됨: ' + res.savedPath + ' — 창을 닫습니다…', 'ok');
+      setTimeout(() => window.close(), 700);
     } catch (e) {
       setStatus('요청 실패: ' + e.message, 'err'); confirmBtn.disabled = false;
     } finally {
