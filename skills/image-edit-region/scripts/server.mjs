@@ -22,18 +22,19 @@ export function createSession({ runEditCycle, saveFinal, idleMs = 600_000, heart
     isAlive: () => alive,
     getPreview: (id) => previews.get(id),
     finish,
-    async handleEdit({ bbox, prompt }) {
+    async handleEdit({ bbox, prompt, maskPng }) {
       try {
-        const { outPath } = await runEditCycle({ bbox, prompt, quality: 'low' });
+        const maskBuf = maskPng ? decodeMaskDataUrl(maskPng) : undefined;
+        const { outPath } = await runEditCycle({ bbox, maskBuf, prompt, quality: 'low' });
         const previewId = `p${++seq}`;
-        previews.set(previewId, { bbox, prompt, quality: 'low', outPath });
+        previews.set(previewId, { bbox, maskBuf, prompt, quality: 'low', outPath });
         return { previewId };
       } catch (err) { return { error: err.message }; }
     },
     async handleConfirm({ previewId }) {
       const p = previews.get(previewId);
       if (!p) throw new Error(`알 수 없는 previewId: ${previewId}`);
-      const savedPath = await saveFinal(p.bbox, p.prompt); // 고품질 재실행
+      const savedPath = await saveFinal({ bbox: p.bbox, maskBuf: p.maskBuf, prompt: p.prompt }); // 고품질 재실행
       finish({ status: 'confirmed', path: savedPath });
       return { savedPath };
     },
@@ -63,6 +64,14 @@ async function readJson(req) {
   return chunks.length ? JSON.parse(Buffer.concat(chunks).toString('utf8')) : {};
 }
 function sendJson(res, code, obj) { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(obj)); }
+
+// data:image/png;base64,... dataURL 을 PNG Buffer 로. 전송 계층 관심사라 서버에 둔다.
+export function decodeMaskDataUrl(dataUrl) {
+  if (typeof dataUrl !== 'string') throw new Error('maskPng 가 문자열이 아닙니다.');
+  const m = /^data:image\/png;base64,(.+)$/s.exec(dataUrl);
+  if (!m) throw new Error('maskPng 형식이 잘못되었습니다(data:image/png;base64 필요).');
+  return Buffer.from(m[1], 'base64');
+}
 async function sendFile(res, file, type) {
   try { const buf = await readFile(file); res.writeHead(200, { 'content-type': type }); res.end(buf); }
   catch { res.writeHead(404); res.end('not found'); }
