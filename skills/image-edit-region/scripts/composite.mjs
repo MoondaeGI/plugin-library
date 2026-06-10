@@ -112,3 +112,38 @@ export function compositeMask(originalBuf, editedBuf, maskBuf) {
   }
   return encodePNG(out, W, H, 6);
 }
+
+// 마스크 alpha 채널을 분리형 박스 블러(수평→수직, radius)로 번지게 한다.
+// 하드 경계(0↔255)를 그라데이션으로 만들어 compositeMask 가 자연스럽게 페더링하게 한다.
+// radius<1 이면 원본 마스크를 그대로(RGBA 재인코드) 돌려준다. RGB 는 0 유지.
+export function featherMask(maskBuf, radius) {
+  const { px, bpp, width, height } = decodePNG(maskBuf);
+  const rgba = toRGBA(px, bpp, width, height);
+  if (!radius || radius < 1) return encodePNG(rgba, width, height, 6);
+  const N = width * height, win = radius * 2 + 1;
+  const a0 = new Float64Array(N);
+  for (let i = 0; i < N; i++) a0[i] = rgba[i*4+3];
+  const a1 = new Float64Array(N);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let s = 0;
+      for (let k = -radius; k <= radius; k++) {
+        const xx = Math.min(width - 1, Math.max(0, x + k));
+        s += a0[y*width + xx];
+      }
+      a1[y*width + x] = s / win;
+    }
+  }
+  const out = Buffer.alloc(N * 4);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      let s = 0;
+      for (let k = -radius; k <= radius; k++) {
+        const yy = Math.min(height - 1, Math.max(0, y + k));
+        s += a1[yy*width + x];
+      }
+      out[(y*width + x)*4 + 3] = Math.round(s / win);
+    }
+  }
+  return encodePNG(out, width, height, 6);
+}

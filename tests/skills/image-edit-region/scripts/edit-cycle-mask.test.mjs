@@ -26,7 +26,8 @@ test('runEditCycle(maskBuf): --mask 로 마스크를 보내고 compositeMask 로
     return { status: 0, stdout: '', stderr: '' };
   };
 
-  const res = await runEditCycle({ imagePath, maskBuf, prompt: '파랗게', quality: 'low', workDir: dir, runImageGen });
+  // featherRadius 0 으로 하드 경계 유지 — compositeMask 정합을 정확값으로 검증
+  const res = await runEditCycle({ imagePath, maskBuf, prompt: '파랗게', quality: 'low', workDir: dir, runImageGen, featherRadius: 0 });
 
   assert.ok(seen.includes('--mask'));
   assert.ok(seen.includes('--image') && seen.includes(imagePath));
@@ -37,6 +38,26 @@ test('runEditCycle(maskBuf): --mask 로 마스크를 보내고 compositeMask 로
   const at = (x,y)=>[...px.subarray((y*width+x)*4,(y*width+x)*4+4)];
   assert.deepEqual(at(0, 0), [255, 0, 0, 255]); // 보존
   assert.deepEqual(at(1, 1), [0, 0, 255, 255]); // 편집
+});
+
+test('runEditCycle(maskBuf): 기본 페더로 경계가 블렌드된다', async () => {
+  const dir = mkdtempSync(path.join(tmpdir(), 'ier-'));
+  const imagePath = path.join(dir, 'orig.png');
+  writeFileSync(imagePath, solid(32, 32, [255, 0, 0, 255])); // 빨강
+  const maskBuf = buildMask(32, 32, { x: 8, y: 8, w: 16, h: 16 }); // 가운데 16x16 편집
+  const runImageGen = async (args) => {
+    writeFileSync(args[args.indexOf('--out') + 1], solid(32, 32, [0, 0, 255, 255])); // 파랑
+    return { status: 0, stdout: '', stderr: '' };
+  };
+  // featherRadius 미지정 → 기본값(이미지 크기 기준) 적용
+  const res = await runEditCycle({ imagePath, maskBuf, prompt: 'x', quality: 'low', workDir: dir, runImageGen });
+  const { px, width } = decodePNG(readFileSync(res.outPath));
+  const at = (x,y)=>[...px.subarray((y*width+x)*4,(y*width+x)*4+4)];
+  assert.deepEqual(at(0, 0), [255, 0, 0, 255]);   // 경계서 먼 보존 영역 = 원본 빨강
+  assert.deepEqual(at(15, 15), [0, 0, 255, 255]); // 편집 영역 한가운데 = 파랑
+  // 경계 바로 바깥(col 7)은 페더로 블렌드 → 순수 빨강도 파랑도 아님
+  const edge = at(7, 16);
+  assert.ok(edge[0] > 0 && edge[0] < 255 && edge[2] > 0 && edge[2] < 255);
 });
 
 test('runEditCycle(maskBuf): 편집 영역이 없는 마스크는 거부', async () => {

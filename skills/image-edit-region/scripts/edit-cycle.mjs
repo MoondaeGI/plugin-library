@@ -6,7 +6,7 @@ import { writeFileSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { decodePNG } from '../../image-gen/scripts/autocrop.mjs';
-import { buildMask, compositeRegion, compositeMask, maskHasEditableArea, resizePNG } from './composite.mjs';
+import { buildMask, compositeRegion, compositeMask, maskHasEditableArea, featherMask, resizePNG } from './composite.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IMAGE_GEN = path.resolve(__dirname, '../../image-gen/scripts/image-gen.mjs');
@@ -28,20 +28,24 @@ export function defaultRunImageGen(args) {
 
 // imagePath 의 bbox(또는 maskBuf) 영역만 prompt 로 편집한 결과 PNG 를 workDir 에 만들고 경로를 돌려준다.
 // maskBuf 가 주어지면 브러시 마스크 경로(compositeMask 알파 가중 블렌드), 없으면 기존 직사각형 경로.
-export async function runEditCycle({ imagePath, bbox, maskBuf, prompt, quality, workDir, runImageGen = defaultRunImageGen }) {
+export async function runEditCycle({ imagePath, bbox, maskBuf, prompt, quality, workDir, runImageGen = defaultRunImageGen, featherRadius }) {
   const orig = readFileSync(imagePath);
   const { width, height } = decodePNG(orig);
 
-  let tag, maskPath;
+  let tag, maskPath, effMask = null;
   if (maskBuf) {
     if (!maskHasEditableArea(maskBuf)) throw new EditCycleError('편집할 영역이 칠해지지 않았습니다.');
     const m = decodePNG(maskBuf);
     if (m.width !== width || m.height !== height) {
       throw new EditCycleError(`마스크 크기 불일치: 이미지 ${width}x${height} vs 마스크 ${m.width}x${m.height}`);
     }
-    tag = `mask-${shortHash(maskBuf)}-${quality}`;
+    // 경계를 부드럽게: 마스크를 페더(blur)해 API 전송·로컬 합성 둘 다에 같은 마스크를 쓴다.
+    // featherRadius 미지정 시 이미지 크기에 비례한 기본값(4~24px), 0 이면 하드 경계 유지.
+    const radius = featherRadius ?? Math.min(24, Math.max(4, Math.round(Math.min(width, height) / 128)));
+    effMask = featherMask(maskBuf, radius);
+    tag = `mask-${shortHash(effMask)}-${quality}`;
     maskPath = path.join(workDir, `${tag}-mask.png`);
-    writeFileSync(maskPath, maskBuf);
+    writeFileSync(maskPath, effMask);
   } else {
     tag = `${bbox.x}-${bbox.y}-${bbox.w}-${bbox.h}-${quality}`;
     maskPath = path.join(workDir, `mask-${tag}.png`);
@@ -61,7 +65,7 @@ export async function runEditCycle({ imagePath, bbox, maskBuf, prompt, quality, 
   // API 결과는 원본과 다른 크기로 올 수 있으므로 원본 크기로 되돌린 뒤 합성한다.
   const editedResized = resizePNG(readFileSync(editedApi), width, height);
   const composited = maskBuf
-    ? compositeMask(orig, editedResized, maskBuf)
+    ? compositeMask(orig, editedResized, effMask)
     : compositeRegion(orig, editedResized, bbox);
   writeFileSync(outPath, composited);
   return { outPath, maskPath, editedApi };
