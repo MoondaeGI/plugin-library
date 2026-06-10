@@ -78,10 +78,10 @@ export async function main(argv) {
     // 브라우저 백그라운드 탭은 타이머가 ~60s로 throttle 되므로 heartbeat 를 넉넉히(90s)
     // 둔다. 진짜 창 닫힘은 GUI 의 pagehide beacon(/cancel)이 즉시 처리한다.
     heartbeatMs: 90_000,
-    runEditCycle: ({ bbox, prompt, quality }) =>
-      runEditCycle({ imagePath: image, bbox, prompt, quality, workDir, runImageGen: defaultRunImageGen }),
-    saveFinal: async (bbox, prompt) => {
-      const r = await runEditCycle({ imagePath: image, bbox, prompt, quality: 'high', workDir, runImageGen: defaultRunImageGen });
+    runEditCycle: ({ bbox, maskBuf, prompt, quality }) =>
+      runEditCycle({ imagePath: image, bbox, maskBuf, prompt, quality, workDir, runImageGen: defaultRunImageGen }),
+    saveFinal: async ({ bbox, maskBuf, prompt }) => {
+      const r = await runEditCycle({ imagePath: image, bbox, maskBuf, prompt, quality: 'high', workDir, runImageGen: defaultRunImageGen });
       const { copyFileSync } = await import('node:fs');
       copyFileSync(r.outPath, outPath);
       return outPath;
