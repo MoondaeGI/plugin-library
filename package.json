@@ -17,5 +17,8 @@
   "devDependencies": {
     "@iconify/tools": "^5.0.12",
     "five-server": "^0.4.5"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
   }
 }
