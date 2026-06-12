@@ -77,3 +77,23 @@ test('검증은 원본 스펙을 변경하지 않는다', () => {
   validateSpec(spec);
   assert.equal(JSON.stringify(spec), snapshot);
 });
+
+test('two-col 레이아웃의 5개 필수 필드를 검증한다', () => {
+  const ok = {
+    theme: 'default-corporate',
+    slides: [{ layout: 'two-col', fields: {
+      title: '비교', leftTitle: '현행', leftBullets: ['느림'],
+      rightTitle: '개선', rightBullets: ['빠름'] } }],
+  };
+  assert.doesNotThrow(() => validateSpec(ok));
+  const missing = JSON.parse(JSON.stringify(ok));
+  delete missing.slides[0].fields.rightBullets;
+  assert.throws(() => validateSpec(missing), /슬라이드 1.*rightBullets/);
+});
+
+test('image 레이아웃은 path가 필수이고 빈 문자열을 거부한다', () => {
+  const ok = { theme: 'default-corporate', slides: [{ layout: 'image', fields: { path: 'chart.png', caption: '4분기' } }] };
+  assert.doesNotThrow(() => validateSpec(ok));
+  const empty = { theme: 'default-corporate', slides: [{ layout: 'image', fields: { path: '   ' } }] };
+  assert.throws(() => validateSpec(empty), /슬라이드 1.*path/);
+});
