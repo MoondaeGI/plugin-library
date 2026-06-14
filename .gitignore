@@ -32,3 +32,7 @@ Thumbs.db
 
 # Superpowers brainstorming visual companion (local state/mockups)
 .superpowers/
+
+# ppt 파이프라인 작업물 — 덱 산출물(spec.json·deck.pptx·review PNG)은 대상 폴더의
+# 로컬 생성물이라 이 repo에는 커밋하지 않는다 (스모크/실사용 모두).
+.slides/
