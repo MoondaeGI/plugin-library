@@ -3,12 +3,15 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { loadEnv, DEFAULT_ENV_PATH } from '../load-env.mjs';
+import { LAYOUTS } from './validate-spec.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PLUGIN_ROOT = path.resolve(__dirname, '..', '..', '..');
 const BUILTIN_DIR = path.join(PLUGIN_ROOT, 'skills', 'ppt-theme', 'themes');
 
-export const LAYOUT_NAMES = ['title', 'section', 'bullets', 'two-col', 'chart', 'table', 'image', 'closing'];
+// 레이아웃 8종 계약은 validate-spec.mjs의 LAYOUTS가 단일 권위.
+// 여기서 파생시켜 두 모듈을 손으로 동기화할 일을 없앤다 (코드 리뷰 Important).
+export const LAYOUT_NAMES = Object.keys(LAYOUTS);
 
 export class ThemeNotFoundError extends Error {
   constructor(name, available) {
