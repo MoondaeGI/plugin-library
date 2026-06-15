@@ -336,7 +336,7 @@ Brand Overview · Brand Essence · Target Audience · Value Pillars · Tagline O
 ```
 
 ```
-node ../../scripts/lib/serve-design.mjs <cwd>/.design
+node ../../scripts/lib/design/serve-design.mjs <cwd>/.design
 ```
 
 - 자동 오픈은 `/` → `index.html` → `/view/overview.html`. 이후 자산 재생성·HTML 외과 편집 때마다 자동 새로고침.

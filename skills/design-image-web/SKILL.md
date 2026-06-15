@@ -92,7 +92,7 @@ node "<이 스킬 디렉터리>/../image-gen/scripts/image-gen.mjs" \
 라이브 시트(`page-web-<slug>.html`)를 **처음 제시할 때** 공유 라이브 서버를 **사용자 확인 후 1회 백그라운드로** 기동한다:
 
 ```bash
-node ../../scripts/lib/serve-design.mjs <cwd>/.design
+node ../../scripts/lib/design/serve-design.mjs <cwd>/.design
 ```
 
 직접 URL: `http://localhost:5500/view/page-web-<slug>.html`

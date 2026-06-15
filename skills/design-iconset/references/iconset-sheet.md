@@ -54,7 +54,7 @@
     --out "<cwd>/.design/view/iconset-sheet.html" \
     --brand "<브랜드명>"
   ```
-- 라이브 프리뷰: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server가 watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`.
+- 라이브 프리뷰: `node ../../scripts/lib/design/serve-design.mjs <cwd>/.design` (five-server가 watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`.
 
 ## 4. 셀 참조 = 번호/이름 → 해당 .svg 외과 편집
 

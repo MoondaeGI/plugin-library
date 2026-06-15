@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import {
   fetchIconSvg as realFetch,
   iconExists as realExists,
-} from '../../../scripts/lib/iconify-client.mjs'
+} from '../../../scripts/lib/design/iconify-client.mjs'
 
 // 우선순위: 다색 logos 먼저, 단색 simple-icons 폴백.
 export const VENDOR_CANDIDATES = {

@@ -116,7 +116,7 @@ UI 킷은 세 층으로 나뉜다 — **무엇을 저작하고 무엇을 주입�
    - `slot:foundations|core|informational|structural`: 각 그룹 specimen. **매트릭스(행=상태×열=변형)**로 변형·상태를 한눈에. 번호/라벨로 검수 가능하게. 신규 구조 컴포넌트는 대응 패널에 specimen으로 노출 — **core**: filter chip(`.chip-filter` 기본/활성), **structural**: footer·navbar 풀블리드 변형·section header·(제품에 있으면) sidebar. 템플릿은 4패널 고정 chrome이므로 새 패널을 만들지 않고 기존 슬롯에 채운다.
    - 아이콘은 `assets/icon/*.svg`를 **인라인**(currentColor).
    - **key-visual은 헤더 밴드에만**(패널 뒤 금지 — 토큰 충실도·대비 보호).
-6. **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design`(루트=`.design/`). 시트 직접 URL `http://localhost:5500/view/ui-kit.html`. 처음 제시 시 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
+6. **라이브 프리뷰**: `node ../../scripts/lib/design/serve-design.mjs <cwd>/.design`(루트=`.design/`). 시트 직접 URL `http://localhost:5500/view/ui-kit.html`. 처음 제시 시 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
 7. **편집 루프**: 번호/이름 지목 → 외과 편집 → 자동 새로고침. **`components.css` class 편집은 이 스킬**이, **`ui-kit.html` specimen 마크업 편집·레이아웃 깨짐 수정은 web-publisher**가 한다(쇼케이스 저작자가 일관되게 고치도록).
 8. **lock (승인 + overview 슬롯 + 다음 단계 2분기)**:
    - `assets/css/components.css`·`view/ui-kit.html`이 이미 캐노니컬 홈에 있다(별도 복사 없음). `ui-kit-briefs.md`는 `candidate/ui-kit/`에 git 추적.

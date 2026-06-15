@@ -6,8 +6,8 @@
 //   이 스크립트는 그 로직을 구현하지 않는다. (.design/ 을 루트로 서빙하면 view/*.html이
 //   ../assets/·../reference/·../candidate/ 상대경로로 동작하고, 루트 index.html이 /view/overview.html로 리다이렉트.)
 //
-// 사용: node scripts/lib/serve-design.mjs <dir|html경로> [--port N] [--no-open]
-//       node scripts/lib/serve-design.mjs <...> --print-options   # 옵션만 출력, 서버 미기동(테스트용)
+// 사용: node scripts/lib/design/serve-design.mjs <dir|html경로> [--port N] [--no-open]
+//       node scripts/lib/design/serve-design.mjs <...> --print-options   # 옵션만 출력, 서버 미기동(테스트용)
 //
 // 여러 design 스킬(design-brand-kit·design-html-prototype 등)이 공유한다.
 // scripts/lib/ 에 두는 이유: Codex 번들이 미러링하는 유일한 최상위 공유 위치라 Claude·Codex 둘 다 ../../scripts/lib/ 로 참조 가능.

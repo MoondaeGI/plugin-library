@@ -94,7 +94,7 @@ description: brand-kit의 로고 이미지가 마음에 들지 않거나 단순�
 `logos.html`을 **처음 제시할 때** 공유 런처로 로컬 라이브 서버를 **한 번 백그라운드로** 띄운다 — 이후 PNG 재생성·HTML 편집 때마다 자동 새로고침.
 
 ```
-node ../../scripts/lib/serve-design.mjs <cwd>/.design
+node ../../scripts/lib/design/serve-design.mjs <cwd>/.design
 ```
 
 시트 직접 URL: `http://localhost:5500/view/logos.html`

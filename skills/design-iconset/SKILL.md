@@ -52,7 +52,7 @@ description: 확정된 brand kit를 바탕으로 제품 아이콘 세트를 Icon
 
 - **fetch+정규화(@iconify/tools·`scripts/`) + 부족분만 저작**: 세트에서 가져온 아이콘은 `scripts/normalize.mjs`로 24그리드·currentColor 정규화해 사용. gap(세트에 없는 아이콘)만 §11 폼 규칙 + tokens를 따라 LLM이 SVG로 직접 저작한다. 가족 계약(스타일·viewBox·stroke/fill·join/cap·코너·색)은 `references/iconset-sheet.md §1`, 형태·일관성·메타포·회피의 권위는 `../references/design/icon/`(`icon-rules.md §1–§5`·`icon-style-catalog.md`·`icon-domain-examples.md`)다. **`icon-rules.md §6` 이미지 청크는 쓰지 않는다.**
 - **검수 시트는 결정적 스크립트**: `scripts/build-iconset-sheet.mjs`가 `candidate/icon/*.svg`를 글롭→번호+kebab 라벨 HTML 그리드 렌더. `references/iconset-sheet.md §3`.
-- **라이브 프리뷰**: `node ../../scripts/lib/serve-design.mjs <cwd>/.design` (five-server watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`. 처음 제시할 때 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
+- **라이브 프리뷰**: `node ../../scripts/lib/design/serve-design.mjs <cwd>/.design` (five-server watch·자동 새로고침). 시트 직접 URL: `http://localhost:5500/view/iconset-sheet.html`. 처음 제시할 때 **최초 1회만 사용자 확인** 후 백그라운드 기동, lock/종료 시 닫는다.
 - **image-gen·OPENAI_API_KEY 불필요.** **저작 시 네트워크 필요**(api.iconify.design, 키 불필요).
 
 ## 흐름 (디자이너 협업 루프)
