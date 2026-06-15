@@ -121,11 +121,14 @@ designer가 design-* 가족을 소유하듯 ppt-* 전담 서브에이전트를 �
 }
 ```
 
-- **내장 테마**: 스킬 번들 안 (`skills/ppt-theme/themes/` — create가 읽기만 함).
-- **커스텀·이식 테마**: `.env`의 `PPT_THEME_DIR`(librarian의 `LIBRARIAN_VAULT_PATH` 패턴,
-  머신별 로컬 값). 어느 폴더에서 실행해도 회사 테마 재사용.
-- `PPT_THEME_DIR` 미설정 시: 내장 테마만 사용 가능. 커스텀 저장·potx 이식을 시도하면
-  설정 안내와 함께 실패(resolve-vault.mjs와 같은 방식).
+- **모든 테마**: 스킬 번들 안 한 곳 (`skills/ppt-theme/themes/<이름>/theme.json`). 내장이든
+  사용자가 만든 커스텀이든 같은 폴더에 둔다.
+- **2026-06-15 결정 (env 폐기)**: 처음엔 커스텀 테마를 `.env`의 `PPT_THEME_DIR`(librarian의
+  `LIBRARIAN_VAULT_PATH` 패턴, 머신별 로컬 절대경로)에 두려 했으나 폐기. 이유: ① theme.json은
+  머신 종속 데이터가 아니라 포터블한 색·폰트 config이고, ② ppt-create는 플러그인 루트에서
+  실행해 `.slides`/themes 위치가 고정이며, ③ 이 repo는 개인 모노레포라 커밋해도 무방하다.
+  내장 옆에 커밋하면 env 설정 없이 git로 머신 간 동기화되고 fresh clone에도 따라온다.
+  → `PPT_THEME_DIR` env와 `resolve-theme-dir.mjs`는 제거됨.
 
 ## 5. 스크립트 아키텍처
 

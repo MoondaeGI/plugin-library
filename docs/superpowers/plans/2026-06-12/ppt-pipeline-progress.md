@@ -2,6 +2,11 @@
 
 작성: 2026-06-12 (세션 중단, 집에서 이어서 진행 예정)
 
+> **2026-06-15 갱신**: 파이프라인은 v1으로 구현 완료됐고, 이후 테마 저장 방식이 바뀌었다.
+> 커스텀 테마용 `PPT_THEME_DIR` env와 `resolve-theme-dir.mjs`는 **제거**됐고, 모든 테마는
+> `skills/ppt-theme/themes/<이름>/`에 커밋된다(아래 Task 9·35–37·52줄의 env 관련 서술은 폐기).
+> 근거는 `docs/superpowers/specs/2026-06-12/ppt-pipeline-design.md`의 theme.json 절 참고.
+
 ## 한 줄 요약
 
 `docs/superpowers/plans/2026-06-12/ppt-pipeline.md`(태스크 10개)를 **서브에이전트 구동 방식**으로

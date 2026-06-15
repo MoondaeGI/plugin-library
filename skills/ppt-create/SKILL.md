@@ -14,7 +14,7 @@ description: Use when 발표 내용·구성이 정해진 뒤 실제 PPT 파일(.
 
 ## 진행
 
-1. **테마 선택(1회)**: 내장 테마는 현재 `default-corporate` 하나(`skills/ppt-theme/themes/`). `PPT_THEME_DIR`가 설정돼 있으면 그 아래 커스텀 테마도 후보. 목록·기본 추천(`default-corporate`)을 보여주고 택1. 테마는 직교 액세서리 — 한 번 고르면 끝.
+1. **테마 선택(1회)**: 테마는 모두 `skills/ppt-theme/themes/<이름>/`에 있다(기본 `default-corporate`, 커스텀이 있으면 같은 폴더에 함께). `availableThemes()` 목록과 기본 추천(`default-corporate`)을 보여주고 택1. 테마는 직교 액세서리 — 한 번 고르면 끝.
 2. **내용 → spec.json**: outline.md의 페이지별 한 줄 메시지·근거를 슬라이드 내용으로 번역해 `.slides/<덱>/spec.json` 작성(아래 형식·필드 표). 레이아웃은 내용에 맞게 배정. 페이지 메시지는 해당 슬라이드 `notes`(발표자 노트)에 기본 탑재.
 3. **렌더**: `node scripts/lib/ppt/render-deck.mjs .slides/<덱>`. 검증 실패 시 에러가 슬라이드 번호·필드를 짚어준다 — 그걸 보고 spec을 고친다.
 4. **검수 게이트**: `powershell -File scripts/lib/ppt/export-png.ps1 -PptxPath .slides/<덱>/deck.pptx` → `review/slide-*.png`를 **먼저 직접 읽고** 오버플로·겹침·어색한 줄바꿈을 자가 수정한 뒤, 사용자에게 번호와 함께 제시.

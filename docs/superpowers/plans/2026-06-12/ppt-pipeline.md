@@ -4,6 +4,11 @@
 
 **Spec:** docs/superpowers/specs/2026-06-12/ppt-pipeline-design.md
 
+> **2026-06-15 갱신 (이 계획 이후 변경)**: Task 9의 `resolve-theme-dir.mjs`와 `PPT_THEME_DIR`
+> env 기반 커스텀 테마 저장은 **폐기**됐다. 모든 테마는 `skills/ppt-theme/themes/<이름>/`에
+> 커밋한다. 아래 본문·코드 스니펫의 `PPT_THEME_DIR`·`resolve-theme-dir`·`loadEnv` 관련 서술은
+> 역사적 기록이며 현재 구현과 다르다 — 권위는 spec의 theme.json 절과 `scripts/lib/ppt/load-theme.mjs`.
+
 **Goal:** "주제 → 자료·전략·페이지 설계 → spec.json → PptxGenJS 렌더 → COM PNG 검수" 파이프라인을 ppt-* 스킬 가족(plan/create/edit/theme)으로 구현한다.
 
 **Architecture:** 덱 스펙(spec.json)을 단일 진실 소스로 두는 선언적 재생성 구조. 공유 스크립트(`scripts/lib/ppt/`)가 검증·렌더·검수 시트를 담당하고, 스킬 4종은 게이트 대화 산문이다. 테마는 theme.json 한 포맷으로 수렴(내장/커스텀).
