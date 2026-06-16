@@ -1,8 +1,12 @@
-# ppt-analyze-source 스킬 신설 + ppt-plan 게이트1 슬림화 — 구현 계획
+# read-file 스킬 신설 + ppt-plan 게이트1 슬림화 — 구현 계획
+
+> **개정 (2026-06-16):** 구현 후 스킬을 범용 **`read-file`**로 개명하고 산출물을 호출자 지정으로
+> 바꿨다(상세는 spec 개정 노트 참고). 이하 본문의 `ppt-analyze-source`·고정 `.slides/<덱>/sources.md`
+> 표기는 실행 당시 기록이며, 현행 권위는 `skills/read-file/SKILL.md`다.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Spec:** `docs/superpowers/specs/2026-06-15/ppt-analyze-source-design.md`
+**Spec:** `docs/superpowers/specs/2026-06-15/read-file-design.md`
 
 **Goal:** 발표 자료원을 요소 단위로 분석(네이티브 추출 / 래스터만 비전)해 `.slides/<덱>/sources.md`로 남기는 새 스킬 `ppt-analyze-source`를 만들고, `ppt-plan` 게이트1을 그 위임으로 슬림화한다.
 

@@ -1,7 +1,15 @@
-# ppt-analyze-source 스킬 신설 + ppt-plan 게이트 1 슬림화 — 설계
+# read-file 스킬 신설 + ppt-plan 게이트 1 슬림화 — 설계
 
-- 날짜: 2026-06-15
-- 대상: 신규 `skills/ppt-analyze-source/SKILL.md`, 수정 `skills/ppt-plan/SKILL.md`
+> **개정 (2026-06-16):** 스킬을 ppt 전용에서 **범용 `read-file`**로 일반화하며 개명했다.
+> ① 스킬명 `ppt-analyze-source` → `read-file`. ② 산출물은 **호출자 지정**으로 바뀌었다 —
+> 기본은 결과를 그대로 제시하고, 경로를 받으면 거기에 저장(ppt-plan은 `.slides/<덱>/sources.md`
+> 지정). 고정 `.slides/<덱>/sources.md` 종속 제거(결정 1 갱신). ③ 경계를 "전략·제작은 호출자
+> 몫"으로 일반화(ppt-plan·ppt-create는 한 소비자 예시). 그 외 결정 2~7(요소 단위 판별 등)은
+> 그대로다. **이하 본문의 `ppt-analyze-source`·고정 `.slides/<덱>/sources.md` 표기는 옛 설계
+> 기록이며, 현행은 `skills/read-file/SKILL.md`가 권위다.**
+
+- 날짜: 2026-06-15 (개명·일반화 2026-06-16)
+- 대상: 신규 `skills/read-file/SKILL.md`, 수정 `skills/ppt-plan/SKILL.md`
 - 선행: 같은 날짜 `ppt-plan-image-data-source-design.md`(이미지 데이터화)를 **흡수·확장**한다 — 이미지 분기·추출 수치 always 확인 로직이 ppt-plan에서 새 스킬로 이전된다.
 
 ## 배경·문제
