@@ -113,10 +113,10 @@ for i in range(doc.page_count):
 
 ### 레거시 .doc/.xls (OLE)
 
-zip 프로브 불가. `.xls`는 `markitdown[xls]`로 직접 추출. `.doc` 등은 `LibreOffice`로 정규화 후 위 경로:
+zip 프로브 불가. `.xls`는 `markitdown`(xls extra 설치 시 — `pip install "markitdown[xls]"`)으로 직접 추출하되 명령은 `markitdown <파일> -o <out>.md` 그대로다. `.doc` 등은 `LibreOffice`로 PDF 정규화 후 위 PDF 경로로:
 
 ```
-soffice --headless --convert-to pdf <파일>
+soffice --headless --convert-to pdf --outdir <출력폴더> <파일>
 ```
 
 **주의(Claude):** Claude의 PDF Read는 `pdftoppm`(poppler)에 의존해 미설치 환경에선 실패한다 — 그래서 PDF 1차는 Read가 아니라 markitdown/pymupdf 렌더다.
